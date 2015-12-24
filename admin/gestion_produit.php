@@ -133,8 +133,8 @@ $resultat= executeRequete("SELECT COUNT(id_produit) AS nbre_produits,
 
 $donnees = $resultat -> fetch_assoc();
 
-echo '<p>Vous avez actuellement '. $donnees['stock_total'].' produits en stock<br /> Prix moyen des articles en stock: '.$donnees['prix_moyen'].'€<br />
-	Valeur totale de votre stock: '. $donnees['valeur_stock'].'€</p>';
+echo '<p class="orange">Vous avez '. $donnees['stock_total'].' produits en stock | Prix moyen des articles en stock: '.$donnees['prix_moyen'].'€ 
+		<br />Valeur du stock: '. $donnees['valeur_stock'].'€</p>';
 
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {	
@@ -205,10 +205,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}
 		}		
 	}
-	echo'</tr>';	
-
-	
-
+	echo'<th></th><th></th></tr>';
 
 while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
 {
@@ -261,15 +258,12 @@ affichagePaginationGestion(7, 'produit', '');
 
 if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == 'modification') )
 {
-	
-// SI on clique sur MODIFIER ou AJOUTER  -> FORMULAIRE D'AJOUT (pré-rempli si modif)
+	// MODIFIER ou AJOUTER  -> FORMULAIRE D'AJOUT (pré-rempli si modif)
 	if(isset($_GET['id_produit']))
 	{
-		$resultat = executeREquete("SELECT * FROM produit WHERE id_produit ='$_GET[id_produit]'") ; // on recupere les infos de l'article à partir de l'id_article récupéré dans l'URL
+		$resultat = executeREquete("SELECT * FROM produit WHERE id_produit ='$_GET[id_produit]'") ;
 		$produit_actuel = $resultat ->fetch_assoc();
-
 		// debug($produit_actuel);
-		
 	}
 
 	echo '<form  class="form" method="post" action="" enctype="multipart/form-data">

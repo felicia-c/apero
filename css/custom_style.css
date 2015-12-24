@@ -224,20 +224,7 @@ th{
     padding: 1% 2%;
 
     color: #b4b8bb;
-    font-size: 0.8em;
-    border: 1px solid #b4b8bb;
-       -moz-border-radius-topleft: 3px;
-    -moz-border-radius-topright:3px;
-    -moz-border-radius-bottomleft:3px;
-    -moz-border-radius-bottomright:3px;
-    -webkit-border-top-left-radius:3px;
-    -webkit-border-top-right-radius:3px;
-    -webkit-border-bottom-left-radius:3px;
-    -webkit-border-bottom-right-radius:3px;
-    border-top-left-radius:3px;
-    border-top-right-radius:3px;
-    border-bottom-left-radius:3px;
-    border-bottom-right-radius:3px;
+    font-size: 0.8em; 
 }
 th a:hover,
 th a.active,
@@ -256,6 +243,7 @@ td{
 }
 tr{
     border-bottom: 1px solid #b4b8bb;
+   
 } 
 div.produit{
     width: 25%;
@@ -267,13 +255,13 @@ div.produit{
 .large_table th{
     
     padding: 0.2%;
-    font-size: 0.5em;
+    font-size: 0.6em;
 }
 
 .large_table td{
 
     padding: 0.2%;
-    font-size: 0.4em;
+    font-size: 0.5em;
 }
 
 table tbody tr:nth-child(odd) {
@@ -281,5 +269,14 @@ table tbody tr:nth-child(odd) {
 }
 table tbody tr:first-child{
     background-color: white; 
-    border-color: white;
+    /*border-color: white;*/
+    border: 1px solid #b4b8bb;
 }
+.teal{
+    color: teal;
+}
+.orange{
+    color: orange;
+}
+
+
