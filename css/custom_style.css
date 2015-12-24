@@ -85,6 +85,7 @@ a:hover,
 }
 a.btn_delete:hover{
     color: tomato;
+    border: none;
 }
 a.btn_edit:hover{
     color: teal;

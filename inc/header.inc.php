@@ -28,11 +28,12 @@
     <div class="container">
       <div class="header">
         <header>
-          <a href="'.RACINE_SITE.'index.php"><img src="<?php echo RACINE_SITE; ?>images/apero_logo.png" id="logo_header" alt="apéro" width="150px"/></a>
-          <nav>
+  <?php   
+          echo '<a href="'.RACINE_SITE.'index.php"><img src="'.RACINE_SITE.'images/apero_logo.png" id="logo_header" alt="apéro" width="150px"/></a>';
+
+         echo '<nav>
             <ul class="nav">
-  <?php            
-           echo '<li><a href="'.RACINE_SITE.'index.php">accueil</a></li>
+              <li><a href="'.RACINE_SITE.'index.php">accueil</a></li>
               <li><a href="'.RACINE_SITE.'boutique.php">t-shirts</a></li>
               <li><a href="'.RACINE_SITE.'bars_et_promos.php">bars & promos</a></li>
               <li><a href="'.RACINE_SITE.'panier.php">panier</a></li>';
@@ -48,6 +49,7 @@
               echo '<li><a href="'.RACINE_SITE.'inscription.php">inscription</a></li>
                     <li><a href="'.RACINE_SITE.'connexion.php">connexion</a></li>';
           } 
+
           if(utilisateurEstConnecteEtEstGerant())
           {
            echo '<li><a href="'.RACINE_SITE.'bar/gestion_promo_bar.php">gérer mes promos</li>';
