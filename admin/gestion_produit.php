@@ -6,7 +6,7 @@ require_once("../inc/init.inc.php");
  if(!utilisateurEstConnecteEtEstAdmin())
  {
 	 header("location:../connexion.php");
-	exit(); // arrete l'execution du code 
+	exit();
  }
  
  // SUPPRESSION DES PRODUITS
@@ -24,7 +24,7 @@ require_once("../inc/init.inc.php");
 	
 	executeRequete("DELETE FROM produit WHERE id_produit='$_GET[id_produit]'");
 	$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Produit N°'. $_GET['id_produit'] .' supprimé avec succès!/div>';
-	$_GET['action'] = 'affichage'; // Pour afficher le tableau d'affichage une fois qu'on a validé le formulaire on peut changer la valeur action dans $_GET
+	$_GET['affichage'] = 'affichage'; // afficher les produits une fois qu'on a validé le formulaire 
 
 }
 						
@@ -47,7 +47,7 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 		{
 			$photo_bdd = $_POST['photo_actuelle'];  // dans le cas d'une modif on recupere la photo actuelle avant de vérifier si l'utilisateur en charge une nouvelle (l'ancienne sera alors ecrasée)
 		}
-		if(!empty($_FILES['photo']['name']))//on verifie si photo a bien été postée (empty teste aussi par defaut si c'est isset')
+		if(!empty($_FILES['photo']['name']))//on verifie si photo a bien été postée
 		{
 			if(verificationExtensionPhoto())
 			{
@@ -74,7 +74,7 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 			{
 				$_POST[$indice] = htmlentities($valeur, ENT_QUOTES); 
 			}
-			extract($_POST); // EXTRACT marche sur un tableau array (si indices non-numerique)
+			extract($_POST);
 			
 			if(isset($_GET['action']) && $_GET['action'] == 'modification')
 			{
@@ -83,7 +83,7 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 			else{
 				executeRequete("INSERT INTO produit (reference, categorie, titre, description, couleur, taille, sexe, photo, prix, stock, id_promo_produit) VALUES ( '$reference', '$categorie', '$titre', '$description', '$couleur', '$taille', '$sexe', '$photo_bdd', '$prix', '$stock', '$id_promo_produit')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
 			}
-			$_GET['action'] = 'affichage'; // Pour afficher le tableau d'affichage une fois qu'on a validé le formulaire on peut changer la valeur action dans $_GET
+			$_GET['affichage'] = 'affichage'; // afficher les produits une fois qu'on a validé le formulaire
 		}	
 	}
 }
@@ -141,15 +141,17 @@ echo $msg;
 
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {
-$req = "SELECT * FROM produit";
-$resultat = executeRequete($req); 
-$req = paginationGestion(10, 'produit', $req);
-$nbcol = $resultat->field_count; 
-echo '<br />
-	<br />
+	echo '<br />
+		<br />
 
-	<table class="large_table">
-		<tr>'; 
+		<table class="large_table">
+			<tr>'; 
+$req = "SELECT * FROM produit";
+
+$req = paginationGestion(7, 'produit', $req);
+$resultat = executeRequete($req); 
+$nbcol = $resultat->field_count; 
+
 for($i= 0; $i < $nbcol; $i++) 
 {
 	$colonne= $resultat->fetch_field(); 
@@ -163,6 +165,7 @@ for($i= 0; $i < $nbcol; $i++)
 	}
 	else
 	{
+
 		echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
 		if(isset($_GET['asc']))
 		{
@@ -176,7 +179,7 @@ for($i= 0; $i < $nbcol; $i++)
 		echo '"'; 
 		if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
 		{
-			echo ' class="actif" ';
+			echo ' class="active" ';
 		}
 		if($colonne->name == 'id_promo_produit')
 		{
@@ -194,10 +197,10 @@ for($i= 0; $i < $nbcol; $i++)
 }
 echo'</tr>';
 
-while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
+while ($ligne = $resultat->fetch_assoc())
 {
 	echo '<tr>';
-		foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
+		foreach($ligne AS $indice => $valeur)
 		{
 			if($indice == 'photo')
 			{
@@ -205,7 +208,7 @@ while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resul
 			}
 			elseif($indice == 'description')
 			{
-				echo '<td colspan="3">' . substr($valeur, 0, 70) . '...</td>'; //Pour couper la description (affiche une description de 70 caracteres maximum)
+				echo '<td colspan="3">' . substr($valeur, 0, 50) . '...</td>'; 
 			}
 			else
 			{
@@ -221,8 +224,8 @@ while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resul
 }						
 echo '</table><br />';
 echo '</div>';
-$lien = "";
-affichagePaginationGestion(10, 'produit', $lien);
+
+affichagePaginationGestion(7, 'produit', '');
 }
 
 /******** FORMULAIRE ENREGISTREMENT / MODIFICATION PRODUITSS *******/ 
@@ -235,7 +238,7 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 	{
 		$resultat = executeREquete("SELECT * FROM produit WHERE id_produit ='$_GET[id_produit]'") ; // on recupere les infos de l'article à partir de l'id_article récupéré dans l'URL
 		$produit_actuel = $resultat ->fetch_assoc();
-		//on transforme la ligne de resultat en tableau array
+
 		// debug($produit_actuel);
 		
 	}

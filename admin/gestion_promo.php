@@ -135,7 +135,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 		
 		if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
 		{
-			echo ' class="actif" ';
+			echo ' class="active" ';
 		}
 		if($colonne->name == 'id_promo_produit')
 		{
