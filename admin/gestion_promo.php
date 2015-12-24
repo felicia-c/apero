@@ -102,7 +102,7 @@ else
 		<h2><a href="?action=ajout" class="button">Ajouter des promos</a></h2><br />';
 }
 echo $msg;
-		/////////AFFICHAGE DE TOUTES LES PROMO///////////
+/////////AFFICHAGE DE TOUTES LES PROMO///////////
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {
 	echo '
@@ -120,22 +120,22 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	
 	for($i= 0; $i < $nbcol; $i++) 
 	{
-			$colonne= $resultat->fetch_field(); 	
-			echo '<th style="text-align: center;"><a href="?affichage=affichage&orderby='. $colonne->name ; 
-			if(isset($_GET['asc']))
-			{
-				echo '&desc=desc';
-			}
-			else
-			{
-				echo '&asc=asc';
-			}
-			
-			echo '"'; 
+		$colonne= $resultat->fetch_field(); 	
+		echo '<th style="text-align: center;"><a href="?affichage=affichage&orderby='. $colonne->name ; 
+		if(isset($_GET['asc']))
+		{
+			echo '&desc=desc';
+		}
+		else
+		{
+			echo '&asc=asc';
+		}
+		
+		echo '"'; 
 		
 		if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
 		{
-			echo ' class="actif" ';
+			echo ' class="active" ';
 		}
 		if($colonne->name == 'id_promo_produit')
 		{
@@ -163,8 +163,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 				else
 				{
 					echo '<td >'.$valeur.'</td>';
-				}
-				
+				}	
 			} 
 
 		echo '<td><a href="?affichage=affichage&action=suppression&id_promo_produit='.$ligne['id_promo_produit'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));">
@@ -182,39 +181,38 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 }
 	
 if(isset($_GET['action']) && ($_GET['action']=='ajout' || $_GET['action'] == 'modifier') )
-	{	
-		echo'<form method="post" action="" id="form_inscription" class="form" >
-				<fieldset>
-				<legend>';
-			if($_GET['action'] == 'modifier')
-			{
-				$resultat = executeRequete("SELECT * FROM promo_produit WHERE id_promo_produit = '$_GET[id_promo_produit]' "); // Recup les infos sur la promo à modifier
-				$promo_actuelle = $resultat -> fetch_assoc(); 
-				echo 'Modification de la promo N° '. $promo_actuelle['id_promo_produit'] ;
-			}
-			elseif($_GET['action'] == 'ajout')
-			{
-				echo 'Nouvelle Promotion';
-			}
+{	
+	echo'<form method="post" action="" id="form_inscription" class="form" >
+			<fieldset>
+			<legend>';
+		if($_GET['action'] == 'modifier')
+		{
+			$resultat = executeRequete("SELECT * FROM promo_produit WHERE id_promo_produit = '$_GET[id_promo_produit]' "); // Recup les infos sur la promo à modifier
+			$promo_actuelle = $resultat -> fetch_assoc(); 
+			echo 'Modification de la promo N° '. $promo_actuelle['id_promo_produit'] ;
+		}
+		elseif($_GET['action'] == 'ajout')
+		{
+			echo 'Nouvelle Promotion';
+		}
 
-				echo '</legend>
-					<label for="code_promo">Code Promo</label><br />
-					<input type="text" id="code_promo" name="code_promo" required value="'; if(isset($_POST['code_promo'])) {echo $_POST['code_promo'];} elseif(isset($promo_actuelle)){ echo $promo_actuelle['code_promo']; } echo '" /><br /><br />
+			echo '</legend>
+				<label for="code_promo">Code Promo</label><br />
+				<input type="text" id="code_promo" name="code_promo" required value="'; if(isset($_POST['code_promo'])) {echo $_POST['code_promo'];} elseif(isset($promo_actuelle)){ echo $promo_actuelle['code_promo']; } echo '" /><br /><br />
+				
+				<label for="reduction">Reduction (en %)</label><br />
+				<input type="text" id="reduction" name="reduction" required value="'; if(isset($_POST['reduction'])) {echo $_POST['reduction'];} elseif(isset($promo_actuelle)){ echo $promo_actuelle['reduction'];} echo '" /><br /><br />
 					
-					<label for="reduction">Reduction (en %)</label><br />
-					<input type="text" id="reduction" name="reduction" required value="'; if(isset($_POST['reduction'])) {echo $_POST['reduction'];} elseif(isset($promo_actuelle)){ echo $promo_actuelle['reduction'];} echo '" /><br /><br />
-						
-					<input type="submit" id="enregistrer" class="button" name="enregistrer" value="Enregistrer" />
-				</fieldset>	
-			</form>
-			<br />';
-?>
-		</div>
+				<input type="submit" id="enregistrer" class="button" name="enregistrer" value="Enregistrer" />
+			</fieldset>	
+		</form>
 		<br />
-		<br />
-					
-<?php
-	}	
+	</div>
+	<br />
+	<br />';
+				
+
+}	
 require_once("../inc/footer.inc.php");	
 ?>					
 					

@@ -12,12 +12,15 @@
     <title>Apéro ?</title>
 
     <link href="<?php echo RACINE_SITE; ?>css/custom_style.css" rel="stylesheet">
+    <link href="<?php echo RACINE_SITE; ?>js/jquery-1.11.3.min.js" rel="javascript">
+    
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
   </head>
 
   <body >
@@ -25,7 +28,7 @@
     <div class="container">
       <div class="header">
         <header>
-        <a href="'.RACINE_SITE.'index.php"><img src="<?php echo RACINE_SITE; ?>images/apero_logo.png" id="logo_header" alt="apéro" width="150px"/></a>
+          <a href="'.RACINE_SITE.'index.php"><img src="<?php echo RACINE_SITE; ?>images/apero_logo.png" id="logo_header" alt="apéro" width="150px"/></a>
           <nav>
             <ul class="nav">
   <?php            

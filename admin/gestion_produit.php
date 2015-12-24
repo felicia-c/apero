@@ -6,7 +6,7 @@ require_once("../inc/init.inc.php");
  if(!utilisateurEstConnecteEtEstAdmin())
  {
 	 header("location:../connexion.php");
-	exit(); // arrete l'execution du code 
+	exit();
  }
  
  // SUPPRESSION DES PRODUITS
@@ -24,31 +24,45 @@ require_once("../inc/init.inc.php");
 	
 	executeRequete("DELETE FROM produit WHERE id_produit='$_GET[id_produit]'");
 	$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Produit N°'. $_GET['id_produit'] .' supprimé avec succès!/div>';
-	$_GET['action'] = 'affichage'; // Pour afficher le tableau d'affichage une fois qu'on a validé le formulaire on peut changer la valeur action dans $_GET
+	$_GET['affichage'] = 'affichage'; // afficher les produits une fois qu'on a validé le formulaire 
 
 }
 						
  
- //ENREGISTREMENT DES PRODUITS
-	if(isset($_POST['enregistrement'])) //nom du bouton valider
-		
+//ENREGISTREMENT DES PRODUITS
+if(isset($_POST['enregistrement'])) //nom du bouton valider
+	
+{
+	$reference= executeRequete("SELECT reference FROM produit WHERE reference='$_POST[reference]'");
+	if($reference -> num_rows > 0 && isset($_GET['action']) && $_GET['action'] == 'ajout') //si la requete retourne un enregistrement, alors la reference est deja utilisée, on affiche un message (si on est bien dans un ajout, et pas une modif ! lors d'une modif on garde la reference de l'article, donc on ne rentrerait pas ds cette condition)
 	{
-		$reference= executeRequete("SELECT reference FROM produit WHERE reference='$_POST[reference]'");
-		if($reference -> num_rows > 0 && isset($_GET['action']) && $_GET['action'] == 'ajout') //si la requete retourne un enregistrement, alors la reference est deja utilisée, on affiche un message (si on est bien dans un ajout, et pas une modif ! lors d'une modif on garde la reference de l'article, donc on ne rentrerait pas ds cette condition)
+		$msg .='<div class="msg_erreur" style="margin-top: 20px; padding: 10px; text-align: center">Cette référence est déjà utilisée !</div>';
+	}
+	else
+	{  //sinon  la référence est valable, on enregistre le nouveau produit
+		// $msg .= 'TEST';
+		$photo_bdd =""; //evite une erreur lors de la requete INSERT si l'utilisateur ne charge pas de photo
+		
+		if(isset($_GET['action']) && $_GET['action'] == 'modification')
 		{
-			$msg .='<div class="msg_erreur" style="margin-top: 20px; padding: 10px; text-align: center">Cette référence est déjà utilisée !</div>';
+			$photo_bdd = $_POST['photo_actuelle'];  // dans le cas d'une modif on recupere la photo actuelle avant de vérifier si l'utilisateur en charge une nouvelle (l'ancienne sera alors ecrasée)
 		}
-		else
-		{  //sinon  la référence est valable, on enregistre le nouveau produit
-			// $msg .= 'TEST';
-			$photo_bdd =""; //evite une erreur lors de la requete INSERT si l'utilisateur ne charge pas de photo
-			
-			if(isset($_GET['action']) && $_GET['action'] == 'modification')
+		if(!empty($_FILES['photo']['name']))//on verifie si photo a bien été postée
+		{
+			if(verificationExtensionPhoto())
 			{
-				$photo_bdd = $_POST['photo_actuelle'];  // dans le cas d'une modif on recupere la photo actuelle avant de vérifier si l'utilisateur en charge une nouvelle (l'ancienne sera alors ecrasée)
+				// $msg .= '<div class="bg-success" style="padding: 10px; text-align: center"><h4>OK !</h4></div>';
+				$nom_photo = $_POST['reference'] . '_' . $_FILES['photo']['name']; //afin que chaque nom de photo soit unique
+				
+				$photo_bdd = RACINE_SITE . "images/produits/$nom_photo"; //chemin src que l'on va enregistrer ds la BDD
+				
+				$photo_dossier = RACINE_SERVER . RACINE_SITE . "images/produits/$nom_photo";// chemin pour l'enregistrement dans le dossier qui va servir dans la fonction copy()
+				copy($_FILES['photo']['tmp_name'], $photo_dossier); // COPY() permet de copier un fichier depuis un endroit (1er argument) vers un autre endroit (2eme argument). 
+				
 			}
-			if(!empty($_FILES['photo']['name']))//on verifie si photo a bien été postée (empty teste aussi par defaut si c'est isset')
+			else
 			{
+<<<<<<< HEAD
 				if(verificationExtensionPhoto())
 				{
 					// $msg .= '<div class="bg-success" style="padding: 10px; text-align: center"><h4>OK !</h4></div>';
@@ -65,27 +79,34 @@ require_once("../inc/init.inc.php");
 				}
 			}
 			if(empty($msg))// S'il n'y a pas de message...
-			{
-				$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Produit enregistré avec succès!</div>';
-				
-				foreach($_POST AS $indice => $valeur )
-				{
-					$_POST[$indice] = htmlentities($valeur, ENT_QUOTES); 
-				}
-				extract($_POST); // EXTRACT marche sur un tableau array (si indices non-numerique)
-				
-				if(isset($_GET['action']) && $_GET['action'] == 'modification')
-				{
-					executeRequete("UPDATE produit SET categorie='$categorie', titre='$titre', description='$description', couleur='$couleur', taille='$taille', sexe='$sexe', photo='$photo_bdd', prix='$prix',stock='$stock', id_promo_produit = '$id_promo_produit' WHERE id_produit='$_POST[id_produit]'");
-				}
-				else{
-					executeRequete("INSERT INTO produit (reference, categorie, titre, description, couleur, taille, sexe, photo, prix, stock, id_promo_produit) VALUES ( '$reference', '$categorie', '$titre', '$description', '$couleur', '$taille', '$sexe', '$photo_bdd', '$prix', '$stock', '$id_promo_produit')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
-				}
-				$_GET['action'] = 'affichage'; // Pour afficher le tableau d'affichage une fois qu'on a validé le formulaire on peut changer la valeur action dans $_GET
-			}	
+=======
+				$msg .= '<div class="msg_erreur" style="padding: 10px; text-align: center">L\' extension de la photo n\'est pas valide(jpg, jpeg, png, gif)</div>';
+			}
 		}
+
+		if(empty($msg))// S'il n'y a pas de message...
+		{
+			$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Produit enregistré avec succès!</div>';
+			
+			foreach($_POST AS $indice => $valeur )
+>>>>>>> pagination
+			{
+				$_POST[$indice] = htmlentities($valeur, ENT_QUOTES); 
+			}
+			extract($_POST);
+			
+			if(isset($_GET['action']) && $_GET['action'] == 'modification')
+			{
+				executeRequete("UPDATE produit SET categorie='$categorie', titre='$titre', description='$description', couleur='$couleur', taille='$taille', sexe='$sexe', photo='$photo_bdd', prix='$prix',stock='$stock', id_promo_produit = '$id_promo_produit' WHERE id_produit='$_POST[id_produit]'");
+			}
+			else{
+				executeRequete("INSERT INTO produit (reference, categorie, titre, description, couleur, taille, sexe, photo, prix, stock, id_promo_produit) VALUES ( '$reference', '$categorie', '$titre', '$description', '$couleur', '$taille', '$sexe', '$photo_bdd', '$prix', '$stock', '$id_promo_produit')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
+			}
+			$_GET['affichage'] = 'affichage'; // afficher les produits une fois qu'on a validé le formulaire
+		}	
 	}
-	// FIN ENREGISTREMENT DES PRODUITS
+}
+// FIN ENREGISTREMENT DES PRODUITS
 
 require_once("../inc/header.inc.php");
 
@@ -99,26 +120,27 @@ echo '<div class="box_info" >';
 
 // STATS
 $resultat = executeRequete("SELECT SUM(montant) AS total,
-											COUNT(id_commande) AS nbre_commandes,
-											ROUND(AVG(montant),0) AS panier_moyen,
-											MAX(date) AS der_commande 
-										FROM commande");
+										COUNT(id_commande) AS nbre_commandes,
+										ROUND(AVG(montant),0) AS panier_moyen,
+										MAX(date) AS der_commande 
+									FROM commande");
 $commandes = $resultat -> fetch_assoc();
 echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $commandes['nbre_commandes'].' | Commande moyenne : '.$commandes['panier_moyen'].'€</h3>';
-$resultat = executeRequete("SELECT COUNT(id_produit) AS nbre_produits,
-										SUM(prix * stock) AS valeur_stock,
-										ROUND(AVG(prix),0) AS prix_moyen,
-										MAX(prix) AS prix_max,
-										SUM(stock) AS stock_total
-									FROM produit");
+$resultat= executeRequete("SELECT COUNT(id_produit) AS nbre_produits,
+									SUM(prix * stock) AS valeur_stock,
+									ROUND(AVG(prix),0) AS prix_moyen,
+									MAX(prix) AS prix_max,
+									SUM(stock) AS stock_total
+								FROM produit");
 
-$produits = $resultat -> fetch_assoc();
+$donnees = $resultat -> fetch_assoc();
 
-echo '<p>Vous avez actuellement '. $produits['stock_total'].' produits en stock<br /> Prix moyen des articles en stock: '.$produits['prix_moyen'].'€<br />
-		Valeur totale de votre stock: '. $produits['valeur_stock'].'€</p>';
+echo '<p>Vous avez actuellement '. $donnees['stock_total'].' produits en stock<br /> Prix moyen des articles en stock: '.$donnees['prix_moyen'].'€<br />
+	Valeur totale de votre stock: '. $donnees['valeur_stock'].'€</p>';
 
-if(isset($_GET['action']) && $_GET['action'] == 'affichage')
+if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {	
+<<<<<<< HEAD
 	$resultat_produits = executeRequete("SELECT COUNT(id_produit) AS nbre_produits FROM produit");
 	$produits =$resultat_produits -> fetch_assoc();	
 	echo '<h2><a href="?affichage=affichage" class="button active" >Tous les produits ('. $produits['nbre_produits'].')</a></h2>
@@ -133,6 +155,21 @@ else
 {
 	echo '<h2><a href="?affichage=affichage" class="button" >Tous les produits</a></h2> 
 		<h2><a href="?action=ajout" class="button">Ajouter des produits</a></h2> ';
+=======
+
+echo '<h2><a href="?affichage=affichage" class="button active" >Tous les produits ('. $donnees['nbre_produits'].')</a></h2>
+<a href="?action=ajout" class="button">Ajouter des produits</a><br />';
+}
+elseif(isset($_GET['action']) && $_GET['action'] == 'ajout')
+{
+echo '<h2><a href="?action=ajout" class="button active">Ajouter des produits</a></h2>
+<a href="?affichage=affichage" class="button" >Tous les produits</a>';
+}
+else
+{
+echo '<h2><a href="?affichage=affichage" class="button" >Tous les produits</a></h2>
+	<h2><a href="?action=ajout" class="button">Ajouter des produits</a></h2><br />';
+>>>>>>> pagination
 }
 
 
@@ -140,49 +177,88 @@ echo $msg;
 
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {
-	$req = "SELECT * FROM produit";
-	$resultat = executeRequete($req); 
-	$req = paginationGestion(10, 'produit', $req);
-	$nbcol = $resultat->field_count; 
 	echo '<br />
 		<br />
 
+<<<<<<< HEAD
 		<table class=large_table>
+=======
+		<table class="large_table">
+>>>>>>> pagination
 			<tr>'; 
-	for($i= 0; $i < $nbcol; $i++) 
+$req = "SELECT * FROM produit";
+
+$req = paginationGestion(7, 'produit', $req);
+$resultat = executeRequete($req); 
+$nbcol = $resultat->field_count; 
+
+for($i= 0; $i < $nbcol; $i++) 
+{
+	$colonne= $resultat->fetch_field(); 
+	if($colonne->name == 'photo')
 	{
-		$colonne= $resultat->fetch_field(); 
-		if($colonne->name == 'photo')
+		echo '<th class="text-center">'. ucfirst($colonne->name).'</th>'; 
+	}
+	elseif($colonne->name == 'description')
+	{
+		echo '<th colspan="3" class="text-center">'. ucfirst($colonne->name).'</th>'; 
+	}
+	else
+	{
+
+		echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
+		if(isset($_GET['asc']))
 		{
+			echo '&desc=desc';
+		}
+		else
+		{
+<<<<<<< HEAD
 			echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
 		}
 		elseif($colonne->name != 'description')
+=======
+			echo '&asc=asc';
+		}
+		
+		echo '"'; 
+		if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
 		{
-			echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
-			if(isset($_GET['asc']))
+			echo ' class="active" ';
+		}
+		if($colonne->name == 'id_promo_produit')
+		{
+			echo '>Promo</a></th>'; 
+		}
+		elseif($colonne->name == 'id_produit')
+		{
+			echo '>Id</a></th>'; 
+		}
+		else
+>>>>>>> pagination
+		{
+			echo '>'. ucfirst($colonne->name).'</a></th>'; 
+		}			
+	}		
+}
+echo'</tr>';
+
+while ($ligne = $resultat->fetch_assoc())
+{
+	echo '<tr>';
+		foreach($ligne AS $indice => $valeur)
+		{
+			if($indice == 'photo')
 			{
-				echo '&desc=desc';
+				echo '<td ><img src="'.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
+			}
+			elseif($indice == 'description')
+			{
+				echo '<td colspan="3">' . substr($valeur, 0, 50) . '...</td>'; 
 			}
 			else
 			{
-				echo '&asc=asc';
-			}
-			
-			echo '"'; 
-			if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
-			{
-				echo ' class="actif" ';
-			}
-			if($colonne->name == 'id_promo_produit')
-			{
-				echo '>Promo</a></th>'; 
-			}
-			elseif($colonne->name == 'id_produit')
-			{
-				echo '>Id</a></th>'; 
-			}
-			else
-			{
+<<<<<<< HEAD
 				echo '>'. ucfirst($colonne->name).'</a></th>'; 
 			}			
 		}		
@@ -226,52 +302,58 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 				{
 					echo '<td >'.$valeur.'</td>';
 				}
+=======
+				echo '<td >'.$valeur.'</td>';
+>>>>>>> pagination
 			}
-			echo '<td><a href="?action=suppression&id_produit='.$ligne['id_produit'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
-			
-			echo '<td><a href="?action=modification&id_produit='.$ligne['id_produit'] .'" class="btn_edit">éditer</a></td>';
-			
-			
-		echo '</tr>';
-	}						
-	echo '</table><br />';
-	echo '</div>';
+		}
+		echo '<td><a href="?action=suppression&id_produit='.$ligne['id_produit'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
+		
+		echo '<td><a href="?action=modification&id_produit='.$ligne['id_produit'] .'" class="btn_edit">éditer</a></td>';
+		
+		
+	echo '</tr>';
+}						
+echo '</table><br />';
+echo '</div>';
+
+affichagePaginationGestion(7, 'produit', '');
 }
 
- /******** FORMULAIRE ENREGISTREMENT / MODIFICATION PRODUITSS *******/ 
- 
-	if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == 'modification') ) // Si ajout OU si modification...( /!\ à la place des parenthèses!! )
-	{
-		
-	// SI on clique sur MODIFIER ou AJOUTER  -> FORMULAIRE D'AJOUT (pré-rempli si modif)
-		if(isset($_GET['id_produit']))
-		{
-			$resultat = executeREquete("SELECT * FROM produit WHERE id_produit ='$_GET[id_produit]'") ; // on recupere les infos de l'article à partir de l'id_article récupéré dans l'URL
-			$produit_actuel = $resultat ->fetch_assoc();
-			//on transforme la ligne de resultat en tableau array
-			// debug($produit_actuel);
-			
-		}
+/******** FORMULAIRE ENREGISTREMENT / MODIFICATION PRODUITSS *******/ 
 
-		echo '<form  class="form" method="post" action="" enctype="multipart/form-data">
-		 <fieldset>
-			 <legend >';
-		if(isset($_GET['id_produit']) && ($_GET['action']=='modifier'))
-		{	
-			echo 'Modifier le produit n°';				
-			if(isset($produit_actuel['id_produit'])) // n° du produit ds le titre
-			{ 
-				echo $produit_actuel['id_produit'];
-			} 
-			elseif(isset($_POST['id_produit']))
-			{ 
-				echo $_POST['id_produit'];
-			}
+if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == 'modification') )
+{
+	
+// SI on clique sur MODIFIER ou AJOUTER  -> FORMULAIRE D'AJOUT (pré-rempli si modif)
+	if(isset($_GET['id_produit']))
+	{
+		$resultat = executeREquete("SELECT * FROM produit WHERE id_produit ='$_GET[id_produit]'") ; // on recupere les infos de l'article à partir de l'id_article récupéré dans l'URL
+		$produit_actuel = $resultat ->fetch_assoc();
+
+		// debug($produit_actuel);
+		
+	}
+
+	echo '<form  class="form" method="post" action="" enctype="multipart/form-data">
+	 <fieldset>
+		 <legend >';
+	if(isset($_GET['id_produit']) && ($_GET['action']=='modifier'))
+	{	
+		echo 'Modifier le produit n°';				
+		if(isset($produit_actuel['id_produit'])) // n° du produit ds le titre
+		{ 
+			echo $produit_actuel['id_produit'];
+		} 
+		elseif(isset($_POST['id_produit']))
+		{ 
+			echo $_POST['id_produit'];
 		}
-		else
-		{
-			echo 'Ajouter un produit';	
-		}
+	}
+	else
+	{
+		echo 'Ajouter un produit';	
+	}
 		?>
 			</legend>
 			 <input type="hidden" name="id_produit" id="id_produit" value="<?php if(isset($produit_actuel['id_produit'])){ echo $produit_actuel['id_produit']; }?>" /><!-- On met un input caché pour pouvoir identifier l'article lors de la modification (REPLACE se base sur l'id uniquement(PRIMARY KEY)) /!\SECURITE : On est ici dans un back-office, on peut donc se permettre une certaine confiance en l'utilisateur, mais les champs cachés ne sont pas sécurisés pour l'acces public il faut faire des controles securités sur les url -->
@@ -299,14 +381,14 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			</select>
 			<br />
 			
-			<label for="sexe">Sexe </label><br /> <!--On met un cas par défaut + une valeur checkée si le formulaire a dejà été rempli-->
+			<label for="sexe">Sexe </label><br /> <!--cas par défaut + une valeur checkée si le formulaire a dejà été rempli-->
 				<input   type="radio" name="sexe" value="m"  class="inline" <?php if((isset($_POST['sexe']) && $_POST['sexe'] == "m") ||(isset($produit_actuel['sexe'])&& $produit_actuel['sexe'] == "m")) { echo 'checked';} elseif(!isset($_POST['sexe']) && !isset($produit_actuel['sexe'])){echo 'checked';} ?> /> Homme &nbsp;
 				<input  <?php if((isset($_POST['sexe']) && $_POST['sexe'] == "f") ||(isset($produit_actuel['sexe'])&& $produit_actuel['sexe'] == "f")) { echo 'checked';} ?> type="radio" name="sexe" value="f"  class="inline" /> Femme<br /><br />
 			
 			<label for="photo">Photo </label>
 			<input type="file" name="photo" id="photo"><br />
 			<?php 
-			if(isset($produit_actuel)) // Si le produit actuel existe alors on rentre dans la modif et on affiche la photo actuelle par defaut
+			if(isset($produit_actuel)) // on affiche la photo actuelle par defaut
 			{
 					echo '<label>Photo actuelle</label><br />';
 					echo '<img src="'. $produit_actuel['photo'].'" width="140"/><br />';
@@ -346,11 +428,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
  </div>
  <?php
 }
-else
-{
 
-	
-}
 echo '</div>'; //fin box_info : tableau	 
  ?>
 	 <br />
