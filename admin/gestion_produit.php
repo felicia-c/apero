@@ -62,7 +62,6 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 			}
 			else
 			{
-<<<<<<< HEAD
 				if(verificationExtensionPhoto())
 				{
 					// $msg .= '<div class="bg-success" style="padding: 10px; text-align: center"><h4>OK !</h4></div>';
@@ -79,7 +78,7 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 				}
 			}
 			if(empty($msg))// S'il n'y a pas de message...
-=======
+
 				$msg .= '<div class="msg_erreur" style="padding: 10px; text-align: center">L\' extension de la photo n\'est pas valide(jpg, jpeg, png, gif)</div>';
 			}
 		}
@@ -89,7 +88,6 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 			$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Produit enregistré avec succès!</div>';
 			
 			foreach($_POST AS $indice => $valeur )
->>>>>>> pagination
 			{
 				$_POST[$indice] = htmlentities($valeur, ENT_QUOTES); 
 			}
@@ -105,7 +103,7 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 			$_GET['affichage'] = 'affichage'; // afficher les produits une fois qu'on a validé le formulaire
 		}	
 	}
-}
+
 // FIN ENREGISTREMENT DES PRODUITS
 
 require_once("../inc/header.inc.php");
@@ -140,10 +138,7 @@ echo '<p>Vous avez actuellement '. $donnees['stock_total'].' produits en stock<b
 
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {	
-<<<<<<< HEAD
-	$resultat_produits = executeRequete("SELECT COUNT(id_produit) AS nbre_produits FROM produit");
-	$produits =$resultat_produits -> fetch_assoc();	
-	echo '<h2><a href="?affichage=affichage" class="button active" >Tous les produits ('. $produits['nbre_produits'].')</a></h2>
+	echo '<h2><a href="?affichage=affichage" class="button active" >Tous les produits ('. $donnees['nbre_produits'].')</a></h2>
 	<a href="?action=ajout" class="button">Ajouter des produits</a><br />';
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'ajout')
@@ -153,23 +148,8 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'ajout')
 }
 else
 {
-	echo '<h2><a href="?affichage=affichage" class="button" >Tous les produits</a></h2> 
-		<h2><a href="?action=ajout" class="button">Ajouter des produits</a></h2> ';
-=======
-
-echo '<h2><a href="?affichage=affichage" class="button active" >Tous les produits ('. $donnees['nbre_produits'].')</a></h2>
-<a href="?action=ajout" class="button">Ajouter des produits</a><br />';
-}
-elseif(isset($_GET['action']) && $_GET['action'] == 'ajout')
-{
-echo '<h2><a href="?action=ajout" class="button active">Ajouter des produits</a></h2>
-<a href="?affichage=affichage" class="button" >Tous les produits</a>';
-}
-else
-{
-echo '<h2><a href="?affichage=affichage" class="button" >Tous les produits</a></h2>
-	<h2><a href="?action=ajout" class="button">Ajouter des produits</a></h2><br />';
->>>>>>> pagination
+	echo '<h2><a href="?affichage=affichage" class="button" >Tous les produits</a></h2>
+		<h2><a href="?action=ajout" class="button">Ajouter des produits</a></h2><br />';
 }
 
 
@@ -179,139 +159,96 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {
 	echo '<br />
 		<br />
-
-<<<<<<< HEAD
-		<table class=large_table>
-=======
 		<table class="large_table">
->>>>>>> pagination
 			<tr>'; 
-$req = "SELECT * FROM produit";
+	$req = "SELECT * FROM produit";
 
-$req = paginationGestion(7, 'produit', $req);
-$resultat = executeRequete($req); 
-$nbcol = $resultat->field_count; 
+	$req = paginationGestion(7, 'produit', $req);
+	$resultat = executeRequete($req); 
+	$nbcol = $resultat->field_count; 
 
-for($i= 0; $i < $nbcol; $i++) 
-{
-	$colonne= $resultat->fetch_field(); 
-	if($colonne->name == 'photo')
+	for($i= 0; $i < $nbcol; $i++) 
 	{
-		echo '<th class="text-center">'. ucfirst($colonne->name).'</th>'; 
+		$colonne= $resultat->fetch_field(); 
+		if($colonne->name == 'photo')
+		{
+				echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
+		}
+		elseif(($colonne->name != 'description') && ($colonne->name != 'photo'))
+		{
+			echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
+			if(isset($_GET['asc']))
+			{
+				echo '&desc=desc';
+			}
+			else
+			{
+				echo '&asc=asc';
+			}
+
+			echo '"'; 
+			if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
+			{
+				echo ' class="active" ';
+			}
+			if($colonne->name == 'id_promo_produit')
+			{
+				echo '>Promo</a></th>'; 
+			}
+			elseif($colonne->name == 'id_produit')
+			{
+				echo '>Id</a></th>'; 
+			}
+			else
+			{
+				echo '>'. ucfirst($colonne->name).'</a></th>'; 		
+			}
+		}		
 	}
-	elseif($colonne->name == 'description')
-	{
-		echo '<th colspan="3" class="text-center">'. ucfirst($colonne->name).'</th>'; 
-	}
-	else
-	{
+	echo'</tr>';	
 
-		echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
-		if(isset($_GET['asc']))
-		{
-			echo '&desc=desc';
-		}
-		else
-		{
-<<<<<<< HEAD
-			echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
-		}
-		elseif($colonne->name != 'description')
-=======
-			echo '&asc=asc';
-		}
-		
-		echo '"'; 
-		if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
-		{
-			echo ' class="active" ';
-		}
-		if($colonne->name == 'id_promo_produit')
-		{
-			echo '>Promo</a></th>'; 
-		}
-		elseif($colonne->name == 'id_produit')
-		{
-			echo '>Id</a></th>'; 
-		}
-		else
->>>>>>> pagination
-		{
-			echo '>'. ucfirst($colonne->name).'</a></th>'; 
-		}			
-	}		
-}
-echo'</tr>';
+	
 
-while ($ligne = $resultat->fetch_assoc())
+
+while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
 {
 	echo '<tr>';
-		foreach($ligne AS $indice => $valeur)
+		foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
 		{
 			if($indice == 'photo')
 			{
 				echo '<td ><img src="'.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
 			}
-			elseif($indice == 'description')
+			elseif($indice == 'id_promo_produit')
 			{
-				echo '<td colspan="3">' . substr($valeur, 0, 50) . '...</td>'; 
+				if(!empty($valeur))
+				{
+					$resultat_promo = executeRequete("SELECT * FROM promo_produit WHERE id_promo_produit = '$ligne[id_promo_produit]'");
+					$promo = $resultat_promo -> fetch_assoc();
+					echo '<td >'.$promo['code_promo'].' ('.$promo['id_promo_produit'].') <br /> -'. $promo['reduction'].'%</td>';
+				}
+				else
+				{
+					echo '<td >PAS DE PROMO</td>';
+				}	
 			}
-			else
+			elseif($indice == 'stock')
 			{
-<<<<<<< HEAD
-				echo '>'. ucfirst($colonne->name).'</a></th>'; 
-			}			
-		}		
-	}
-	echo'</tr>';
-
-	while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
-	{
-		echo '<tr>';
-			foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
+				echo '<td > x '.$valeur.'</td>';
+			}
+			elseif($indice == 'prix')
 			{
-				if($indice == 'photo')
-				{
-					echo '<td ><img src="'.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
-				}
-				elseif($indice == 'id_promo_produit')
-				{
-					if(!empty($valeur))
-					{
-						$resultat_promo = executeRequete("SELECT * FROM promo_produit WHERE id_promo_produit = '$ligne[id_promo_produit]'");
-						$promo = $resultat_promo -> fetch_assoc();
-						echo '<td >'.$promo['code_promo'].' ('.$promo['id_promo_produit'].') <br /> -'. $promo['reduction'].'%</td>';
-					}
-					else
-					{
-						echo '<td >PAS DE PROMO</td>';
-					}
-					
-				}
-				elseif($indice == 'stock')
-				{
-					echo '<td > x '.$valeur.'</td>';
-
-				}
-				elseif($indice == 'prix')
-				{
-					echo '<td >'.$valeur.'€</td>';
-
-				}
-				elseif($indice != 'description')
-				{
-					echo '<td >'.$valeur.'</td>';
-				}
-=======
+				echo '<td >'.$valeur.'€</td>';
+			}
+			elseif($indice != 'description')
+			{
 				echo '<td >'.$valeur.'</td>';
->>>>>>> pagination
 			}
 		}
-		echo '<td><a href="?action=suppression&id_produit='.$ligne['id_produit'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
-		
-		echo '<td><a href="?action=modification&id_produit='.$ligne['id_produit'] .'" class="btn_edit">éditer</a></td>';
-		
-		
+
+	echo '<td><a href="?action=suppression&id_produit='.$ligne['id_produit'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
+	
+	echo '<td><a href="?action=modification&id_produit='.$ligne['id_produit'] .'" class="btn_edit">éditer</a></td>';
 	echo '</tr>';
 }						
 echo '</table><br />';
