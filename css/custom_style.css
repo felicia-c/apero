@@ -272,3 +272,11 @@ table tbody tr:first-child{
     /*border-color: white;*/
     border: 1px solid #b4b8bb;
 }
+.teal{
+    color: teal;
+}
+.orange{
+    color: orange;
+}
+
+

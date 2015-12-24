@@ -114,7 +114,7 @@ $resultat = executeRequete("SELECT COUNT(id_produit) AS nbre_produits,
 
 $produits = $resultat -> fetch_assoc();
 
-echo '<p>Vous avez '. $produits['stock_total'].' produits en stock | Prix moyen des articles en stock: '.$produits['prix_moyen'].'€ 
+echo '<p class="orange">Vous avez '. $produits['stock_total'].' produits en stock | Prix moyen des articles en stock: '.$produits['prix_moyen'].'€ 
 		<br />Valeur du stock: '. $produits['valeur_stock'].'€</p>';
 
 if(isset($_GET['action']) && $_GET['action'] == 'affichage')
@@ -243,12 +243,11 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == 'modification') ) // Si ajout OU si modification...( /!\ à la place des parenthèses!! )
 	{
 		
-	// SI on clique sur MODIFIER ou AJOUTER  -> FORMULAIRE D'AJOUT (pré-rempli si modif)
+	// MODIFIER ou AJOUTER  -> FORMULAIRE D'AJOUT (pré-rempli si modif)
 		if(isset($_GET['id_produit']))
 		{
 			$resultat = executeREquete("SELECT * FROM produit WHERE id_produit ='$_GET[id_produit]'") ; // on recupere les infos de l'article à partir de l'id_article récupéré dans l'URL
 			$produit_actuel = $resultat ->fetch_assoc();
-			//on transforme la ligne de resultat en tableau array
 			// debug($produit_actuel);
 			
 		}
