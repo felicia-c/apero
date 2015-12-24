@@ -114,8 +114,8 @@ $resultat = executeRequete("SELECT COUNT(id_produit) AS nbre_produits,
 
 $produits = $resultat -> fetch_assoc();
 
-echo '<p>Vous avez actuellement '. $produits['stock_total'].' produits en stock<br /> Prix moyen des articles en stock: '.$produits['prix_moyen'].'€<br />
-		Valeur totale de votre stock: '. $produits['valeur_stock'].'€</p>';
+echo '<p>Vous avez '. $produits['stock_total'].' produits en stock | Prix moyen des articles en stock: '.$produits['prix_moyen'].'€ 
+		<br />Valeur du stock: '. $produits['valeur_stock'].'€</p>';
 
 if(isset($_GET['action']) && $_GET['action'] == 'affichage')
 {	
@@ -187,7 +187,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}			
 		}		
 	}
-	echo'</tr>';
+	echo'<th></th><th></th></tr>';
 
 	while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
 	{
