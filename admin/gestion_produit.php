@@ -57,15 +57,13 @@ require_once("../inc/init.inc.php");
 					$photo_bdd = RACINE_SITE . "images/produits/$nom_photo"; //chemin src que l'on va enregistrer ds la BDD
 					
 					$photo_dossier = RACINE_SERVER . RACINE_SITE . "images/produits/$nom_photo";// chemin pour l'enregistrement dans le dossier qui va servir dans la fonction copy()
-					copy($_FILES['photo']['tmp_name'], $photo_dossier); // COPY() permet de copier un fichier depuis un endroit (1er argument) vers un autre endroit (2eme argument). 
-					
+					copy($_FILES['photo']['tmp_name'], $photo_dossier); // COPY() permet de copier un fichier depuis un endroit (1er argument) vers un autre endroit (2eme argument). 	
 				}
 				else
 				{
 					$msg .= '<div class="msg_erreur" style="padding: 10px; text-align: center">L\' extension de la photo n\'est pas valide(jpg, jpeg, png, gif)</div>';
 				}
 			}
-
 			if(empty($msg))// S'il n'y a pas de message...
 			{
 				$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Produit enregistré avec succès!</div>';
@@ -123,24 +121,24 @@ if(isset($_GET['action']) && $_GET['action'] == 'affichage')
 {	
 	$resultat_produits = executeRequete("SELECT COUNT(id_produit) AS nbre_produits FROM produit");
 	$produits =$resultat_produits -> fetch_assoc();	
-	echo '<h2><a href="?action=affichage" class="button active" >Tous les produits ('. $produits['nbre_produits'].')</a></h2>
+	echo '<h2><a href="?affichage=affichage" class="button active" >Tous les produits ('. $produits['nbre_produits'].')</a></h2>
 	<a href="?action=ajout" class="button">Ajouter des produits</a><br />';
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'ajout')
 {
 	echo '<h2><a href="?action=ajout" class="button active">Ajouter des produits</a></h2>
-	<a href="?action=affichage" class="button" >Tous les produits</a>';
+	<a href="?affichage=affichage" class="button" >Tous les produits</a>';
 }
 else
 {
-	echo '<a href="?action=affichage" class="button" >Tous les produits</a> | 
-		<a href="?action=ajout" class="button">Ajouter des produits</a><br />';
+	echo '<h2><a href="?affichage=affichage" class="button" >Tous les produits</a></h2> 
+		<h2><a href="?action=ajout" class="button">Ajouter des produits</a></h2> ';
 }
 
 
 echo $msg;
 
-if(isset($_GET['action']) && $_GET['action'] == 'affichage')
+if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {
 	$req = "SELECT * FROM produit";
 	$resultat = executeRequete($req); 
@@ -149,20 +147,16 @@ if(isset($_GET['action']) && $_GET['action'] == 'affichage')
 	echo '<br />
 		<br />
 
-		<table>
+		<table class=large_table>
 			<tr>'; 
 	for($i= 0; $i < $nbcol; $i++) 
 	{
 		$colonne= $resultat->fetch_field(); 
 		if($colonne->name == 'photo')
 		{
-			echo '<th class="text-center">'. ucfirst($colonne->name).'</th>'; 
+			echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
 		}
-		elseif($colonne->name == 'description')
-		{
-			echo '<th colspan="3" class="text-center">'. ucfirst($colonne->name).'</th>'; 
-		}
-		else
+		elseif($colonne->name != 'description')
 		{
 			echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
 			if(isset($_GET['asc']))
@@ -204,11 +198,31 @@ if(isset($_GET['action']) && $_GET['action'] == 'affichage')
 				{
 					echo '<td ><img src="'.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
 				}
-				elseif($indice == 'description')
+				elseif($indice == 'id_promo_produit')
 				{
-					echo '<td colspan="3">' . substr($valeur, 0, 70) . '...</td>'; //Pour couper la description (affiche une description de 70 caracteres maximum)
+					if(!empty($valeur))
+					{
+						$resultat_promo = executeRequete("SELECT * FROM promo_produit WHERE id_promo_produit = '$ligne[id_promo_produit]'");
+						$promo = $resultat_promo -> fetch_assoc();
+						echo '<td >'.$promo['code_promo'].' ('.$promo['id_promo_produit'].') <br /> -'. $promo['reduction'].'%</td>';
+					}
+					else
+					{
+						echo '<td >PAS DE PROMO</td>';
+					}
+					
 				}
-				else
+				elseif($indice == 'stock')
+				{
+					echo '<td > x '.$valeur.'</td>';
+
+				}
+				elseif($indice == 'prix')
+				{
+					echo '<td >'.$valeur.'€</td>';
+
+				}
+				elseif($indice != 'description')
 				{
 					echo '<td >'.$valeur.'</td>';
 				}

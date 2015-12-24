@@ -212,11 +212,12 @@ img.thumbnail{
     margin: 0;
     width: 100%;
     display: inline-block;
-    border-left: 2px solid  #b4b8bb;;
+    border-left: 2px solid  #b4b8bb;
 }
 table{
     margin: 0;
     width: 100%;
+    border-collapse: collapse;
 }
    
 th{
@@ -238,6 +239,15 @@ th{
     border-bottom-left-radius:3px;
     border-bottom-right-radius:3px;
 }
+th a:hover,
+th a.active,
+th a.actif{
+   border: none; 
+}
+th a.active,
+th a.actif{
+    color: orange;
+}
 td{
     padding: 0.5%;
     font-size: 0.6em;
@@ -245,7 +255,7 @@ td{
     text-align: center;
 }
 tr{
-    border-bottom: 1px solid grey;
+    border-bottom: 1px solid #b4b8bb;
 } 
 div.produit{
     width: 25%;
@@ -254,5 +264,22 @@ div.produit{
     margin: 2%;
     text-align: center;
 }
+.large_table th{
+    
+    padding: 0.2%;
+    font-size: 0.5em;
+}
 
+.large_table td{
 
+    padding: 0.2%;
+    font-size: 0.4em;
+}
+
+table tbody tr:nth-child(odd) {
+    background-color: rgba(192, 192, 192, 0.25); 
+}
+table tbody tr:first-child{
+    background-color: white; 
+    border-color: white;
+}
