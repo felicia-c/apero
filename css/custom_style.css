@@ -63,7 +63,9 @@ body{
     max-width: 1000px;
     margin: 0 auto;
 }
-
+p{
+    margin: 0;
+}
 ul, li{
     list-style: none;
     margin: 0;
@@ -199,7 +201,7 @@ img.thumbnail{
 .col1
 {
     border: none;
-    width: 15%;
+    width: 100%;
     margin-right: 0;
     padding: 0;
     margin: 0;
@@ -208,7 +210,7 @@ img.thumbnail{
 .col2
 {
     margin: 0;
-    width: 65%;
+    width: 100%;
     display: inline-block;
     border-left: 2px solid  #b4b8bb;;
 }
@@ -245,6 +247,12 @@ td{
 tr{
     border-bottom: 1px solid grey;
 } 
-
+div.produit{
+    width: 25%;
+    border: 1px solid grey;
+    display: inline-block;
+    margin: 2%;
+    text-align: center;
+}
 
 

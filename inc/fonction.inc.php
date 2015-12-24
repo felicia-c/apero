@@ -60,7 +60,7 @@ function paginationGestion($items_par_page, $table, $resultat) // attend 2 argum
 		
 	}
 	
-	$premiere_entree= abs(($page_actuelle-1)*$items_par_page); // On calcul la première entrée à lire
+	$premiere_entree= abs(($page_actuelle-1)*$items_par_page); // On calcule la première entrée à lire
 
 	if(isset($_GET['orderby']))
 	{
@@ -339,7 +339,7 @@ function creationDuPanier()
 	$verif_caractere = preg_match('#^[a-zA-Z0-9._-]+$#', $code_promo); //retourne FALSE si mauvais caracteres dans $_POST['pseudo'], sinon TRUE
 	if(!$verif_caractere && !empty($_POST['code_promo']))
 	{
-		$msg .= '<div class="msg_erreur" ><h4>Caractères acceptés: A à Z et 0 à 9</h4></div>';  
+		$msg .= '<div class="msg_erreur" >Caractères acceptés: A à Z et 0 à 9</div>';  
 	}
 
 	if(empty($msg))
@@ -370,13 +370,13 @@ function creationDuPanier()
 					$prix_reduit = ($infos_mon_produit['prix'] -= $infos_mon_produit['prix'] * ($infos_promo['reduction'] / 100));  // calcule du pourcentage de réduction
 					
 					$_SESSION['panier']['prix_reduit'][$i] = $prix_reduit; //On stocke le prix reduit dans la session
-					$msg .= '<div class="msg_success" ><h4>La promotion a été appliquée</h4></div>';
+					$msg .= '<div class="msg_success" >La promotion a été appliquée</div>';
 				}
 			}
 		}
 		else
 		{
-			$msg .= '<div class="msg_erreur" ><h4>Le code promo saisit n\'est pas valide !</h4></div>';
+			$msg .= '<div class="msg_erreur" >Le code promo saisit n\'est pas valide !</div>';
 		}
 	}
  }
@@ -590,12 +590,12 @@ function coherenceDates($date1, $date2)
 }
 
 //// AFFICHAGE
-function afficheProduit($resultat)
+function afficheProduits($req)
 {
+	$resultat = executeRequete($req);
 	while($mon_produit = $resultat -> fetch_assoc())
 	{
-		echo '<div class="text-center >
-				<img src="images/apero_logo.png" style="max-width: 100%"></div>
+		echo '<div class ="produit">
 				<img src="'. $mon_produit['photo'].'" style=" width: 200px; max-width: 100%;" />
 				<h3>'. $mon_produit['titre'] .'</h3>
 				<p>'. $mon_produit['prix'].' €</p>
