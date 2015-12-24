@@ -113,7 +113,7 @@ function affichagePaginationGestion($items_par_page, $table, $lien) // arguments
 		}
 		else //liens page 1, 2, etc
 		{
-			if(!empty($lien))
+			if(isset($lien))
 			{
 				echo $lien;
 			}
@@ -131,11 +131,7 @@ function affichagePaginationGestion($items_par_page, $table, $lien) // arguments
 			{
 				echo '&asc=asc&';
 			}
-			/*if(isset($_GET['desc']))
-			{
-				echo '&desc=desc&';
-			}*/
-			else
+			if(isset($_GET['desc']))
 			{
 				echo '&desc=desc&';
 			}
