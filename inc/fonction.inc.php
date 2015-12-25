@@ -239,7 +239,6 @@ function affichagePaginationRecherche($items_par_page, $req) // arguments obliga
 	echo '</p>';
 }
 
-
 /*********************************FIN FONCTIONS DIVERS*****************************/
 
 

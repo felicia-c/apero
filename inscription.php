@@ -1,7 +1,7 @@
 <?php
 $titre_page = "Inscription";
 require_once("inc/init.inc.php");
-////////Lokisalle - Felicia Cuneo - 11/2015
+//APERO- Felicia Cuneo - 12/2015
 if(utilisateurEstConnecte())
 {
 	header("location:profil.php");
@@ -41,18 +41,12 @@ if($_POST){
 		$msg .= '<div class="msg_erreur" ><h4>Erreur sur le prénom.<br /> Caractères acceptés: - àâäçéèêëï A-Z et 0-9</h4></div>';  
 	}
 	
-	$verif_caractere = preg_match('#^[a-zA-Z0-9._ -@]+$#', $_POST['email']); // RAJOUTER LES ACCENTS et espaces!!
-	if(!$verif_caractere && !empty($_POST['email']))
+	$email = filter_input( INPUT_POST, 'email', FILTER_VALIDATE_EMAIL ); 
+	if(!$email && !empty($_POST['email']))
 	{
-		$sanitized_a = filter_var($a, FILTER_SANITIZE_EMAIL);
-		if (!filter_var($sanitized_a, FILTER_VALIDATE_EMAIL)) {
-			$msg .= '<div class="msg_erreur" ><h4>Veuillez renseigner un email valide</h4></div>'; 
-		}
-		else
-		$msg .= '<div class="msg_erreur" ><h4>Votre email comporte des caracteres invalides</h4></div>';
-	}
+		$msg .= '<div class="msg_erreur" >Adresse e-mail invalide !</div>'; 
+	} 
 
-	
 	$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9._ -]+$#', $_POST['ville']); // RAJOUTER LES ACCENTS et espaces!!
 	if(!$verif_caractere && !empty($_POST['ville']))
 	{

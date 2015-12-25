@@ -1,5 +1,4 @@
 <?php
-
 require_once("../inc/init.inc.php");
 //APERO - Felicia Cuneo - 12/2015
 $titre_page = "Gestion des membres";
@@ -16,32 +15,36 @@ if(!empty($_POST))
 		$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9._ -]+$#', $_POST['nom']); 
 		if(!$verif_caractere && !empty($_POST['nom']))
 		{
-			$msg .= '<div class="msg_erreur" ><h4>Caractères acceptés: A à Z et 0 à 9</h4></div>';  
+			$msg .= '<div class="msg_erreur" >Nom - Caractères acceptés: _ - àâäçéèêëï A à Z et 0 à 9</div>';  
 		}
 		
 		$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9._ -]+$#', $_POST['prenom']); 
 		if(!$verif_caractere && !empty($_POST['prenom']))
 		{
-			$msg .= '<div class="msg_erreur" ><h4>Caractères acceptés: A à Z et 0 à 9</h4></div>';  
+			$msg .= '<div class="msg_erreur" >Prénom - caractères acceptés: _ -  àâäçéèêëï A à Z et 0 à 9</div>';  
 		}
-		// AJOUTER VERIF MAIL
+		$email = filter_input( INPUT_POST, 'email', FILTER_VALIDATE_EMAIL ); 
+		if(!$email && !empty($_POST['email']))
+		{
+			$msg .= '<div class="msg_erreur" >Adresse e-mail invalide !</div>'; 
+		} 
 		
 		$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9._ -]+$#', $_POST['ville']); 
 		if(!$verif_caractere && !empty($_POST['ville']))
 		{
-			$msg .= '<div class="msg_erreur" ><h4>Caractères acceptés: A à Z, 0 à 9 -_</h4></div>';  
+			$msg .= '<div class="msg_erreur" >Ville - Caractères acceptés: _ - àâäçéèêëïa A à Z, 0 à 9 -_</div>';  
 		}
 		
 		$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9._ -]+$#', $_POST['adresse']); 
 		if(!$verif_caractere && !empty($_POST['adresse']))
 		{
-			$msg .= '<div class="msg_erreur"><h4>Caractères acceptés: A à Z et 0 à 9</h4></div>';  
+			$msg .= '<div class="msg_erreur"> Adresse - Caractères acceptés: _ - àâäçéèêëïa A à Z et 0 à 9</div>';  
 		}
 		
 		$verif_caractere = preg_match('#^[0-9]+$#', $_POST['cp']); 
 		if(!$verif_caractere && !empty($_POST['cp']))      
 		{
-			$msg .= '<div class="msg_erreur" ><h4>Caractères acceptés: 0 à 9</h4></div>';  
+			$msg .= '<div class="msg_erreur" >Code postal - Caractères acceptés: 0 à 9</div>';  
 		}
 			
 			
@@ -56,23 +59,23 @@ if(!empty($_POST))
 		
 		if(strlen($_POST['nom'])< 2 || strlen($_POST['nom'])>20)
 		{
-			$msg .= '<div class="msg_erreur" ><h4>Le nom doit avoir entre 2 et 20 caractères inclus</h4></div>';
+			$msg .= '<div class="msg_erreur" >Le nom doit avoir entre 2 et 20 caractères inclus</div>';
 		}
 		if(strlen($_POST['prenom'])< 2 || strlen($_POST['prenom'])>20) 
 		{
-			$msg .= '<div class="msg_erreur"><h4>Le prénom doit avoir entre 2 et 20 caractères inclus</h4></div>';
+			$msg .= '<div class="msg_erreur">Le prénom doit avoir entre 2 et 20 caractères inclus</div>';
 		}
 		if(strlen($_POST['email'])<8) 
 		{
-			$msg .= '<div class="msg_erreur"><h4>email trop court !</h4></div>';
+			$msg .= '<div class="msg_erreur">email trop court !</div>';
 		}
 		if(strlen($_POST['email'])>30) 
 		{
-			$msg .= '<div class="msg_erreur"><h4>email trop long !</h4></div>';
+			$msg .= '<div class="msg_erreur">email trop long !</div>';
 		}
 		if(strlen($_POST['ville'])>20) 
 		{
-			$msg .= '<div class="msg_erreur"><h4>Le nom de la ville est trop long !</h4></div>';
+			$msg .= '<div class="msg_erreur">Le nom de la ville est trop long !</div>';
 		}
 		if(strlen($_POST['adresse'])>30) 
 		{
@@ -91,16 +94,16 @@ if(!empty($_POST))
 	
 	
 	
-	if(empty($msg))// Si $msg est vide, alors il n'y a pas d'erreur, nous pouvons lancer l'inscription !
+	if(empty($msg)) //si pas d'erreur
 	{
 		$membre= executeRequete("SELECT * FROM membre WHERE pseudo='$_POST[pseudo]'");
-		if($membre -> num_rows > 0) //si la requete retourne un enregistrement, alors le pseudo est deja utilisé, on affiche un message
+		if($membre -> num_rows > 0) //si le pseudo est deja utilisé
 		{
 			$msg .='<div class="msg_erreur"><h4>Ce pseudo est déjà utilisé !</h4></div>';
 		}
 		else{
 		
-			extract($_POST); // EXTRACT marche sur un tableau array (si indices non-numerique)
+			extract($_POST);
 			executeRequete("INSERT INTO membre (pseudo, mdp, nom, prenom, email, sexe, ville, cp, adresse, statut) VALUES ('$pseudo', '$mdp', '$nom', '$prenom', '$email', '$sexe', '$ville', '$cp', '$adresse', '$statut')"); //requete d'inscription 
 			$msg .='<div class="msg_success"><h4>Inscription réussie !</h4></div>';
 		}

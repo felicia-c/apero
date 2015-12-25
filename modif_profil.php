@@ -1,7 +1,7 @@
 <?php 
 $titre_page = "Modifier mon profil";
 require_once("inc/init.inc.php");
-////////Lokisalle - Felicia Cuneo - 11/2015
+//APERO- Felicia Cuneo - 12/2015
 
 if(!utilisateurEstConnecte()) //Si l'utilisateur n'est PAS connecté (SECURITE)
 {
@@ -43,8 +43,13 @@ if($_POST)
 	{
 		$msg .= '<div class="msg_erreur" ><h4> Caractères acceptés: àâäçéèêëï - A à Z et 0 à 9</h4></div>';  
 	}
-	// AJOUTER VERIF MAIL
-	
+
+	$email = filter_input( INPUT_POST, 'email', FILTER_VALIDATE_EMAIL ); 
+	if(!$email && !empty($_POST['email']))
+	{
+		$msg .= '<div class="msg_erreur" >Adresse e-mail invalide !</div>'; 
+	} 
+		
 	$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9._ -]+$#', $_POST['ville']); 
 	if(!$verif_caractere && !empty($_POST['ville']))
 	{
