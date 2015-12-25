@@ -314,8 +314,9 @@ function creationDuPanier()
 		{
 			$_SESSION['panier'] = array();
 			$_SESSION['panier']['id_produit']= array();
-			
+			$_SESSION['panier']['quantite']= array();
 			$_SESSION['panier']['prix']= array();
+
 			$_SESSION['panier']['prix_reduit']= array();
 			
 			// PROMO
@@ -331,6 +332,7 @@ function creationDuPanier()
  
  function appliquerUnCodePromoAuPanier($code_promo)
  {
+ 	$msg ="";
 	$verif_caractere = preg_match('#^[a-zA-Z0-9._-]+$#', $code_promo); //retourne FALSE si mauvais caracteres dans $_POST['pseudo'], sinon TRUE
 	if(!$verif_caractere && !empty($_POST['code_promo']))
 	{
@@ -342,14 +344,12 @@ function creationDuPanier()
 			//par securité on s'assure que le code promo existe bien dans la table promotion
 		$resultat = executeRequete("SELECT * FROM promo_produit WHERE code_promo = '$code_promo' ");
 
-		$code_promo_exists = $resultat-> num_rows; // on compte le nombre de resultats (normalement 1 ou 0)
-
-		if($code_promo_exists !== 0) //si le code promo existe dans la table promotion, on vérifie qu'il est bien associé au produit (dans la table produit) 
+		if($resultat) //si le code promo existe dans la table promotion, on vérifie qu'il est bien associé au produit (dans la table produit) 
 		{	
 			$infos_promo = $resultat->fetch_assoc(); // on récupere les infos 
 			
 			$_SESSION['panier']['promo']['code_promo'][] = $code_promo;
-			$_SESSION['panier']['promo']['id_promo'][] = $infos_promo['id_promo']; // ENREGISTREMENT EN SESSION OK
+			$_SESSION['panier']['promo']['id_promo'][] = $infos_promo['id_promo_produit']; // ENREGISTREMENT EN SESSION OK
 			
 			$nb_produit = count($_SESSION['panier']['id_produit']); 
 			
@@ -357,14 +357,19 @@ function creationDuPanier()
 			{	
 				$id_mon_produit = $_SESSION['panier']['id_produit'][$i];
 				//recherche des id_promo et prix dans la table produit pour chaque produit du panier 
-				$resultat = executeRequete("SELECT id_promo, prix FROM produit WHERE id_produit = '$id_mon_produit' "); 
+				$resultat = executeRequete("SELECT id_produit, id_promo_produit, prix FROM produit WHERE id_produit = '$id_mon_produit' "); 
 				$infos_mon_produit = $resultat->fetch_assoc();
 				
-				if($infos_mon_produit['id_promo'] == $infos_promo['id_promo']) // si les id_promo session et bdd sont =
+				if($infos_mon_produit['id_promo_produit'] == $infos_promo['id_promo_produit']) // si les id_promo session et bdd sont =
 				{
-					$prix_reduit = ($infos_mon_produit['prix'] -= $infos_mon_produit['prix'] * ($infos_promo['reduction'] / 100));  // calcule du pourcentage de réduction
+					$prix_ttc = $infos_mon_produit['prix'] * 1.2;
+					$prix_reduit = ($prix_ttc-= $prix_ttc * ($infos_promo['reduction'] / 100));  // calcule du pourcentage de réduction
 					
-					$_SESSION['panier']['prix_reduit'][$i] = $prix_reduit; //On stocke le prix reduit dans la session
+					$prix_reduit = round($prix_reduit, 2);
+					
+					$position_produit = array_search($infos_mon_produit['id_produit'], $_SESSION['panier']['id_produit']);
+					
+					$_SESSION['panier']['prix_reduit'][$position_produit] = $prix_reduit; //On stocke le prix reduit dans la session
 					$msg .= '<div class="msg_success" >La promotion a été appliquée</div>';
 				}
 			}
@@ -381,7 +386,7 @@ function creationDuPanier()
  
 // AJOUTER UN ARTICLE AU PANIER
 
-function ajouterArticleDansPanier($id_produit, $prix)
+function ajouterArticleDansPanier($id_produit, $quantite, $prix)
 {
 	//on vérifie que le produit n'est pas déjà présent dans le panier en cours (si déjà present -> on affiche un message d'erreur)
 	
@@ -389,41 +394,46 @@ function ajouterArticleDansPanier($id_produit, $prix)
 	
 	 //var_dump($position_produit);
 	
-	if($position_produit !== FALSE) // = si le produit a été trouvé 
+	if($position_produit !=FALSE) // = si l'article a été trouvé 
 	{
-		$msg .= '<div class="msg_erreur"> Cet article est déjà dans votre panier!</div>';	
+		$_SESSION['panier']['quantite'][$position_produit] += $quantite;  //on augmente la quantité	
 	}
 	
-	else //sinon l'id_produit n'est pas déjà présent dans le panier, c'est donc un nouvel ajout
+	else //sinon c'est donc un nouvel ajout
 	{	
 		if(isset($_SESSION['panier']['promo']['id_promo'][0])) //si un id promo existe dans la session
 		{	
 			//on recup les infos de la promo presente en session :
 			$id_promo = $_SESSION['panier']['promo']['id_promo'][0];
-			$resultat = executeRequete("SELECT * FROM promo_produit WHERE id_promo = '$id_promo' ");
+			$resultat = executeRequete("SELECT * FROM promo_produit WHERE id_promo_produit = '$id_promo' ");
 			$infos_promo = $resultat->fetch_assoc(); 
 			
 			//recherche des id_promo et prix du produit ajouté
 			$resultat = executeRequete("SELECT id_promo_produit, prix FROM produit WHERE id_produit = '$id_produit' "); 
 			$infos_produit = $resultat->fetch_assoc();
 			
-			if($infos_produit['id_promo'] == $id_promo) // si les id_promo produit et session sont =
+			$prix_ttc = $infos_produit['prix'] * 1.2;//Prix ttc a mettre dans la session
+			
+			if($infos_produit['id_promo_produit'] == $id_promo) // si les id_promo produit et session sont =
 			{
-				$prix_reduit = ($infos_produit['prix'] -= $infos_produit['prix'] * ($infos_promo['reduction'] / 100));  // calcule du pourcentage de réduction
+				
+				$prix_reduit = ($prix -= $prix_ttc * ($infos_promo['reduction'] / 100));  // calcule du pourcentage de réduction
 				$_SESSION['panier']['prix_reduit'][] = $prix_reduit; //On stocke le prix reduit dans la session
 			}
 			else
 			{
-				$_SESSION['panier']['prix_reduit'][] = NULL;				
+				$_SESSION['panier']['prix_reduit'][] = NULL;			
 			}
 		}
 		else
 		{
 			$_SESSION['panier']['prix_reduit'][] = NULL;
+			$prix_ttc = $prix * 1.2;//Prix ttc a mettre dans la session
 		}
 		
 		$_SESSION['panier']['id_produit'][] = $id_produit;
-		$_SESSION['panier']['prix'][] = $prix;
+		$_SESSION['panier']['quantite'][]= $quantite;
+		$_SESSION['panier']['prix'][] = $prix_ttc;
 	}
 }
 
@@ -443,16 +453,15 @@ function totalHt()
 		
 		if(isset($_SESSION['panier']['prix_reduit'][$i]))
 		{
-			$prix_produit = $_SESSION['panier']['prix_reduit'][$i];
+			$prix_produit = ($_SESSION['panier']['prix_reduit'][$i] - ($_SESSION['panier']['prix_reduit'][$i]/(1+ 0.2))) * $_SESSION['panier']['quantite'][$i];
 		}
 		else
 		{
 			$resultat_prix = executeRequete("SELECT prix FROM produit WHERE id_produit = '$id_produit'");
 			$prix_produit = $resultat_prix-> fetch_assoc();
-			$prix_produit = $prix_produit['prix'];
+			$prix_produit = $prix_produit['prix'] * $_SESSION['panier']['quantite'][$i];
 			
 		}
-		
 		
 		$total += $prix_produit;
 	}	
@@ -468,23 +477,16 @@ function totalTva()
 	
 	for($i = 0; $i < $nb_de_produits; $i++)
 	{
-		$id_produit = $_SESSION['panier']['id_produit'][$i];
-		
 		if(isset($_SESSION['panier']['prix_reduit'][$i]))  //SI PROMO 
 		{
-			$prix_produit = $_SESSION['panier']['prix_reduit'][$i];
-			
+			$prix_produit = $_SESSION['panier']['prix_reduit'][$i] * $_SESSION['panier']['quantite'][$i];
 		}
 		else
 		{
-			$resultat_prix = executeRequete("SELECT prix FROM produit WHERE id_produit = '$id_produit'");
-			$prix_produit = $resultat_prix-> fetch_assoc();
-			$prix_produit = $prix_produit['prix'];
-		
+			$prix_produit = $_SESSION['panier']['prix'][$i] * $_SESSION['panier']['quantite'][$i];
 		}
-		$total_tva += 0.2 * $prix_produit;
+		$total_tva += $prix_produit/(1+ 0.2) * 0.2;
 	}
-	
 	return  round($total_tva, 2);
 }
 
@@ -498,11 +500,11 @@ function montantTotal()
 		{
 			if(isset($_SESSION['panier']['prix_reduit'][$i]))
 			{
-				$prix_produit = $_SESSION['panier']['prix_reduit'][$i] * 1.2;
+				$prix_produit = $_SESSION['panier']['prix_reduit'][$i] * $_SESSION['panier']['quantite'][$i];
 			}
 			else
 			{
-				$prix_produit = $_SESSION['panier']['prix'][$i];
+				$prix_produit = $_SESSION['panier']['prix'][$i] * $_SESSION['panier']['quantite'][$i];
 			}
 			$total += $prix_produit; //on multiplie la quantité par le prix de chaque produit			
 		}
@@ -518,12 +520,10 @@ function retirerUnArticleDuPanier($produit_a_supprimer)
 	if($position_produit !== FALSE) // SI le produit est present dans le panier
 	{
 		array_splice($_SESSION['panier']['id_produit'], $position_produit, 1);
+		array_splice($_SESSION['panier']['quantite'], $position_produit, 1);
 		array_splice($_SESSION['panier']['prix'], $position_produit, 1);
-		
-		if(isset($_SESSION['panier']['prix_reduit'][$position_produit]))     //SI Promo appliquée au produit, on retire aussi le prix réduit
-		{
-			array_splice($_SESSION['panier']['prix_reduit'], $position_produit, 1);
-		}
+		array_splice($_SESSION['panier']['prix_reduit'], $position_produit, 1);
+
 		
 		// ARRAY_SPLICE (à ne pas confondre avec array_slice) permet de retirer un element du tableau array et de réordoner les indices du tableau afin de ne pas avoir de trou dans le tableau, et ne pas faire d'incohérences dans le reste de nos affichages/traitements
 	}
@@ -584,7 +584,9 @@ function coherenceDates($date1, $date2)
 	}
 }
 
-//// AFFICHAGE
+
+
+//// VIEW ////
 function afficheProduits($req)
 {
 	$resultat = executeRequete($req);
@@ -593,7 +595,7 @@ function afficheProduits($req)
 		echo '<div class ="produit">
 				<img src="'. $mon_produit['photo'].'" style=" width: 200px; max-width: 100%;" />
 				<h3>'. $mon_produit['titre'] .'</h3>
-				<p>'. $mon_produit['prix'].' €</p>
+				<p>'. $mon_produit['prix'] * 1.2.' €</p>
 				<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="btn ">Voir la fiche</a>
 			</div>';
 	}

@@ -58,10 +58,13 @@ body{
     font-size: 18px;
 }
 .container{
-    font-family: 'nunitobold', helvetica;
+    font-family: 'nunitobold', verdana;
     color: black;
     max-width: 1000px;
     margin: 0 auto;
+}
+h1, h2, h3, h4{
+    font-family: 'nunitobold', helvetica;
 }
 p{
     margin: 0;

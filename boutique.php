@@ -51,8 +51,8 @@ echo '<form class="form" method="get" action="?action=tri">
 	echo '<input type="submit" class="btn" style="margin-top: 20px; margin-bottom: 40px" name="action" value="Trier">
 	</form>
 	<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=min" >- de 15€</a> |  
-	<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=mid">  de 25€ à 35€</a> |  
-	<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=max">  + de 35€</a> | 
+	<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=mid">  de 15€ à 25€</a> |  
+	<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=max">  + de 25€</a> | 
 	<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=tous">Tous les articles</a> | 
 </div>	
 
@@ -92,11 +92,11 @@ if(isset($_GET['action']))
 			// AFFICHAGE PRIX MID(ORDER)
 			case 'mid':
 			
-				$req .= "AND (prix BETWEEN 15 AND 35) ";
+				$req .= "AND (prix BETWEEN 15 AND 25) ";
 				break;
 			// AFFICHAGE PRIX MAX(ORDER)
 			case 'max':
-				$req .= "AND prix > 35 ";
+				$req .= "AND prix > 25 ";
 			break;
 			
 			case 'tous':
