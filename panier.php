@@ -117,18 +117,15 @@ if(isset($_GET['action']) && $_GET['action'] == 'vider')
 }
 
 // AJOUT D'ARTICLE
-if(isset($_POST['ajout_panier']) && isset($_POST['id_produit']))
-{
-	
-	$resultat= executeRequete("SELECT prix FROM produit WHERE id_produit = $_POST[id_produit]");
+if(isset($_POST['ajout_panier']) && isset($_POST['id_produit'])&& isset($_POST['quantite']))
+{	
+	$resultat= executeRequete("SELECT prix FROM produit WHERE id_produit = '$_POST[id_produit]'");
 	
 	$mon_produit = $resultat -> fetch_assoc(); 
-	
-	ajouterArticleDansPanier($_POST['id_produit'], $_POST['quantite'], $mon_produit['prix']); //on rajoute le produit dans le panier
-	unset($_POST);
+	$prix = $mon_produit['prix'] * 1.2;
+	ajouterArticleDansPanier($_POST['id_produit'], $_POST['quantite'], $prix); //on rajoute le produit dans le panier
+	//unset($_POST);
 	header("location:panier.php"); // pour éviter de rajouter plusieur fois l'article quand on rafraichit la page
-
-
 }
 
 //MODIFIER LA QUANTITE
@@ -144,7 +141,7 @@ if(isset($_GET['id']))
 			$stock_produit = $resultat -> fetch_assoc();
 			if($_SESSION['panier']['quantite'][$position_produit] <= $stock_produit['stock'])
 			{
-				$_SESSION['panier']['quantite'][$position_produit] += 1;  //on augmente la quantité	
+				$_SESSION['panier']['quantite'][$position_produit]++;  //on augmente la quantité	
 			}
 		}
 	}
@@ -155,12 +152,14 @@ if(isset($_GET['id']))
 		{
 			if($_SESSION['panier']['quantite'][$position_produit] >= 0)
 			{
-				$_SESSION['panier']['quantite'][$position_produit] -= 1;  //on diminue la quantité	
+				$_SESSION['panier']['quantite'][$position_produit]--;  //on diminue la quantité	
 			}
-			$_SESSION['panier']['quantite'][$position_produit]  == '0';
+			else
+			{
+				$_SESSION['panier']['quantite'][$position_produit]  == '0';	
+			}
 			
-		}
-		
+		}	
 	}
 	header("location:panier.php");
 }
@@ -168,10 +167,9 @@ if(isset($_GET['id']))
 
 
 // RETIRER UN ARTICLE
- if(isset($_GET['action']) && $_GET['action'] == 'retirer')
+ if(isset($_GET['action']) && isset($_GET['id_produit']) && $_GET['action'] == 'retirer')
 {
 	retirerUnArticleDuPanier($_GET['id_produit']);
-
 }
 
 
@@ -183,8 +181,12 @@ if(isset($_GET['action']) && $_GET['action'] == 'supprimer_promo')
 	
 	$nb_prix = count($_SESSION['panier']['prix_reduit']);
 	for($i = 0; $i < $nb_prix; $i++)
-	{
-		$_SESSION['panier']['prix_reduit'][$i] = NULL; // On vide les prix_reduits de la session 
+	{	
+		if($_SESSION['panier']['prix_reduit'][$i] !== NULL)
+		{
+			unset($_SESSION['panier']['prix_reduit'][$i]);
+			$_SESSION['panier']['prix_reduit'][$i] = NULL; // On vide les prix_reduits de la session
+		}
 	}
 	echo '<meta http-equiv="refresh" content="2;URL=panier.php">';
 }	
@@ -211,20 +213,20 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 								<th>Taille</th>
 								<th>Couleur</th>
 								<th>Quantité</th>
-								<th>PU</th>
+								<th>Unité</th>
 								<th>Total</th>
 								<th></th>
 							</tr>';
-				if(!utilisateurEstConnecte())  // liens creation compte / connexion
-				{
-					echo '<tr>
+			//	if(!utilisateurEstConnecte())  // liens creation compte / connexion
+			//	{
+			/*		echo '<tr>
 							<td colspan="4"><p>Vous devez être connecté pour créer un panier <br /><br /> <a href="'.RACINE_SITE.'connexion.php" class="button">Connexion</a></p></td>
 							<td></td>
 							<td colspan="5"><p>Pas encore de compte ? <br /> Créez-en un en 2 minutes<br /><br /> <a href="'.RACINE_SITE.'inscription.php" class="button">Créer un compte</a></p></td>
-						</tr>';
-				}
-				else
-				{
+						</tr>'; */
+			//	}
+				//else
+				//{
 					
 				
 					if(empty($_SESSION['panier']['id_produit'])) // s'il n'y a pas de produit dans le panier : mesg panier vide + liens recherche et profil
@@ -234,8 +236,8 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 							</tr>
 							<tr>
 					
-								<td colspan="4"><a class=" produit button" href="boutique.php" >Poursuivre mes achats</a></td>
-								<td colspan="7"><a class="noborder" href="profil.php"> >Voir mon profil</a></td>
+								<td colspan="3"><a class=" produit button" href="boutique.php" >Poursuivre mes achats</a></td>
+								<td colspan="6"><a class="noborder" href="profil.php"> >Voir mon profil</a></td>
 							</tr>';
 					}
 					else
@@ -251,73 +253,76 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 										<td>'. $produit['titre'].'</td>
 										<td>'. $produit['taille'].'</td>
 										<td>'. $produit['couleur'].'</td>';
-								
 							}
-
+					// QUANTITE
 							echo '<td>'.$_SESSION['panier']['quantite'][$i];  
 							echo '<br /><a class="teal" href="?add=1&id='.$_SESSION['panier']['id_produit'][$i].'" >+1</a> / <a class="orange" href="?rem=1&id='.$_SESSION['panier']['id_produit'][$i].'" >-1</a>';
 							echo '</td>';
+					
 					//Affichage PRIX et TVA	
-								
-							echo '<td >'. $_SESSION['panier']['prix'][$i] .' </td>
-								<td>';	
-							if(isset($_SESSION['panier']['prix_reduit'][$i]))// SI CODE PROMO validé sur ce produit
-							{			
+						
+						//PRIX PRODUIT UNITE		
+							echo '<td >'. $_SESSION['panier']['prix'][$i] .' €</td>
+								<td>';
+							
+							$prix_ttc_total = $_SESSION['panier']['prix'][$i] * $_SESSION['panier']['quantite'][$i];		
+							
+						//PRIX PRODUIT REDUIT
+							if($_SESSION['panier']['prix_reduit'][$i] !== NULL)// SI CODE PROMO validé sur ce produit
+							{		
 								$prix_reduit_total = $_SESSION['panier']['prix_reduit'][$i] * $_SESSION['panier']['quantite'][$i];
-								echo '<strong>'.$prix_reduit_total. '</strong>'; 
+								
+								echo '<strong>'.round($prix_reduit_total, 2). '</strong>€'; 
 								
 								//Promo- economie réalisée
-								$economie = ($_SESSION['panier']['prix'][$i] - $_SESSION['panier']['prix_reduit'][$i]) * $_SESSION['panier']['quantite'][$i];
-								echo '<br />Vous économisez : -'. round($economie, 2) .' €';
+								$economie = $prix_ttc_total - $prix_reduit_total;
+								echo '<br />Vous économisez: -'. round($economie, 2) .'€';
 							}
 							else
-							{
-								$total_produit =  $_SESSION['panier']['prix'][$i] * $_SESSION['panier']['quantite'][$i];	
-								echo $total_produit;	
+							{	
+						// OU PRIX PRODUIT NON REDUIT		
+								echo round($prix_ttc_total, 2) .' €';	
 							}
-						//Prix unitaire
+					
 							echo ' </td>';
-							
-						//Prix total produit
-										
-							
+					//LIEN SUPPRIMER
 							$id_produit = $_SESSION['panier']['id_produit'][$i];
-							echo '<td><a class="delete" href="?action=retirer&id_produit='. $_SESSION['panier']['id_produit'][$i].'"  onClick="return(confirm(\'Voulez-vous vraiment retirer cet article de votre panier ? \'));" title="Supprimer" > X </a></td>';
+							echo '<td><a class="delete" href="?action=retirer&id_produit='. $id_produit.'"  onClick="return(confirm(\'Voulez-vous vraiment retirer cet article de votre panier ? \'));" title="Supprimer" > X </a></td>';
 						
 							echo '</tr>';
 						}
 					
-					//TOTAL et CODE PROMO <img src="'.RACINE_SITE.'image/icon_delete.png" alt="X"/>
-					
-						echo '<tr>
-							<th colspan="7">Total HT</th>
-							<td colspan="2"><strong>'. totalHt() .' €</strong></td>
-						</tr>
-						<tr>
-							<th colspan="7">Total T.V.A</th>
-							<td colspan="2">'. totalTva() .' €</td>
-						</tr>
-						
-						<tr>
-							<th colspan="7">Total TTC</th>
-							<td colspan="2"><strong>' . montantTotal() .' € </strong></td>
-						</tr>
-						<tr>
-							<th colspan="7">Votre code promo</th>
-							<td colspan="2">';
-							
+					//TOTAL et CODE PROMO
 
-						
+						echo '<tr>
+							<th colspan="6">Total HT</th>
+							<td colspan="2">'. totalHt() .' €</td>
+							<td></td>
+						</tr>
+						<tr>
+							<th colspan="6">Total T.V.A</th>
+							<td colspan="2">'. totalTva() .' €</td>
+							<td></td>
+						</tr>
+						<tr>
+							<th colspan="6">Total TTC (hors promotions)</th>
+							<td colspan="2"><strong>' . totalTtc() .' € </strong></td>
+							<td></td>
+						</tr>
+						<tr>
+							<th colspan="6">Votre code promo</th>
+							<td colspan="2">';
+					//code promo
 						if(!empty($_SESSION['panier']['promo']['id_promo']))
 						{ 
 							for($i = 0; $i < count($_SESSION['panier']['promo']['id_promo']); $i++) 
 							{
+
 								$code_promo=$_SESSION['panier']['promo']['code_promo'][$i];
 								$promo = executeRequete("SELECT code_promo, reduction FROM promo_produit WHERE code_promo='$code_promo'");
 								while($reduction = $promo -> fetch_assoc())
 								{
-									echo '<p>'.$reduction['code_promo']. ' -'. $reduction['reduction'] .'% ';
-									echo '<a class="noborder" href="?action=supprimer_promo" title="Supprimer"  onClick="return(confirm(\'Voulez-vous vraiment retirer ce code promo de votre panier ? \'));"> X</a></p>';
+									echo '<p>'.$reduction['code_promo']. ' -'. $reduction['reduction'] .'% <a class="noborder" href="?action=supprimer_promo" title="Supprimer"  onClick="return(confirm(\'Voulez-vous vraiment retirer ce code promo de votre panier ? \'));"> X</a></p>';
 								}
 							}
 						}
@@ -329,27 +334,35 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 							{ 
 								echo $_POST['code_promo']; 
 							} 
-							echo '"/><br /><br />
+							echo '"/>
 									<input type="submit" class="button" id="recalculer" value="Recalculer le total" />
 								</form>';
 						}
-					
+					//MONTANT TOTAL
 						echo '</td>
-							</tr>';
+							<td></td>
+							</tr>
+
+						<tr>
+							<th colspan="6">Montant total avec promo</th>
+							<td colspan="2"><strong>' . montantTotal() .' € </strong></td>
+							<td></td>
+						</tr>';
+						
 					}	
 					if(!empty($_SESSION['panier']['id_produit']))
 					{
-						if(utilisateurEstConnecte())
+						if(utilisateurEstConnecte()) //par securite
 						{	
+				//CGV	
 							echo '<tr>
-								<td></td>
-								<td colspan="4" ><a href="'.RACINE_SITE.'boutique.php" class="button produit">Poursuivre mes achats</a></td>
-								<td></td>
 								
+								<td colspan="3" ><a href="'.RACINE_SITE.'boutique.php" class="button produit">Poursuivre mes achats</a></td>
 
-								<td colspan="5"><form method="post" action="" class="">
-								<input required type="checkbox" name="cgv" value="cgv" class="float" id="cgv"  /> 
-								<h4 style="text-align: left;"> J\'ai lu et j\'accepte les <a class="cgv noborder" href="'.RACINE_SITE.'cgv.php" >Conditions Générales de Vente</h4></a>
+								<td colspan="6">
+									<form method="post" action="" class="">
+									<input required type="checkbox" name="cgv" value="cgv"  style="margin: 0; display: inline-block;" id="cgv"  /> 
+									<label for="cgv" style="text-align: left; display: inline-block; width: 80%;"> J\'ai lu et j\'accepte les <a class="cgv noborder" href="'.RACINE_SITE.'cgv.php" >Conditions Générales de Vente</a></label>
 									
 									<input type="submit" name="payer" class="button" value="Payer" id="payer" /></td>
 							</tr>
@@ -361,17 +374,14 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 						}
 						else
 						{
-							
 							echo '<tr>
 								<td colspan="1"><a href="'.RACINE_SITE.'boutique.php" class="button btn_resa">Poursuivre mes achats</a></td>
 								<td colspan="1">Pour valider vos achats veuillez vous <a href="'.RACINE_SITE.'connexion.php">Connecter</a> Pas encore de compte ? <a href="'.RACINE_SITE.'inscription.php">inscrivez-vous</a></td>
 							</tr>';
 						}	
-
 					}	
-				}	
-				echo '
-						</table>
+		//		}	
+				echo '</table>
 					</div>
 				<!-- fin box-info-->
 				<br /><br />';
