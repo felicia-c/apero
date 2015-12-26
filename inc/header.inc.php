@@ -59,7 +59,8 @@
             echo '<li><a href="'.RACINE_SITE.'admin/gestion_produit.php">gestion produits</a></li>
                   <li><a href="'.RACINE_SITE.'admin/gestion_membre.php">gestion membres</a></li>
                   <li><a href="'.RACINE_SITE.'admin/gestion_bar.php">gestion bars</a></li>
-                  <li><a href="'.RACINE_SITE.'admin/gestion_promo.php">gestion promos</a></li>';
+                  <li><a href="'.RACINE_SITE.'admin/gestion_promo.php">gestion promos</a></li>
+                   <li><a href="'.RACINE_SITE.'admin/gestion_commandes.php">gestion commandes</a></li>';
           }
  
          echo  '</ul>

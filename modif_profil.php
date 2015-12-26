@@ -162,8 +162,8 @@ if($_POST)
 				$statut_membre = $statut -> fetch_assoc();
 				$_SESSION['utilisateur']['statut'] =  $statut_membre['statut'];
 
-				//header("location:profil.php"); //redirige sur la page profil.
-				// exit(); // SECURITE qui permet d'arreter l'execution du code de cette page apres la redirection
+				header("location:profil.php?modif=ok"); //redirige sur la page profil.
+				exit(); // SECURITE qui permet d'arreter l'execution du code de cette page apres la redirection
 				
 			}		
 		}

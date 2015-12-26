@@ -50,7 +50,7 @@ if(!empty($_POST))
 			
 		// HTMLENTITIES 	
 			
-			foreach($_POST AS $indice => $valeur)
+		foreach($_POST AS $indice => $valeur)
 		{
 			$_POST[$indice] = htmlentities($valeur, ENT_QUOTES);
 		} 
@@ -114,7 +114,7 @@ if(!empty($_POST))
 if(isset($_GET['action']) && $_GET['action'] == 'suppression')
 {
 	$resultat = executeRequete("SELECT * FROM membre WHERE id_membre = '$_GET[id_membre]'"); //on recupere les infos dans la table membre
-	executeRequete("DELETE FROM avis WHERE id_membre = '$_GET[id_membre]'"); // on supprime les avis du membre
+	//executeRequete("DELETE FROM avis WHERE id_membre = '$_GET[id_membre]'"); // on supprime les avis du membre
 	executeRequete("UPDATE commande SET id_membre = NULL WHERE id_membre = '$_GET[id_membre]' ");
 	executeRequete("DELETE FROM newsletter WHERE id_membre = '$_GET[id_membre]'");
 	executeRequete("DELETE FROM membre WHERE id_membre='$_GET[id_membre]'");
@@ -218,8 +218,7 @@ require_once("../inc/header.inc.php");
 					{
 						echo '>'. ucfirst($colonne->name).'</a></th>'; 
 					}
-					
-				 }
+				}
 			}
 			
 			echo '<th></th>
@@ -231,13 +230,14 @@ require_once("../inc/header.inc.php");
 				echo '<tr>';
 					foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
 					{
-						if ($indice == 'adresse'){
+						if ($indice == 'adresse')
+						{
 							echo '<td colspan ="2">'. $valeur.'</td>';
 						}
-					elseif(($indice != 'mdp') && ($indice != 'photo')){
+						elseif(($indice != 'mdp') && ($indice != 'photo'))
+						{
 						echo '<td >'.ucfirst($valeur).'</td>';	
-					}
-							
+						}
 					}
 				echo '<td>
 				<a class="btn_delete" href="?affichage=affichage&action=suppression&id_membre='.$ligne['id_membre'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));">

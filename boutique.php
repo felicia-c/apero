@@ -14,17 +14,17 @@ echo '<div class="box_info col1">';
 // debug($_GET);
 $req = "";
 
-echo "<p>";
+echo '<p> | ';
 while ($ligne = $resultat_categorie->fetch_assoc()) 
 {
-	echo '<a class="button" style="margin-bottom: 20px;" href="?action=tri_categorie&categorie='. $ligne['categorie'] .'" >'. $ligne['categorie'] .'</a> | ';
+	echo ' <a class="button" style="margin-bottom: 20px;" href="?action=tri_categorie&categorie='. $ligne['categorie'] .'" > '. $ligne['categorie'] .' </a> | ';
 }
-echo '<a class="button" style="margin-bottom: 20px;" href="?action=order&tri=tous">Tous les articles</a>
-</ul>';
+//echo '<a class="button" style="margin-bottom: 20px;" href="?action=order&tri=tous">Tous les articles</a>
+echo '</ul>';
 
 
 // COULEUR
-
+/*
 echo '<form class="form" method="get" action="?action=tri">
 			<label for="couleur">Trier par couleur</label>
 			<select class="form-control" id="couleur" name="couleur">
@@ -45,15 +45,17 @@ echo '<form class="form" method="get" action="?action=tri">
 	{
 		echo '<option value="'. $ligne['taille'] .'" >'. $ligne['taille'] .'</option>' ;
 	}
-	echo '</select>';
+	echo '</select>
+		<input type="submit" class="btn" style="margin-top: 20px; margin-bottom: 40px" name="action" value="Trier">';
+	</form>    */
+	
 
 	//PRIX
-	echo '<input type="submit" class="btn" style="margin-top: 20px; margin-bottom: 40px" name="action" value="Trier">
-	</form>
-	<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=min" >- de 15€</a> |  
-	<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=mid">  de 15€ à 25€</a> |  
-	<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=max">  + de 25€</a> | 
-	<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=tous">Tous les articles</a> | 
+	echo '<br />
+		<a class="btn" style="margin-bottom: 20px;" href="?action=order&tri=min" >- de 15€</a> |  
+		<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=mid">  de 15€ à 25€</a> |  
+		<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=max">  + de 25€</a><br />
+		<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=tous">Tous les articles</a> 
 </div>	
 
 

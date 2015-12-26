@@ -40,9 +40,9 @@ echo $msg;
 			
 				echo '<label for="quantite">Quantité </label>';
 				echo '<select id="quantite" name="quantite" class="form-control" style="width: 200" >';
-				for($i=1; $i <= $mon_produit['stock'] && $i<=5 ; $i++)
+				for($i=1; $i <= $mon_produit['stock'] && $i<= 10 ; $i++)
 				{
-					echo '<option>'. $i .'</option>';
+					echo '<option value="'.$i.'">'. $i .'</option>';
 				}
 				echo '</select>';
 				echo '<input type="submit" name="ajout_panier" value="Ajouter au panier" class="button"  >';

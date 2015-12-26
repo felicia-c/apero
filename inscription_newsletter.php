@@ -1,7 +1,7 @@
 <?php
-$titre_page = "Newsletter";
  require_once("inc/init.inc.php");
- 
+ $titre_page = "Newsletter";
+
 //APERO - Felicia Cuneo - 12/2015
 if(utilisateurEstConnecte())
 {
@@ -39,7 +39,7 @@ elseif(!$_POST)
 ?>
 	<form class="form" method="post" action="">
 
-		<label for="newsletter">Recevez des informations sur <span class="orange">nos dernières offres, les apéros du moment et tous nos bon plans </span>: </label><br />
+		<label for="newsletter">Recevez des informations sur <span class="orange">nos dernières offres, les apéros du moment et tous nos bons plans </span>: </label><br />
 		<br />
 		<fieldset>
 		<input type="checkbox" value="ok" id="newsletter" class="float" style="margin: 0;" name="newsletter" value="ok" <?php if(isset($_POST['newsletter']) && $_POST['newsletter'] == "ok") { echo 'checked';} elseif(!isset($_POST['newsletter'])){echo 'checked';} ?> required / ><label ><i>Oui, je souhaite recevoir des promotions et informations de la part d'Apéro</i></label>
@@ -52,7 +52,8 @@ elseif(!$_POST)
 <?php
 }	
 ?>
-	<br /><br />
+	<br />
+	<br />
 	</div>
 
 <?php

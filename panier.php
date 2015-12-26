@@ -14,8 +14,6 @@ if($_POST)
 	
 	if(isset($_POST['code_promo']) && empty($_SESSION['panier']['promo']['id_promo'])) //si on a rentré un code promo et qu'il n'y a pas déjà un code promo entré (codes promo non cumulables, 1 promo par panier (1 promo par commande), mais le code peut etre appliqué à plusieurs articles) 
 	{
-		//SECU htmlentities / specialvarchars *****************************
-	
 		appliquerUnCodePromoAuPanier($_POST['code_promo']);
 		unset($_POST['code_promo']);
 	}
@@ -23,7 +21,6 @@ if($_POST)
 	{
 		$msg .= '<div class="msg_erreur" >Un code promo est déjà actif sur ce panier</div>';
 	}
-	
 	
 	// PAYER LE PANIER
 
@@ -41,25 +38,23 @@ if($_POST)
 			{
 				$id_produit= $_SESSION['panier']['id_produit'][$i];
 				
-				$resultat_stock = executeRequete("SELECT stock FROM produit WHERE id_produit = '$id_produit'"); //on recupere les dates du produit 
-				
-				//$resultat = executeRequete("SELECT etat FROM produit WHERE id_produit='$id_produit'"); //on verifie l'etat du produit
+				$resultat_stock = executeRequete("SELECT stock FROM produit WHERE id_produit = '$id_produit'"); //on recupere le stock du produit 
 				$stock = $resultat_stock ->fetch_assoc();
 				
 				// PB de STOCK		
-				if($result['stock']< $_SESSION['panier']['quantite'][$i]) // Si le stock est inférieur à la quantité demandée
+				if($stock['stock'] < $_SESSION['panier']['quantite'][$i]) // Si le stock est inférieur à la quantité demandée
 				{
-					if($result['stock'] > 0) // il reste du stock mais inferieur a la quantité demandée
+					if($stock['stock'] > 0) // il reste du stock mais inferieur a la quantité demandée
 					{
-						$msg .= '<div class="msg_erreur">La quantité de l\'article n° '. $_SESSION['panier']['id_article'][$i] .' a été modifiée car notre stock était insuffisant.<br /> Veuillez vérifier votre commande</div>';
+						$msg .= '<div class="msg_erreur">La quantité de l\'article n° '. $_SESSION['panier']['id_produit'][$i] .' a été modifiée car notre stock était insuffisant.<br /> Veuillez vérifier votre commande</div>';
 						
-						$_SESSION['panier']['quantite'][$i] = $result['stock']; // on change la quantité demandée par le stock restant de la bdd
+						$_SESSION['panier']['quantite'][$i] = $stock['stock']; // on change la quantité demandée par le stock restant de la bdd
 					}
 					else // si le stock est à 0
 					{
-						$msg .= '<div class="msg_erreur">L\'article n° '. $_SESSION['panier']['id_article'][$i] .' a été retiré de votre panier car nous sommes en rupture de stock.<br /> Veuillez vérifier votre commande</div>';
+						$msg .= '<div class="msg_erreur">L\'article n° '. $_SESSION['panier']['id_produit'][$i] .' a été retiré de votre panier car nous sommes en rupture de stock.<br /> Veuillez vérifier votre commande</div>';
 				
-					retirerUnArticleDuPanier($_SESSION['panier']['id_article'][$i]);
+					retirerUnArticleDuPanier($_SESSION['panier']['id_produit'][$i]);
 					
 					$i--; // On décrémente car la fonction retirerUnArticleDuPanier() a réorganisé le tableau array $_SESSION['panier'] au niveau des indices -> pour ne pas rater un article lors controle 
 					}
@@ -70,23 +65,34 @@ if($_POST)
 
 			if(!isset($erreur) && ($_SESSION['panier']['id_produit'] !== NULL)) // ON vérifie s'il n'y a pas eu d'erreur lors du controle des disponibilites et si la commande contient bien un article
 			{
-				// if(montantTotal() === 0){
-					// header("location:panier.php");
-				// }
+				if(montantTotal() == 0)
+				{
+					header("location:panier.php");
+					exit;
+				}
 
 				executeRequete("INSERT INTO commande(montant, id_membre, date) VALUES ('".montantTotal()."', '".$_SESSION['utilisateur']['id_membre']."', now() )");  //on enregistre la commande dans la table BDD commande
 				
-				  $id_commande = $mysqli-> insert_id; //propriete de l'objet mysqli qui nous permet de recuperer le dernier id créé dans la table de commande
+				$id_commande = $mysqli-> insert_id; //propriete de l'objet mysqli qui nous permet de recuperer le dernier id créé dans la table de commande
 
-
-			
 				for($i=0; $i < count($_SESSION['panier']['id_produit']); $i++)
 				{
-					// pour chaque produit dans le panier, nous allons inscrire une ligne dans traitement commande et mettre a jour l'etat du produit;
-					executeRequete("INSERT INTO details_commande (id_commande, id_produit) VALUES ('$id_commande', '". $_SESSION['panier']['id_produit'][$i]."')");
-					
-					executeRequete("UPDATE produit SET stock= stock-".$_SESSION['panier']['quantite'][$i]." WHERE id_produit=". $_SESSION['panier']['id_produit'][$i]); // On modifie le stock dans la BDD produit
-			
+					if($_SESSION['panier']['quantite'][$i] > 0)
+					{
+						// pour chaque produit dans le panier, nous allons inscrire une ligne dans details_commande et mettre a jour le stock du produit;
+						if($_SESSION['panier']['prix_reduit'][$i] !== NULL)
+						{
+							$prix = $_SESSION['panier']['prix_reduit'][$i];
+						}
+						else
+						{
+							$prix = $_SESSION['panier']['prix'][$i];
+						}
+						$quantite = $_SESSION['panier']['quantite'][$i];
+						executeRequete("INSERT INTO details_commande (id_commande, id_produit, quantite, prix) VALUES ('$id_commande', '". $_SESSION['panier']['id_produit'][$i]."', '$quantite', '$prix')");
+						
+						executeRequete("UPDATE produit SET stock= stock-".$_SESSION['panier']['quantite'][$i]." WHERE id_produit=". $_SESSION['panier']['id_produit'][$i]); // On modifie le stock dans la BDD produit
+					}
 				}
 				 // Si tout est ok (commande validée, pas d'erreur)on vide le panier
 				$msg .= '<div class="msg_success">Merci pour vos achats !   Un e-mail de confirmation va vous être envoyé à l\'adresse suivante : <br /><strong>'. $_SESSION['utilisateur']['email'] .'</strong><br /> N° de suivi: '. $id_commande .'</div>';
@@ -98,15 +104,12 @@ if($_POST)
 							<strong>Votre commande sera validée dès réception de votre paiement.</strong><br />
 							L'équipe d'Apéro se tient à votre disposition pour répondre à toute question concernant votre commande.</p>";
 
-				mail($_SESSION['utilisateur']['email'], "Lokisalle | Confirmation de votre commande", $message, "From: $mail_vendeur");
+				mail($_SESSION['utilisateur']['email'], "APERO | Confirmation de votre commande", $message, "From: $mail_vendeur");
 				
-				unset($_SESSION['panier']); // On vide la session (panier)
-				
-				
+				unset($_SESSION['panier']); // On vide la session (panier)	
 			}
 		}
 	}
-	
 }	
 
 //VIDER LE PANIER
@@ -143,6 +146,10 @@ if(isset($_GET['id']))
 			{
 				$_SESSION['panier']['quantite'][$position_produit]++;  //on augmente la quantité	
 			}
+			else
+			{
+				$_SESSION['panier']['quantite'][$position_produit] = $stock_produit['stock'];
+			}
 		}
 	}
 	if(isset($_GET['rem']) && ($_GET['rem'] === '1'))
@@ -150,13 +157,14 @@ if(isset($_GET['id']))
 		$position_produit = array_search($id_produit, $_SESSION['panier']['id_produit']); 
 		if($position_produit !== FALSE) // = si l'article a été trouvé 
 		{
-			if($_SESSION['panier']['quantite'][$position_produit] >= 0)
+			if($_SESSION['panier']['quantite'][$position_produit] > 0)
+			//if($_SESSION['panier']['quantite'][$position_produit] != 0)
 			{
 				$_SESSION['panier']['quantite'][$position_produit]--;  //on diminue la quantité	
 			}
 			else
 			{
-				$_SESSION['panier']['quantite'][$position_produit]  == '0';	
+				$_SESSION['panier']['quantite'][$position_produit]  = 1;	
 			}
 			
 		}	
@@ -184,7 +192,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'supprimer_promo')
 	{	
 		if($_SESSION['panier']['prix_reduit'][$i] !== NULL)
 		{
-			unset($_SESSION['panier']['prix_reduit'][$i]);
+			//unset($_SESSION['panier']['prix_reduit'][$i]);
 			$_SESSION['panier']['prix_reduit'][$i] = NULL; // On vide les prix_reduits de la session
 		}
 	}
@@ -245,18 +253,34 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 						for($i = 0; $i < count($_SESSION['panier']['id_produit']); $i++) 
 						{
 							$infos_produit = executeRequete("SELECT * FROM produit WHERE id_produit = '".$_SESSION['panier']['id_produit'][$i]."'");
-							while($produit = $infos_produit -> fetch_assoc())
-							{
-								echo '<tr>
-										<td>'. $produit['reference'].'</td>
-										<td><a href="'.RACINE_SITE.'fiche_produit.php?id_produit='.$produit['id_produit'].'" title="Détails" ><img src="'.$produit['photo'].'" alt="'.$produit['titre'].'" title="'.$produit['titre'].'" class="thumbnail_tableau" width="80px" /></a></td>
-										<td>'. $produit['titre'].'</td>
-										<td>'. $produit['taille'].'</td>
-										<td>'. $produit['couleur'].'</td>';
-							}
+							$produit = $infos_produit -> fetch_assoc();
+							echo '<tr>
+									<td>'. $produit['reference'].'</td>
+									<td><a href="'.RACINE_SITE.'fiche_produit.php?id_produit='.$produit['id_produit'].'" title="Détails" ><img src="'.$produit['photo'].'" alt="'.$produit['titre'].'" title="'.$produit['titre'].'" class="thumbnail_tableau" width="80px" /></a></td>
+									<td>'. $produit['titre'].'</td>
+									<td>'. $produit['taille'].'</td>
+									<td>'. $produit['couleur'].'</td>';
+						
 					// QUANTITE
 							echo '<td>'.$_SESSION['panier']['quantite'][$i];  
-							echo '<br /><a class="teal" href="?add=1&id='.$_SESSION['panier']['id_produit'][$i].'" >+1</a> / <a class="orange" href="?rem=1&id='.$_SESSION['panier']['id_produit'][$i].'" >-1</a>';
+							echo '<br />';
+							if($_SESSION['panier']['quantite'][$i] <= $produit['stock'])
+							{
+								echo '<a class="teal" href="?add=1&id='.$_SESSION['panier']['id_produit'][$i].'" >+1</a>';
+							}
+							else
+							{
+								echo '+1';
+							}
+							if($_SESSION['panier']['quantite'][$i] >= 1)
+							{
+								echo '/ <a class="orange" href="?rem=1&id='.$_SESSION['panier']['id_produit'][$i].'" >-1</a>';
+							}
+							else
+							{
+								echo '/ -1';
+							}
+							
 							echo '</td>';
 					
 					//Affichage PRIX et TVA	

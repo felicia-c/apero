@@ -1,6 +1,6 @@
 <?php
-$titre_page = "Profil";
 require_once("inc/init.inc.php");
+$titre_page = "Profil";
 //APERO - Felicia Cuneo - 12/2015//
 
 if(!utilisateurEstConnecte()) //Si l'utilisateur n'est PAS connecté (SECURITE)
@@ -8,7 +8,10 @@ if(!utilisateurEstConnecte()) //Si l'utilisateur n'est PAS connecté (SECURITE)
 	header("location:connexion.php");
 	exit();
 }
-
+if(isset($_GET['modif'])&& $_GET['modif'] == 'ok')
+{
+	$msg .= '<div class="msg_success"><p>Votre profil a été modifié</p></div>';
+}
 require_once("inc/header.inc.php");
 //echo debug($_SESSION);
 $membre_actuel = $_SESSION['utilisateur'];
