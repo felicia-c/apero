@@ -234,6 +234,18 @@ require_once("../inc/header.inc.php");
 						{
 							echo '<td colspan ="2">'. $valeur.'</td>';
 						}
+						elseif ($indice == 'statut')
+						{
+							if($valeur == '1')
+							{
+								echo '<td>Admin</td>';
+							}
+							else
+							{
+								echo '<td>Membre</td>';
+							}
+							
+						}
 						elseif(($indice != 'mdp') && ($indice != 'photo'))
 						{
 						echo '<td >'.ucfirst($valeur).'</td>';	

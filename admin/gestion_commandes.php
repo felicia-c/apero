@@ -29,7 +29,6 @@ $req ="";
 require_once("../inc/header.inc.php");
 
 echo '<div class="box_info">
-	<h1>Gestion des commandes</h1>
 	<p><a href="" onClick="(window.history.back())" title="retour"> < Retour</a></p>';
 $resultat = executeRequete("SELECT SUM(montant) AS total,
 										COUNT(id_commande) AS nbre_commandes,
@@ -38,35 +37,35 @@ $resultat = executeRequete("SELECT SUM(montant) AS total,
 								FROM commande");
 				$commandes = $resultat -> fetch_assoc();
 echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $commandes['nbre_commandes'].' | Commande moyenne : '.$commandes['panier_moyen'].'€</h3><br />';
-	echo $msg; 
-	?>
+	$resultat = executeRequete("SELECT COUNT(id_commande) AS nbre_commandes FROM commande");
+	$donnees =$resultat -> fetch_assoc();	
 
-	<?php
-	if(!$_GET)
-	{			//LIENS GET AFFICHAGE DE COMMANDES ET DETAILS COMMANDES
+	if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
+	{	
 		
-		echo '<div class="box_info noborder ">
-				<a class="button bouton_msg bouton_gestion" href="?affichage=affichage&action=commandes" class="button">Toutes les commandes</a>
-			<br />
-
-			<a class="button bouton_msg bouton_gestion" href="?affichage=affichage&action=detail" class="button">Détail des commandes</a>
-		</div>';
+		echo '<h2><a href="?affichage=affichage&action=commandes" class="button active" >Toutes les commandes ('. $donnees['nbre_commandes'].')</a></h2>
+		<a href="?affichage=affichage&action=detail" class="button">Détails des commandes</a><br />';
+	}
+	elseif(isset($_GET['action']) && $_GET['action'] == 'detail')
+	{
+		$resultat_details = executeRequete("SELECT COUNT(id_details_commande) AS nbre_details FROM  details_commande");
+		$details =$resultat_details -> fetch_assoc();	
+		echo '<h2><a href="?affichage=affichage&action=detail" class="button active">Détails des commandes ('. $details['nbre_details'].')</a></h2>
+		<a href="?affichage=affichage&action=commandes" class="button" >Toutes les commandes</a>';
+	}
+	else
+	{
+		echo '<h2><a href="?affichage=affichage&action=commandes" class="button" >Toutes les commandes</a></h2>
+			<h2><a href="?affichage=affichage&action=detail" class="button">Détails des commandes</a></h2><br />';
 	}
 
+	echo $msg; 
+echo '<br /><br />';
 /////AFFiCHAGE DETAILS COMMANDE
 
 	if(isset($_GET['action']) && $_GET['action'] == 'detail')
 	{		
-					$resultat_details = executeRequete("SELECT COUNT(id_details_commande) AS nbre_details FROM  details_commande");
-				$details =$resultat_details -> fetch_assoc();	
-			echo '<h2>Détails des Commandes ('. $details['nbre_details'].')</h2>
-				<div class="box_info noborder nopadding_top">
-					<a href="?affichage=affichage&action=commandes" class="button bouton_msg bouton_gestion">Toutes les commandes</a>
-				</div>
-			<br />';
 
-
-			
 	// DETAILs DES PRODUITS
 			if((isset($_GET['info']) && $_GET['info'] == 'detailproduit') && (isset($_GET['action'])&& $_GET['action'] == 'detail'))
 			{
@@ -79,15 +78,62 @@ echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $c
 				
 				for($i= 0; $i < $nbcol; $i++) 
 				{
-					$colonne= $resultat->fetch_field(); 	
-					echo '<th>'. $colonne->name.'</th>'; 
+					$colonne= $resultat->fetch_field(); 
+					if($colonne->name == 'photo')
+					{
+							echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
+					}
+					elseif(($colonne->name != 'description') && ($colonne->name != 'photo'))
+					{
+						echo '<th class="text-center">';
+						if($colonne->name == 'id_promo_produit')
+						{
+							echo 'Promo</a></th>'; 
+						}
+						elseif($colonne->name == 'id_produit')
+						{
+							echo 'Id</a></th>'; 
+						}
+						else
+						{
+							echo ucfirst($colonne->name).'</a></th>'; 		
+						}
+					}		
 				}
 				while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
 				{
 					echo '<tr>';
-					foreach($ligne AS $indice => $valeur)
+					foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
 					{
-							echo '<td>'.$valeur.'</td>';
+						if($indice == 'photo')
+						{
+							echo '<td ><img src="'.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
+						}
+						elseif($indice == 'id_promo_produit')
+						{
+							if(!empty($valeur))
+							{
+								$resultat_promo = executeRequete("SELECT * FROM promo_produit WHERE id_promo_produit = '$ligne[id_promo_produit]'");
+								$promo = $resultat_promo -> fetch_assoc();
+								echo '<td >'.$promo['code_promo'].' ('.$promo['id_promo_produit'].') <br /> -'. $promo['reduction'].'%</td>';
+							}
+							else
+							{
+								echo '<td >PAS DE PROMO</td>';
+							}	
+						}
+						elseif($indice == 'stock')
+						{
+							echo '<td > x '.$valeur.'</td>';
+						}
+						elseif($indice == 'prix')
+						{
+							echo '<td >'.$valeur.'€</td>';
+						}
+						elseif($indice != 'description')
+						{
+							echo '<td >'.$valeur.'</td>';
+						}
 					}
 				}
 				echo '</tr></table><br />';
@@ -128,6 +174,18 @@ echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $c
 						if ($indice == 'adresse')
 						{
 							echo '<td colspan ="2">'. $valeur.'</td>';
+						}
+							elseif ($indice == 'statut')
+						{
+							if($valeur == '1')
+							{
+								echo '<td>Admin</td>';
+							}
+							else
+							{
+								echo '<td>Membre</td>';
+							}
+							
 						}
 						elseif(($indice != 'mdp') && ($indice != 'photo'))
 						{
@@ -233,9 +291,18 @@ echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $c
 
 			if(isset($_GET['id_commande']) && ($_GET['action'] != 'suppression'))
 			{
-				echo '<h3 id="detail_commande">Détail de la commande n°'.$_GET['id_commande'].' </h3>';
+				echo '<h3 id="detail_commande">Détail de la commande N°'.$_GET['id_commande'].' </h3>';
 				$resultat = executeRequete("SELECT * FROM details_commande WHERE id_commande= '$_GET[id_commande]'");
 				echo'<table>'; 
+					echo '<tr>';
+			$nbcol = $resultat->field_count; 
+ 
+			for($i= 0; $i < $nbcol; $i++) 
+			{
+				$colonne= $resultat->fetch_field(); 	
+				echo '<th>'. $colonne->name.'</th>'; 
+			}	
+			echo'</tr>';
 			}
 			else
 			{
@@ -268,16 +335,6 @@ echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $c
 				echo '</tr>';
 			}
 
-		
-			echo '<tr>';
-			$nbcol = $resultat->field_count; 
- 
-			for($i= 0; $i < $nbcol; $i++) 
-			{
-				$colonne= $resultat->fetch_field(); 	
-				echo '<th>'. $colonne->name.'</th>'; 
-			}	
-			echo'</tr>';
 			
 			while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
 			{
@@ -319,18 +376,8 @@ echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $c
 //AFFICHAGE DE TOUTES LES COMMANDES
 	if((isset($_GET['affichage']) && $_GET['affichage'] == 'affichage') && (isset($_GET['action']) && $_GET['action'] == 'commandes'))
 	{
-			$resultat_commandes = executeRequete("SELECT COUNT(id_commande) AS nbre_commandes FROM commande");
-			$commandes =$resultat_commandes -> fetch_assoc();	
-		echo '<h2>Toutes les commandes ('. $commandes['nbre_commandes'].')</h2>
-			<br />
-				<div class="box_info noborder nopadding_top">
-					<a class="button bouton_msg bouton_gestion" href="?affichage=affichage&action=detail" class="button">Détail des commandes</a>
-				</div>
-				<br />
-				<br />
-
-				<table>
-					<tr>';
+		echo '<table>
+				<tr>';
 	// PAGINATION + TRI
 			$req .= "SELECT * FROM commande";
 			$req = paginationGestion(10, 'commande', $req);  

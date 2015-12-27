@@ -211,10 +211,10 @@ echo debug($_SESSION['panier']);
 //echo debug($_SESSION['panier']['promo']);
 				//echo debug($_SESSION);
 echo '<!-- TITRES TABLEAU PANIER  -->
-			<div class="box_info panier noborder">
+			<div class="box_info">
 					<div id="tableau_panier style="width: 100%;"">
 						<table>
-							<tr >
+							<tr>
 								<th>Ref.</th> 
 								<th>Photo</th>
 								<th>Titre</th> 
@@ -311,7 +311,7 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 							echo ' </td>';
 					//LIEN SUPPRIMER
 							$id_produit = $_SESSION['panier']['id_produit'][$i];
-							echo '<td><a class="delete" href="?action=retirer&id_produit='. $id_produit.'"  onClick="return(confirm(\'Voulez-vous vraiment retirer cet article de votre panier ? \'));" title="Supprimer" > X </a></td>';
+							echo '<td><a class="btn_delete" href="?action=retirer&id_produit='. $id_produit.'"  onClick="return(confirm(\'Voulez-vous vraiment retirer cet article de votre panier ? \'));" title="Supprimer" > X </a></td>';
 						
 							echo '</tr>';
 						}
@@ -346,7 +346,7 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 								$promo = executeRequete("SELECT code_promo, reduction FROM promo_produit WHERE code_promo='$code_promo'");
 								while($reduction = $promo -> fetch_assoc())
 								{
-									echo '<p>'.$reduction['code_promo']. ' -'. $reduction['reduction'] .'% <a class="noborder" href="?action=supprimer_promo" title="Supprimer"  onClick="return(confirm(\'Voulez-vous vraiment retirer ce code promo de votre panier ? \'));"> X</a></p>';
+									echo '<p>'.$reduction['code_promo']. ' -'. $reduction['reduction'] .'% <a class="btn_delete" href="?action=supprimer_promo" title="Supprimer"  onClick="return(confirm(\'Voulez-vous vraiment retirer ce code promo de votre panier ? \'));"> X</a></p>';
 								}
 							}
 						}
@@ -393,7 +393,7 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 						
 							<tr>
 								<td></td>
-								<td colspan="3"><a href="panier.php?action=vider">Vider le panier</a></td>
+								<td colspan="3"><a class="btn_delete" href="panier.php?action=vider">Vider le panier</a></td>
 							</tr>';
 						}
 						else

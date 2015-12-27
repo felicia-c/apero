@@ -18,66 +18,63 @@ $membre_actuel = $_SESSION['utilisateur'];
 
 
 echo '<div class="box_info" >';
-			echo $msg;
-			//echo debug($_SESSION);
-				if(isset($_SESSION['utilisateur']))
-				{
-					echo '<h2>Bonjour <strong>'. ucfirst($membre_actuel['prenom']).' !</strong></h2>';
-				}
-				else{
-					header("location:".RACINE_SITE."connexion.php");
-				}
-				
+echo $msg;
+//echo debug($_SESSION);
+if(isset($_SESSION['utilisateur']))
+{
+	echo '<h2>Bonjour <strong>'. ucfirst($membre_actuel['prenom']).' !</strong></h2>';
+}
+else{
+	header("location:".RACINE_SITE."connexion.php");
+}
+	
 
 // INFOS UTILISATEUR
 
-			if(utilisateurEstConnecteEtEstAdmin())
-				{
-					echo '<h3>Compte administrateur</h3>';
-				}
-				else
-				{
-					echo '<h3>Bienvenue sur votre profil</h3>' ;
-				} 
-				echo '<div class="float photo_profil">
-						<img src="images/userpic_default.png" class="thumbnail float" alt="photo par défaut" >
-					</div>
-				<div class="infos_profil">';
-				if (isset($membre_actuel['sexe']) && $membre_actuel['sexe'] == 'f')
-				{
-					echo '<p>Mme ';
-				}
-				else
-				{
-					echo '<p>M. ';
-				}
-				echo ucfirst($membre_actuel['prenom']) .' '. ucfirst($membre_actuel['nom']) .'</p>';
-// adresse de livraison
-			echo '<strong>'. ucfirst($membre_actuel['pseudo']) .'</strong></p>
-			
-				<p><strong>'. $membre_actuel['email'] .	'</strong></p><br />
-				</div>
-				<hr />
-				
-				<h4>Votre adresse de livraison</h4>
-			
-				<p><strong>'. ucfirst($membre_actuel['prenom']) .' '. ucfirst($membre_actuel['nom']) .'</strong><br />'.$membre_actuel['adresse'] .'<br />'.$membre_actuel['cp'] .' '. ucfirst($membre_actuel['ville']) .'</p>';
-	//LIEN MODIFIER		
-		
-		
+if(utilisateurEstConnecteEtEstAdmin())
+{
+	echo '<h3>Compte administrateur</h3>';
+}
+else
+{
+	echo '<h3>Bienvenue sur votre profil</h3>' ;
+} 
+echo '<div class="float photo_profil">
+		<img src="images/userpic_default.png" class="thumbnail float" alt="photo par défaut" >
+	</div>
+<div class="infos_profil inline-block">';
+	if (isset($membre_actuel['sexe']) && $membre_actuel['sexe'] == 'f')
+	{
+		echo '<p>Mme ';
+	}
+	else
+	{
+		echo '<p>M. ';
+	}
+	echo ucfirst($membre_actuel['prenom']) .' '. ucfirst($membre_actuel['nom']) .'</p>';
+	// adresse de livraison
+	echo '<strong>'. ucfirst($membre_actuel['pseudo']) .'</strong></p>
+
+		<p><strong>'. $membre_actuel['email'] .	'</strong></p>';
+			//LIEN MODIFIER		
 		if(isset($membre_actuel['id_membre']))
 		{
 			$id_membre_actuel = $_SESSION['utilisateur']['id_membre'];
-			echo '<hr />
+			echo '
 			<br />
 			<a href="'.RACINE_SITE.'modif_profil.php?id_membre='.$id_membre_actuel.'&action=Modifier" class="button" >Modifier</a>';		
 		}
-
 		echo '</div>
-			<br />
-<!-- DERNIERES COMMANDES -->
-		 <div class="box_info">
-			<h4>Vos dernières commandes</h4>';
+		<div class="infos_profil inline-block">
+			<h4>Votre adresse de livraison</h4>
+		<p><strong>'. ucfirst($membre_actuel['prenom']) .' '. ucfirst($membre_actuel['nom']) .'</strong><br />'.$membre_actuel['adresse'] .'<br />'.$membre_actuel['cp'] .' '. ucfirst($membre_actuel['ville']) .'</p>';
+
+
+	echo '</div>
+		</div>
+			<!-- DERNIERES COMMANDES -->
+			 <div class="box_info">
+				<h4>Vos dernières commandes</h4>';
 			
 //selection des commandes de l'utilisateur
 		$id_utilisateur = $_SESSION['utilisateur']['id_membre'];
@@ -112,6 +109,7 @@ echo '<div class="box_info" >';
 		<br />
 
 	 </div>';
+
 	require_once("inc/footer.inc.php");
  
   ?>
