@@ -38,7 +38,7 @@ if(!empty($_POST))
 		$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9._ -]+$#', $_POST['adresse']); 
 		if(!$verif_caractere && !empty($_POST['adresse']))
 		{
-			$msg .= '<div class="msg_erreur"> Adresse - Caractères acceptés: _ - àâäçéèêëïa A à Z et 0 à 9</div>';  
+			$msg .= '<div class="msg_erreur">Adresse - Caractères acceptés: _ - àâäçéèêëïa A à Z et 0 à 9</div>';  
 		}
 		
 		$verif_caractere = preg_match('#^[0-9]+$#', $_POST['cp']); 
@@ -65,13 +65,13 @@ if(!empty($_POST))
 		{
 			$msg .= '<div class="msg_erreur">Le prénom doit avoir entre 2 et 20 caractères inclus</div>';
 		}
-		if(strlen($_POST['email'])<8) 
+		if(strlen($_POST['email'])<8 ) 
 		{
-			$msg .= '<div class="msg_erreur">email trop court !</div>';
+			$msg .= '<div class="msg_erreur">E-mail trop court !</div>';
 		}
 		if(strlen($_POST['email'])>30) 
 		{
-			$msg .= '<div class="msg_erreur">email trop long !</div>';
+			$msg .= '<div class="msg_erreur">E-mail trop long !</div>';
 		}
 		if(strlen($_POST['ville'])>20) 
 		{
@@ -79,17 +79,17 @@ if(!empty($_POST))
 		}
 		if(strlen($_POST['adresse'])>30) 
 		{
-			$msg .= '<div class="msg_erreur"><h4>Adresse trop longue !</h4></div>';
+			$msg .= '<div class="msg_erreur">Adresse trop longue !</div>';
 		}
 		if(strlen($_POST['cp']) != 5) 
 		{
-			$msg .= '<div class="msg_erreur"><h4>Le code postal doit contenir 5 caractères</h4></div>';
+			$msg .= '<div class="msg_erreur">Le code postal doit contenir 5 caractères</div>';
 		}
 		
 		//FIN SECURITE
 		if($_POST['mdp2'] != $_POST['mdp'] )
 		{
-			$msg .= '<div class="msg_erreur"><h4>Veuillez confirmer votre mot-de-passe</h4></div>';
+			$msg .= '<div class="msg_erreur">Veuillez confirmer votre mot de passe</div>';
 		}
 	
 	
@@ -99,13 +99,15 @@ if(!empty($_POST))
 		$membre= executeRequete("SELECT * FROM membre WHERE pseudo='$_POST[pseudo]'");
 		if($membre -> num_rows > 0) //si le pseudo est deja utilisé
 		{
-			$msg .='<div class="msg_erreur"><h4>Ce pseudo est déjà utilisé !</h4></div>';
+			$msg .='<div class="msg_erreur">Ce pseudo est déjà utilisé !</div>';
 		}
 		else{
 		
 			extract($_POST);
-			executeRequete("INSERT INTO membre (pseudo, mdp, nom, prenom, email, sexe, ville, cp, adresse, statut) VALUES ('$pseudo', '$mdp', '$nom', '$prenom', '$email', '$sexe', '$ville', '$cp', '$adresse', '$statut')"); //requete d'inscription 
-			$msg .='<div class="msg_success"><h4>Inscription réussie !</h4></div>';
+			$ajout = executeRequete("INSERT INTO membre (pseudo, mdp, nom, prenom, email, sexe, ville, cp, adresse, statut) VALUES ('$pseudo', '$mdp', '$nom', '$prenom', '$email', '$sexe', '$ville', '$cp', '$adresse', '$statut')"); //requete d'inscription 
+			$msg .='<div class="msg_success">Inscription réussie ! 
+						<a href="'.RACINE_SITE.'admin/gestion_bar.php?action=ajout&id_membre='.$mysqli->insert_id.'" >Associer un bar à ce nouveau membre</a><br />
+					</div>';
 		}
 	}
 }
@@ -118,7 +120,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'suppression')
 	executeRequete("UPDATE commande SET id_membre = NULL WHERE id_membre = '$_GET[id_membre]' ");
 	executeRequete("DELETE FROM newsletter WHERE id_membre = '$_GET[id_membre]'");
 	executeRequete("DELETE FROM membre WHERE id_membre='$_GET[id_membre]'");
-	$msg .='<div class="msg_success"><h4>Membre N°'. $_GET['id_membre'] .' supprimé avec succès!</h4></div>';   //suppression de la commande dans la table + affichage d'un msg de confirmation
+	$msg .='<div class="msg_success">Membre N°'. $_GET['id_membre'] .' supprimé avec succès!</div>';   //suppression de la commande dans la table + affichage d'un msg de confirmation
 
 }
 $req = "";
@@ -236,13 +238,18 @@ require_once("../inc/header.inc.php");
 						}
 						elseif ($indice == 'statut')
 						{
+							
+							if($valeur == '0')
+							{
+								echo '<td>Membre</td>';
+							}
 							if($valeur == '1')
 							{
 								echo '<td>Admin</td>';
 							}
-							else
+							if($valeur == '3')
 							{
-								echo '<td>Membre</td>';
+								echo '<td>Barman</td>';
 							}
 							
 						}
@@ -326,9 +333,10 @@ require_once("../inc/header.inc.php");
 					
 					<br />
 					<input type="submit" id="ajouter" name="ajouter" value="Ajouter" class="button" /><br />
-					<br />
+				
 					<a class="button " href="<?php echo RACINE_SITE; ?>admin/gestion_membre.php?affichage=affichage">Retour aux membres</a><br />
 					<br />
+					<a href="'.RACINE_SITE.'admin/gestion_bar.php?action=ajout" >Ajouter un bar</a><br /><br />
 					</fieldset>
 				</form>		
 	

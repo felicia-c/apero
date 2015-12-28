@@ -230,13 +230,13 @@ $mdp_membre = $mdp_membre -> fetch_assoc();
 					<textarea type="text" id="adresse" name="adresse" maxlength="50" placeholder="86 rue de la Ville" required><?php if(isset($membre_actuel['adresse'])) {echo $membre_actuel['adresse'];} elseif(isset($_POST['adresse'])){ echo $_POST['adresse'];}?></textarea><br /><br />
 					
 					<input type="submit" id="modifier" name="modifier" value="Modifier" class="button" /><br />
-					
+					<a class="button text-center" href="<?php RACINE_SITE ?>profil.php">Retour au profil</a><br />
 				</fieldset>
 
 			</form>
 		
 			<br />
-			<a class="button" href="<?php RACINE_SITE ?>profil.php">Retour au profil</a><br />
+			
 		</div>
 		<br /><br />
 
