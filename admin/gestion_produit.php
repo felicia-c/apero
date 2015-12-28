@@ -30,8 +30,7 @@ require_once("../inc/init.inc.php");
 						
  
 //ENREGISTREMENT DES PRODUITS
-if(isset($_POST['enregistrement'])) //nom du bouton valider
-	
+if(isset($_POST['enregistrement'])) //nom du bouton valider	
 {
 	$reference= executeRequete("SELECT reference FROM produit WHERE reference='$_POST[reference]'");
 	if($reference -> num_rows > 0 && isset($_GET['action']) && $_GET['action'] == 'ajout') //si la requete retourne un enregistrement, alors la reference est deja utilisée, on affiche un message (si on est bien dans un ajout, et pas une modif ! lors d'une modif on garde la reference de l'article, donc on ne rentrerait pas ds cette condition)
@@ -62,27 +61,9 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 			}
 			else
 			{
-				if(verificationExtensionPhoto())
-				{
-					// $msg .= '<div class="bg-success" style="padding: 10px; text-align: center"><h4>OK !</h4></div>';
-					$nom_photo = $_POST['reference'] . '_' . $_FILES['photo']['name']; //afin que chaque nom de photo soit unique
-					
-					$photo_bdd = RACINE_SITE . "images/produits/$nom_photo"; //chemin src que l'on va enregistrer ds la BDD
-					
-					$photo_dossier = RACINE_SERVER . RACINE_SITE . "images/produits/$nom_photo";// chemin pour l'enregistrement dans le dossier qui va servir dans la fonction copy()
-					copy($_FILES['photo']['tmp_name'], $photo_dossier); // COPY() permet de copier un fichier depuis un endroit (1er argument) vers un autre endroit (2eme argument). 	
-				}
-				else
-				{
-					$msg .= '<div class="msg_erreur" style="padding: 10px; text-align: center">L\' extension de la photo n\'est pas valide(jpg, jpeg, png, gif)</div>';
-				}
-			}
-			if(empty($msg))// S'il n'y a pas de message...
-
 				$msg .= '<div class="msg_erreur" style="padding: 10px; text-align: center">L\' extension de la photo n\'est pas valide(jpg, jpeg, png, gif)</div>';
 			}
 		}
-
 		if(empty($msg))// S'il n'y a pas de message...
 		{
 			$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Produit enregistré avec succès!</div>';
@@ -97,7 +78,8 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 			{
 				executeRequete("UPDATE produit SET categorie='$categorie', titre='$titre', description='$description', couleur='$couleur', taille='$taille', sexe='$sexe', photo='$photo_bdd', prix='$prix',stock='$stock', id_promo_produit = '$id_promo_produit' WHERE id_produit='$_POST[id_produit]'");
 			}
-			else{
+			else
+			{
 				executeRequete("INSERT INTO produit (reference, categorie, titre, description, couleur, taille, sexe, photo, prix, stock, id_promo_produit) VALUES ( '$reference', '$categorie', '$titre', '$description', '$couleur', '$taille', '$sexe', '$photo_bdd', '$prix', '$stock', '$id_promo_produit')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
 			}
 			$_GET['affichage'] = 'affichage'; // afficher les produits une fois qu'on a validé le formulaire
