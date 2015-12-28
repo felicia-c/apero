@@ -56,17 +56,15 @@ echo '<div class="float photo_profil">
 	echo '<strong>'. ucfirst($membre_actuel['pseudo']) .'</strong></p>
 
 		<p><strong>'. $membre_actuel['email'] .	'</strong></p>';
-			//LIEN MODIFIER		
+	//LIEN MODIFIER		
 		if(isset($membre_actuel['id_membre']))
 		{
 			$id_membre_actuel = $_SESSION['utilisateur']['id_membre'];
-			echo '
-			<br />
-			<a href="'.RACINE_SITE.'modif_profil.php?id_membre='.$id_membre_actuel.'&action=Modifier" class="button" >Modifier</a>';		
+			echo '<a class="teal" href="'.RACINE_SITE.'modif_profil.php?id_membre='.$id_membre_actuel.'&action=Modifier" class="button" >Modifier</a>';		
 		}
 		echo '</div>
 		<div class="infos_profil inline-block">
-			<h4>Votre adresse de livraison</h4>
+			<h4 class="orange">Votre adresse de livraison</h4>
 		<p><strong>'. ucfirst($membre_actuel['prenom']) .' '. ucfirst($membre_actuel['nom']) .'</strong><br />'.$membre_actuel['adresse'] .'<br />'.$membre_actuel['cp'] .' '. ucfirst($membre_actuel['ville']) .'</p>';
 
 
@@ -74,7 +72,7 @@ echo '<div class="float photo_profil">
 		</div>
 			<!-- DERNIERES COMMANDES -->
 			 <div class="box_info">
-				<h4>Vos dernières commandes</h4>';
+				<h4 class=orange>Vos dernières commandes</h4>';
 			
 //selection des commandes de l'utilisateur
 		$id_utilisateur = $_SESSION['utilisateur']['id_membre'];
