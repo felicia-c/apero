@@ -4,7 +4,8 @@ require_once("../inc/init.inc.php");
 $titre_page = "Gestion des bars";
 
 //Redirection si l'utilisateur n'est pas admin
-if(!utilisateurEstConnecteEtEstAdmin()){
+if(!utilisateurEstConnecteEtEstAdmin())
+{
 	header("location:../connexion.php");
 }
 
@@ -96,11 +97,9 @@ if(!empty($_POST))
 			{
 				executeRequete("UPDATE membre SET statut = 3 WHERE id_membre='$_POST[id_membre]'");
 			}
-			else
-			{
-				executeRequete("INSERT INTO bar (id_membre, siret, nom_bar, photo, description, nom_gerant, prenom_gerant, ville, cp, adresse, telephone, email) VALUES ( '$id_membre', '$siret', '$nom_bar', '$photo_bdd', '$description', '$nom', '$prenom', '$ville', '$cp', '$adresse', '$telephone', '$email')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
-			}
-				header('location:gestion_bar.php?add=ok&affichage=affichage');
+			
+			executeRequete("INSERT INTO bar (id_membre, siret, nom_bar, photo, description, nom_gerant, prenom_gerant, ville, cp, adresse, telephone, email) VALUES ( '$id_membre', '$siret', '$nom_bar', '$photo_bdd', '$description', '$nom', '$prenom', '$ville', '$cp', '$adresse', '$telephone', '$email')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
+			header('location:gestion_bar.php?add=ok&affichage=affichage');
 		}	
 	}
 }
@@ -246,7 +245,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}
 		}		
 	}
-	echo'<th></th><th></th></tr>';
+	echo'<th></th></tr>';
 
 	while ($ligne = $resultat->fetch_assoc())
 	{
@@ -364,7 +363,7 @@ if(isset($_GET['action']) &&  $_GET['action']=='ajout')
 			<input required  type="text" id="ville" name="ville" value="<?php if(isset($_POST['ville'])) {echo $_POST['ville'];}?>" placeholder="Maville" required /><br />
 		
 			<label for="cp">Code Postal</label>
-			<input required  type="text" id="cp" name="cp" minlength="5" maxlength="5"> value="<?php if(isset($_POST['cp'])) {echo $_POST['cp'];}?>" placeholder="99999" required/><br />
+			<input required  type="text" id="cp" name="cp" minlength="5" maxlength="5" value="<?php if(isset($_POST['cp'])) {echo $_POST['cp'];}?>" placeholder="99999" required/><br />
 			
 			<label for="adresse">Adresse</label>
 			<textarea required type="text" id="adresse" name="adresse" maxlength="100" placeholder="86 rue de la Ville" required><?php if(isset($_POST['adresse'])) {echo $_POST['adresse'];}?></textarea><br />
@@ -384,7 +383,7 @@ if(isset($_GET['action']) &&  $_GET['action']=='ajout')
 }
 echo '</div>
 
-S<br /><br /><br />';
+<br /><br /><br />';
 	
 require_once("../inc/footer.inc.php");	
 	
