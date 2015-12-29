@@ -32,27 +32,27 @@
           echo '<a href="'.RACINE_SITE.'index.php"><img src="'.RACINE_SITE.'images/apero_logo.png" id="logo_header" alt="apéro" width="150px"/></a>';
 
          echo '<nav>
-            <ul class="nav">
-              <li><a href="'.RACINE_SITE.'index.php">accueil</a></li>
-              <li><a href="'.RACINE_SITE.'boutique.php">t-shirts</a></li>
-              <li><a href="'.RACINE_SITE.'bars_et_promos.php">bars & promos</a></li>
-              <li><a href="'.RACINE_SITE.'panier.php">panier</a></li>';
+                <ul class="nav">
+                  <li><a href="'.RACINE_SITE.'index.php">accueil</a></li>
+                  <li><a href="'.RACINE_SITE.'boutique.php">t-shirts</a></li>
+                  <li><a href="'.RACINE_SITE.'bars_et_promos.php">bars & promos</a></li>
+                  <li><a href="'.RACINE_SITE.'panier.php">panier</a></li>';
 
        
           if(utilisateurEstConnecte())
           {
-             echo '<li><a href="'.RACINE_SITE.'profil.php">profil</a></li>
+            echo '<li><a href="'.RACINE_SITE.'profil.php">profil</a></li>
                   <li><a href="'.RACINE_SITE.'connexion.php?action=deconnexion">déconnexion</a></li>';
           } 
           else
           {
-              echo '<li><a href="'.RACINE_SITE.'inscription.php">inscription</a></li>
-                    <li><a href="'.RACINE_SITE.'connexion.php">connexion</a></li>';
+            echo '<li><a href="'.RACINE_SITE.'inscription.php">inscription</a></li>
+                  <li><a href="'.RACINE_SITE.'connexion.php">connexion</a></li>';
           } 
 
           if(utilisateurEstConnecteEtEstGerant())
           {
-           echo '<li><a href="'.RACINE_SITE.'bar/gestion_promo_bar.php">gérer mes promos</li>';
+            echo '<li><a href="'.RACINE_SITE.'bar/gestion_promo_bar.php">gérer mes promos</a></li>';
           }
           if(utilisateurEstConnecteEtEstAdmin())
           {
@@ -60,11 +60,11 @@
                   <li><a href="'.RACINE_SITE.'admin/gestion_membre.php">gestion membres</a></li>
                   <li><a href="'.RACINE_SITE.'admin/gestion_bar.php">gestion bars</a></li>
                   <li><a href="'.RACINE_SITE.'admin/gestion_promo.php">gestion promos</a></li>
-                   <li><a href="'.RACINE_SITE.'admin/gestion_commandes.php">gestion commandes</a></li>';
+                  <li><a href="'.RACINE_SITE.'admin/gestion_commandes.php">gestion commandes</a></li>';
           }
  
-         echo  '</ul>
-          </nav>
+        echo '</ul>
+        </nav>
 
 
         </header>

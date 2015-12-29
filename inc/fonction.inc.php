@@ -275,7 +275,7 @@ function utilisateurEstConnecteEtEstAdmin()
 
 function utilisateurEstConnecteEtEstGerant()
 {
-	if(utilisateurEstConnecte() && $_SESSION['utilisateur']['statut'] == 2)
+	if(utilisateurEstConnecte() && $_SESSION['utilisateur']['statut'] == 3)
 	{
 		return TRUE;
 	}
@@ -630,8 +630,6 @@ function coherenceDates($date1, $date2)
 		return TRUE;
 	}
 }
-
-
 
 //// VIEW ////
 function afficheProduits($req)
