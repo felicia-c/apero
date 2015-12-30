@@ -602,11 +602,11 @@ function chaine_aleatoire($nb_car, $chaine = 'azertyuiopqsdfghjklmwxcvbn12345678
 
 function AfficheDateFr($date1, $date2, $stringAuChoix)
 {
-	$date = date_create_from_format('Y-m-d H:i:s', $date1);
-	echo date_format($date, 'd/m/Y H:i'). $stringAuChoix; 
+	$date = date_create_from_format('Y-m-d', $date1);
+	echo '<p>'.date_format($date, 'd/m/Y'). $stringAuChoix ; 
 					
-	$date = date_create_from_format('Y-m-d H:i:s', $date2);
-	echo date_format($date, 'd/m/Y H:i'); 
+	$date = date_create_from_format('Y-m-d', $date2);
+	echo  date_format($date, 'd/m/Y').'</p>'; 
 }
 
 
@@ -654,5 +654,50 @@ function afficheProduits($req)
 	}
 }
 
+function afficheBar($req)
+{
+	$resultat = executeRequete($req);
 
+	while($mon_bar = $resultat -> fetch_assoc())
+	{
+		echo '<div class="box_info bar text-center">
+			<h1>'.$mon_bar['nom_bar'].'</h1>
+				<img src="'. $mon_bar['photo'].'" style="max-width: 100%;" />
+				
+				<p class=" description_bar">'.$mon_bar['description'].'</p>
+				<div class="adresse_bar">'.$mon_bar['adresse'].'<br /> '. $mon_bar['cp'].' '.$mon_bar['ville'].'</div>
+				<div class="contact_bar">
+					<p>'.$mon_bar['telephone'].'</p>
+					<p>'.$mon_bar['email'].'</p>
+				</div><br />';
 
+		// Google Maps récuperation des adresses : 
+			$ville = $mon_bar['ville'];
+			$adresse = $mon_bar['adresse'];
+			$cp = $mon_bar['cp'];
+
+			$ville_url = str_replace(' ', '+', $ville); // remplace espace par +
+			$adresse_url = str_replace(' ', '+', $adresse); // remplace espace par +
+			$MapCoordsUrl = urlencode($cp.'+'.$ville_url.'+'.$adresse_url); //urlencode : encodage pour URL
+	
+		echo '<div><iframe class="googleMaps" style="width: 100%;" max-width="1000" height="300" src="http://maps.google.fr/maps?q='.$MapCoordsUrl.'&amp;t=h&amp;output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" ></iframe></div>
+			</div>';
+	}
+}
+
+function affichePromoBar($req)
+{
+	$resultat = executeRequete($req);
+
+	while($ma_promo = $resultat -> fetch_assoc())
+	{
+		echo '<br />
+			<div class="box_info bar text-center">
+
+				<p class=" description_promo">'.$ma_promo['description'].'</p>
+				
+				<p class="dates">'.afficheDateFr($ma_promo['date_debut'], $ma_promo['date_fin'], ' au ').'</p>
+				<p>Cette promotion est valable si vous portez un t-shirt de la collection: <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie="'.$ma_promo['categorie_produit'].'>'.$ma_promo['categorie_produit'].'</a></p>
+			</div>';
+	}
+}
