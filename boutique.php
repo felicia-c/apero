@@ -63,6 +63,8 @@ echo '<form class="form" method="get" action="?action=tri">
 
 echo $msg;
 
+//REQUETE TRI
+
 if(isset($_GET['action']))
 { 
 	$req .= "SELECT * FROM produit WHERE stock > 0 ";
@@ -123,10 +125,13 @@ else // PAR DEFAUT
 	$req .= "SELECT * FROM produit WHERE stock > 0 ";
 	
 }	
+
+//AFFICHAGE
+
 echo '<div class="box _info">';		
-paginationRecherche(5, $req);
-afficheProduits($req);
-affichagePaginationRecherche(5, $req);
+paginationRecherche(5, $req); // pagination /tri
+afficheProduits($req); // affichage Produit
+affichagePaginationRecherche(5, $req); // pagination / tri 2
 echo '</div>					
 </div>';
 

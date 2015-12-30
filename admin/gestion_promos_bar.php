@@ -323,7 +323,7 @@ elseif(isset($_GET['id_bar']))
 		}
 		echo '</table><br />';
 	}
-	
+
 //DETAIL PROMO / BAR	
 	echo '<br />';
 	$resultat_bar_promo = executeRequete("SELECT COUNT(id_promo_bar) AS nbre_promo FROM promo_bar WHERE id_bar = '$_GET[id_bar]'");
@@ -424,7 +424,7 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 	<fieldset>
 	<?php
 	
-		if(isset($_GET['id_promo_bar']) && ($_GET['action']=='modifier'))
+		if(isset($_GET['id_promo_bar']) && (isset($_GET['action']) && ($_GET['action']=='modifier')))
 		{
 			$resultat = executeREquete("SELECT * FROM promo_bar WHERE id_promo_bar ='$_GET[id_promo_bar]'") ; // on recupere les infos de l'article à partir de l'id_article récupéré dans l'URL pour les afficher ds le formulaire
 			$promo_actuelle = $resultat ->fetch_assoc();
