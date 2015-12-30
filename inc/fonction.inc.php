@@ -634,15 +634,23 @@ function coherenceDates($date1, $date2)
 //// VIEW ////
 function afficheProduits($req)
 {
+
 	$resultat = executeRequete($req);
+	
 	while($mon_produit = $resultat -> fetch_assoc())
 	{
 		echo '<div class ="produit">
 				<img src="'. $mon_produit['photo'].'" style=" width: 200px; max-width: 100%;" />
 				<h3>'. $mon_produit['titre'] .'</h3>
 				<p>'. $mon_produit['prix'] * 1.2.' €</p>
-				<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="btn ">Voir la fiche</a>
-			</div>';
+				<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="btn ">Voir la fiche</a>';
+		$req_promo= "SELECT promo_bar.id_bar, promo_bar.description AS description_promo, bar.nom_bar FROM promo_bar INNER JOIN bar ON promo_bar.id_bar = bar.id_bar WHERE promo_bar.categorie_produit = '$mon_produit[categorie]'";
+		$promo = executeRequete($req_promo);
+		while($promo_bar = $promo -> fetch_assoc())
+		{
+			echo '<div class="promo_afficheproduit"><h4 class="orange">Apéro offert au <a class="orange" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$promo_bar['id_bar'].'">'. $promo_bar['nom_bar'].'</a>!</h4></div>';
+		}
+		echo '</div>';
 	}
 }
 
