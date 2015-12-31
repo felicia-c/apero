@@ -639,11 +639,19 @@ function afficheProduits($req)
 	
 	while($mon_produit = $resultat -> fetch_assoc())
 	{
-		echo '<div class ="produit">
-				<img src="'. $mon_produit['photo'].'" style=" width: 200px; max-width: 100%;" />
-				<h3>'. $mon_produit['titre'] .'</h3>
-				<p>'. $mon_produit['prix'] * 1.2.' €</p>
-				<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="btn ">Voir la fiche</a>';
+		echo '<div class ="produit  bg_color1">
+		<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="noborder_lien"><h2>'. $mon_produit['titre'] .'</h2></a>
+			<div class="img_produit">
+				<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="noborder_lien"><img src="'. $mon_produit['photo'].'" style=" width: 200px; max-width: 100%;" /></a>
+			</div>
+			<div class="infos_produit">
+				
+				<div class="collection_produit"><p>Collection: '.$mon_produit['categorie'].'<br />
+				<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="btn ">Voir la fiche</a></p></div>';
+		$prix= $mon_produit['prix'] * 1.2;
+		echo '<div class="prix_produit"><p>'. round($prix, 2).' €</p></div>
+				
+			</div>';
 		$req_promo= "SELECT promo_bar.id_bar, promo_bar.description AS description_promo, bar.nom_bar FROM promo_bar INNER JOIN bar ON promo_bar.id_bar = bar.id_bar WHERE promo_bar.categorie_produit = '$mon_produit[categorie]'";
 		$promo = executeRequete($req_promo);
 		while($promo_bar = $promo -> fetch_assoc())
@@ -684,6 +692,34 @@ function afficheBar($req)
 			</div>';
 	}
 }
+
+
+function afficheVignetteBar($req)
+{
+	$resultat = executeRequete($req);
+
+	while($mon_bar = $resultat -> fetch_assoc())
+	{
+		echo '
+			<div class="box_info vignette_bar text-center">
+				<a class="noborder_lien" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$mon_bar['id_bar'].'"><h2>'.$mon_bar['nom_bar'].'</h2>
+				<img class="img_vignette" src="'. $mon_bar['photo'].'" style="max-width: 100%;" /></a>
+					<div class="contact_bar">'. $mon_bar['cp'].' '.$mon_bar['ville'].'
+					<p>'.$mon_bar['telephone'].'</p>';
+		echo '</div>';
+		$req_promo= "SELECT COUNT(promo_bar.id_promo_bar) FROM promo_bar INNER JOIN bar ON promo_bar.id_bar = bar.id_bar WHERE promo_bar.id_bar = '$mon_bar[id_bar]'";
+		$promo = executeRequete($req_promo);
+		if($promo)
+		{
+			echo '<div class="tomato">Ce bar vous offre l\'apéro !</div><br />';
+		}
+		else{
+			echo '<br/>';
+		}
+			echo '</div>';
+	}
+}
+
 
 function affichePromoBar($req)
 {
