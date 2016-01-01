@@ -93,6 +93,9 @@ a.btn_delete:hover{
 a.btn_edit:hover{
     color: teal;
 }
+a.noborder_lien:hover{
+    border-bottom: none;
+}
 header nav li{
     display: inline-block;
     margin: 1%;
@@ -248,12 +251,94 @@ tr{
    
 } 
 div.produit{
-    width: 25%;
-    border: 1px solid grey;
+    width: 45%;
+   
     display: inline-block;
     margin: 2%;
     text-align: center;
 }
+.bg_color1{
+    background-color: #62BCCD;
+    border: none;
+}
+ div.bg_color1 p,
+ div.bg_color1 h4,
+ div.bg_color1 a{
+    color: #2c616b;
+ }
+.bg_color2{
+ /*   background-color: #2c616b; */
+    border: none;
+}
+  div.bg_color1 h2{
+    margin: 4%;
+    padding: 0;
+ }
+ .prix_produit{
+    border: 2px solid white;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright:5px;
+    -moz-border-radius-bottomleft:5px;
+    -moz-border-radius-bottomright:5px;
+    -webkit-border-top-left-radius:5px;
+    -webkit-border-top-right-radius:5px;
+    -webkit-border-bottom-left-radius:5px;
+    -webkit-border-bottom-right-radius:5px;
+    border-top-left-radius:5px;
+    border-top-right-radius:5px;
+    border-bottom-left-radius:5px;
+    border-bottom-right-radius:5px;
+    width: 20%;
+    background-color: white;
+    margin: 2% auto;
+    height: 40px;
+    line-height: 40px;
+    vertical-align: middle;
+
+ }
+ .collection_produit{
+    display: inline-block;
+    margin: 2%;
+   vertical-align: middle;
+ }
+.prix_produit{
+    line-height: 40px;
+    display: inline-block;
+    width: 25%;
+    vertical-align: middle;
+}
+ .img_produit, .infos_produit{
+    display: inline_block;
+}
+.img_produit{
+     margin-top: 5%;
+}
+div.bar{
+    width: 80%;
+    margin: auto;
+}
+div.vignette_bar{
+    width: 30%;
+    display: inline-block;
+}
+.img_vignette{
+    height: 150px;
+    width: 300px;
+    overflow: hidden;
+}
+div.bar .adresse_bar,
+div.bar .contact_bar{
+    display: inline-block;
+    margin: 4%;
+}
+.block_inline{
+    display: inline-block;
+}
+.block_inline img, {
+    display: inline-block;
+    width: 70%; 
+}
+
 .large_table th{
     
     padding: 0.2%;
@@ -276,11 +361,76 @@ table tbody tr:first-child{
     /*border-color: white;*/
     border: 1px solid #b4b8bb;
 }
+
 .teal{
     color: teal;
 }
 .orange{
     color: orange;
 }
+.tomato{
+    color: tomato;
+}
+.bg_color1{
+    background-color: #62BCCD;
+    border: none;
+}
 
+
+
+/*    ANIM PHOTOS   */ 
+
+/* The slow way */
+.make-it-slow {
+ /* box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  transition: box-shadow 0.3s ease-in-out: */
+}
+
+/* Transition to a bigger shadow on hover */
+.make-it-slow:hover {
+/*  box-shadow: 0 5px 15px rgba(0,0,0,0.3); */
+}
+
+/* The fast way */
+.make-it-fast {
+ /* box-shadow: 0 1px 2px rgba(0,0,0,0.15); */
+}
+
+/* Pre-render the bigger shadow, but hide it */
+.make-it-fast:after {
+/*  box-shadow: 0 5px 15px rgba(0,0,0,0.3); */
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out:
+}
+
+/* Transition to showing the bigger shadow on hover */
+.make-it-fast:hover:after {
+  opacity: 1;
+}
+
+.box {
+
+/*  box-shadow: 0 1px 2px rgba(0,0,0,0.15); */
+  transition: all 0.3s ease-in-out;
+}
+
+/* Create the hidden pseudo-element */
+/* include the shadow for the end state */
+.box:after  {
+
+  opacity: 0;
+
+/*  box-shadow: 0 5px 15px rgba(0,0,0,0.3); */
+  transition: opacity 0.3s ease-in-out;
+}
+ 
+/* Scale up the box */
+.box:hover {
+  transform: scale(1.4, 1.4);
+}
+
+/* Fade in the pseudo-element with the bigger shadow */
+.box:hover:after {
+  opacity: 1;
+}
 
