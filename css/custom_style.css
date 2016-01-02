@@ -375,7 +375,9 @@ table tbody tr:first-child{
     background-color: #62BCCD;
     border: none;
 }
-
+input{
+    padding: 1%;
+}
 
 
 /*    ANIM PHOTOS   */ 
