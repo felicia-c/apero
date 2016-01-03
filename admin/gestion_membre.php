@@ -4,7 +4,7 @@ require_once("../inc/init.inc.php");
 $titre_page = "Gestion des membres";
 
 //Redirection si l'utilisateur n'est pas admin
-if(!utilisateurEstConnecteEtEstAdmin()){
+if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAdmin()){
 	header("location:../connexion.php");
 }
 

@@ -3,7 +3,7 @@ require_once("../inc/init.inc.php");
 
 //APERO - Felicia Cuneo 12/2015
 
- if(!utilisateurEstConnecteEtEstAdmin())
+ if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAdmin())
  {
 	 header("location:../connexion.php");
 	exit();
@@ -85,7 +85,7 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 			$_GET['affichage'] = 'affichage'; // afficher les produits une fois qu'on a validé le formulaire
 		}	
 	}
-
+}
 // FIN ENREGISTREMENT DES PRODUITS
 
 require_once("../inc/header.inc.php");
@@ -189,9 +189,9 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	}
 	echo'<th></th><th></th></tr>';
 
-while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
-{
-	echo '<tr>';
+	while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
+	{
+		echo '<tr>';
 		foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
 		{
 			if($indice == 'photo')
@@ -225,15 +225,15 @@ while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resul
 			}
 		}
 
-	echo '<td><a href="?action=suppression&id_produit='.$ligne['id_produit'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
+		echo '<td><a href="?action=suppression&id_produit='.$ligne['id_produit'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
 	
-	echo '<td><a href="?action=modification&id_produit='.$ligne['id_produit'] .'" class="btn_edit">éditer</a></td>';
-	echo '</tr>';
-}						
-echo '</table><br />';
-echo '</div>';
+		echo '<td><a href="?action=modification&id_produit='.$ligne['id_produit'] .'" class="btn_edit">éditer</a></td>';
+		echo '</tr>';
+	}						
+	echo '</table><br />';
+	echo '</div>';
 
-affichagePaginationGestion(7, 'produit', '');
+	affichagePaginationGestion(7, 'produit', '');
 }
 
 /******** FORMULAIRE ENREGISTREMENT / MODIFICATION PRODUITSS *******/ 
@@ -337,9 +337,10 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 			
 		
 		</fieldset>
-	 </form> 
- </div>
+	</form> 
+</div>
  <?php
+ 	
 }
 
 echo '</div>'; //fin box_info : tableau	 

@@ -3,7 +3,7 @@ require_once("../inc/init.inc.php");
 //APERO - Felicia Cuneo - 12/2015
 $titre_page = "Envoi de Newsletter";
 
-if(!utilisateurEstConnecteEtEstAdmin())
+if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAdmin())
 {
 	header("location:../connexion.php");
 	exit();

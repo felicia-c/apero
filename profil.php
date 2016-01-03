@@ -176,7 +176,7 @@ else
 
 // INFOS UTILISATEUR
 
-if(utilisateurEstConnecteEtEstAdmin())
+if(utilisateurEstConnecteEtEstAdmin() || utilisateurEstConnecteEtEstGerantEtAdmin())
 {
 	echo '<h3>Compte administrateur</h3>';
 }
@@ -221,7 +221,7 @@ echo '</div>
 echo '</div>
 	</div>';
 
-if(utilisateurEstConnecteEtEstGerant())
+if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdmin())
 {
 	echo '<div class="box_info">
 			<h4 class=orange>Vos bars</h4>';
@@ -349,6 +349,7 @@ if(utilisateurEstConnecteEtEstGerant())
 	}
 	echo '</table><br />
 	<a href="'.RACINE_SITE.'profil.php?action=ajouter" class="button" >Ajouter un bar</a>';	
+	
 	if($_GET)
 	{
 		if(isset($_GET['action']) &&  (($_GET['action']=='modification') || ($_GET['action']) == 'ajouter'))
@@ -420,7 +421,7 @@ if(utilisateurEstConnecteEtEstGerant())
 			<br />
 		</fieldset>
 	</form>			
-	<br />
+	<br />	
 	<br />
 		<?php
 		}	

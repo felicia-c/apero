@@ -6,7 +6,7 @@ $titre_page = "Gestion des promo";
 
 
 //Redirection si l'utilisateur n'est pas admin
-if(!utilisateurEstConnecteEtEstAdmin())
+if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAdmin())
 {
 	header("location:../connexion.php");
 }
@@ -102,7 +102,11 @@ else
 		<h2><a href="?action=ajout" class="button">Ajouter des promos</a></h2><br />';
 }
 echo $msg;
+
+
 /////////AFFICHAGE DE TOUTES LES PROMO///////////
+
+
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {
 	echo '
@@ -110,18 +114,23 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 		<br />
 		<br />
 		<table>
-			<tr>'; 
+			<tr id="details">'; 
 	
 	$req .= "SELECT * FROM promo_produit"; 
 	
-	$req = paginationGestion(10, 'promo_produit', $req);
+	$req = paginationGestion(5, 'promo_produit', $req);
 	$resultat = executeRequete($req);
 	$nbcol = $resultat->field_count; 
 	
 	for($i= 0; $i < $nbcol; $i++) 
 	{
 		$colonne= $resultat->fetch_field(); 	
-		echo '<th style="text-align: center;"><a href="?affichage=affichage&orderby='. $colonne->name ; 
+		echo '<th style="text-align: center;"><a href="?affichage=affichage&detail=produit&';
+		if(isset($_GET['id_promo_produit']))
+		{
+			echo 'id_promo_produit='.$_GET['id_promo_produit'];
+		}
+		echo '&orderby='. $colonne->name ; 
 		if(isset($_GET['asc']))
 		{
 			echo '&desc=desc';
@@ -150,51 +159,186 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			echo '> '. ucfirst($colonne->name).' </a></th>';
 		}
 	}
-	echo '</tr>';
+	echo '<th></th><th></th></tr>';
 	while ($ligne = $resultat->fetch_assoc()) 
 	{
-		echo '<tr>';
-			foreach($ligne AS $indice => $valeur)
-			{	
-				if($indice == 'reduction')
-				{
-					echo '<td> - '.$valeur.' %</td>'; 
-				}
-				else
-				{
-					echo '<td >'.$valeur.'</td>';
-				}	
-			} 
+		echo '<tr '; 
+		if(isset($_GET['id_promo_produit']) && ($_GET['id_promo_produit'] == $ligne['id_promo_produit']))
+		{
+			echo ' class="tr_active" ';
+		}
+		echo '>';
+		foreach($ligne AS $indice => $valeur)
+		{	
+			if($indice == 'reduction')
+			{
+				echo '<td> - '.$valeur.' %</td>'; 
+			}
+			else
+			{
+				//lien detail produit	
+				echo '<td ><a href="?affichage=affichage';
 
-		echo '<td><a href="?affichage=affichage&action=suppression&id_promo_produit='.$ligne['id_promo_produit'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));">
-		<img src="'.RACINE_SITE.'images/delete-icon.png" width="30px" alt="Supprimer" title="Supprimer" ></a>
+				if(isset($_GET['orderby']))
+				{
+					$orderby = $_GET['orderby'];
+					echo '&orderby='.$orderby;
+				}
+				if(isset($_GET['asc']))
+				{
+					echo '&asc=asc';
+				}
+				if(isset($_GET['desc']))
+				{
+					echo '&desc=desc';
+				}
+
+				echo '&detail=produit&id_promo_produit='.$ligne['id_promo_produit'].'#details">'.$valeur.'</a></td>';
+			}	
+		} 
+
+		echo '<td><a class="btn_delete" href="?affichage=affichage';
+
+		if(isset($_GET['orderby']))
+		{
+			$orderby = $_GET['orderby'];
+			echo '&orderby='.$orderby;
+		}
+		if(isset($_GET['asc']))
+		{
+			echo '&asc=asc';
+		}
+		if(isset($_GET['desc']))
+		{
+			echo '&desc=desc';
+		}
+		echo '&action=suppression&id_promo_produit='.$ligne['id_promo_produit'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
 			</td>
 				<td>
-		<a href="?action=modifier&id_promo_produit='.$ligne['id_promo_produit'] .'" >éditer</a>
+		<a class="btn_edit" href="?action=modifier&id_promo_produit='.$ligne['id_promo_produit'] .'" >éditer</a>
 			</td>
 		</tr>';	
 		
 	}				
 	echo '</table>
 		<br />';
-	affichagePaginationGestion(10, 'promo_produit', '');
-}
+	if(isset($_GET['detail']) && $_GET['detail'] == 'produit')
+	{
+		$lien = '<a href="?affichage=affichage&detail=produit&id_promo_produit='.$_GET['id_promo_produit'].'&';
+	}
+	else
+	{
+		$lien = '';
+	}
 	
-if(isset($_GET['action']) && ($_GET['action']=='ajout' || $_GET['action'] == 'modifier') )
-{	
-	echo'<form method="post" action="" id="form_inscription" class="form" >
-			<fieldset>
-			<legend>';
-		if($_GET['action'] == 'modifier')
+	affichagePaginationGestion(5, 'promo_produit', $lien);
+}
+
+// DETAILS PRODUITS/PROMO
+if((isset($_GET['detail']) && $_GET['detail'] == 'produit') && isset($_GET['id_promo_produit']))
+{
+	echo'<h3>Produits concernés par le code promo N° '.$_GET['id_promo_produit'].'</h3>';
+	echo '<table id="details">';
+	$resultat = executeRequete("SELECT * FROM produit WHERE id_promo_produit = '$_GET[id_promo_produit]'");
+if(!$resultat)
+{
+	echo '<div class="msg_erreur">Ce code promo n\'est actif sur aucun produit</div>';
+}
+else
+{
+
+	$nbcol = $resultat->field_count; 
+	for($i= 0; $i < $nbcol; $i++) 
+	{
+		$colonne= $resultat->fetch_field(); 
+		if($colonne->name == 'photo')
 		{
-			$resultat = executeRequete("SELECT * FROM promo_produit WHERE id_promo_produit = '$_GET[id_promo_produit]' "); // Recup les infos sur la promo à modifier
-			$promo_actuelle = $resultat -> fetch_assoc(); 
-			echo 'Modification de la promo N° '. $promo_actuelle['id_promo_produit'] ;
+				echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
 		}
-		elseif($_GET['action'] == 'ajout')
+		elseif(($colonne->name != 'description') && ($colonne->name != 'photo'))
 		{
-			echo 'Nouvelle Promotion';
-		}
+			echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
+			if(isset($_GET['asc']))
+			{
+				echo '&desc=desc';
+			}
+			else
+			{
+				echo '&asc=asc';
+			}
+
+			echo '"'; 
+			if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
+			{
+				echo ' class="active" ';
+			}
+			if($colonne->name == 'id_promo_produit')
+			{
+				echo '>Promo</a></th>'; 
+			}
+			elseif($colonne->name == 'id_produit')
+			{
+				echo '>Id</a></th>'; 
+			}
+			else
+			{
+				echo '>'. ucfirst($colonne->name).'</a></th>'; 		
+			}
+		}		
+	}
+	echo'<th></th><th></th></tr>';
+	
+		while ($ligne = $resultat->fetch_assoc()) 
+		{
+			if(!$ligne)
+			{
+				echo 'NO RESULT';
+			}
+
+			echo '<tr>';
+			foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
+			{
+				if($indice == 'photo')
+				{
+					echo '<td ><img src="'.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
+				}
+				elseif($indice == 'stock')
+				{
+					echo '<td > x '.$valeur.'</td>';
+				}
+				elseif($indice == 'prix')
+				{
+					echo '<td >'.$valeur.'€</td>';
+				}
+				elseif($indice != 'description' && $indice != 'promo_produit')
+				{
+					echo '<td >'.$valeur.'</td>';
+				}
+			}
+			echo '<td><a href="?action=suppression&id_produit='.$ligne['id_produit'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
+		
+			echo '<td><a href="?action=modification&id_produit='.$ligne['id_produit'] .'" class="btn_edit">éditer</a></td>';
+			echo '</tr>';
+		}						
+		echo '</table><br />';
+	}	
+}
+// FORM AJOUT / MODIF
+	if(isset($_GET['action']) && ($_GET['action']=='ajout' || $_GET['action'] == 'modifier') )
+	{	
+		echo'<form method="post" action="" id="form_inscription" class="form" >
+				<fieldset>
+				<legend>';
+			if($_GET['action'] == 'modifier')
+			{
+				$resultat = executeRequete("SELECT * FROM promo_produit WHERE id_promo_produit = '$_GET[id_promo_produit]' "); // Recup les infos sur la promo à modifier
+				$promo_actuelle = $resultat -> fetch_assoc(); 
+				echo 'Modification de la promo N° '. $promo_actuelle['id_promo_produit'] ;
+			}
+			elseif($_GET['action'] == 'ajout')
+			{
+				echo 'Nouvelle Promotion';
+			}
 
 			echo '</legend>
 				<label for="code_promo">Code Promo</label><br />
@@ -210,9 +354,7 @@ if(isset($_GET['action']) && ($_GET['action']=='ajout' || $_GET['action'] == 'mo
 	</div>
 	<br />
 	<br />';
-				
-
-}	
+	}
 require_once("../inc/footer.inc.php");	
 ?>					
 					

@@ -4,7 +4,7 @@ $titre_page = "Gestion des commandes";
 //APERO- Felicia Cuneo - 12/2015
 
 //Redirection vers connexion si l'utilisateur n'est pas admin
-if(!utilisateurEstConnecteEtEstAdmin()){
+if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAdmin()){
 	header("location:../connexion.php");
 }
 
@@ -437,7 +437,7 @@ echo '<br /><br />';
 						}
 					}
 				echo '<td>
-				<a href="?affichage=affichage&action=commandes&action=suppression&id_commande='.$ligne['id_commande'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
+				<a class="btn_delete" href="?affichage=affichage&action=commandes&action=suppression&id_commande='.$ligne['id_commande'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
 					</td>
 				</tr>';
 			}						

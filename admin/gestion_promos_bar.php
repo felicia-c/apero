@@ -5,7 +5,7 @@ $titre_page = 'Gestion promos bars';
 //APERO - Felicia Cuneo - 12/2015
 
 //Redirection si l'utilisateur n'est pas admin
-if(!utilisateurEstConnecteEtEstAdmin()){
+if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAdmin()){
 	header("location:../connexion.php");
 }
 

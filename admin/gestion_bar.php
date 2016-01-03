@@ -4,7 +4,7 @@ require_once("../inc/init.inc.php");
 $titre_page = "Gestion des bars";
 
 //Redirection si l'utilisateur n'est pas admin
-if(!utilisateurEstConnecteEtEstAdmin())
+if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAdmin())
 {
 	header("location:../connexion.php");
 }
@@ -51,7 +51,7 @@ if(!empty($_POST))
 	}
 
 	//ENREGISTREMENT
-	if(isset($_POST['ajouter']) && $_POST['ajouter'] == 'Ajouter') 
+	if(isset($_POST['enregistrer']) && $_POST['enregistrer'] == 'Enregistrer') 
 	{
 		$siret= executeRequete("SELECT siret FROM bar WHERE siret='$_POST[siret]'");
 		if($siret -> num_rows > 0 && isset($_GET['action']) && $_GET['action'] == 'ajout') //si le siret est deja enregistré
@@ -61,10 +61,10 @@ if(!empty($_POST))
 	 
 		$photo_bdd ="";
 		
-		//if(isset($_GET['action']) && $_GET['action'] == 'modification')
-	//	{
-	//		$photo_bdd = $_POST['photo_actuelle'];  // dans le cas d'une modif on recupere la photo actuelle avant de vérifier si l'utilisateur en charge une nouvelle (l'ancienne sera alors ecrasée)
-	//	}
+		if(isset($_GET['action']) && $_GET['action'] == 'modification')
+		{
+			$photo_bdd = $_POST['photo_actuelle'];  // dans le cas d'une modif on recupere la photo actuelle avant de vérifier si l'utilisateur en charge une nouvelle (l'ancienne sera alors ecrasée)
+		}
 		if(!empty($_FILES['photo']['name']))//on verifie si photo a bien été postée
 		{
 
@@ -97,9 +97,17 @@ if(!empty($_POST))
 			{
 				executeRequete("UPDATE membre SET statut = 3 WHERE id_membre='$_POST[id_membre]'");
 			}
+			if($_GET['action'] == 'modification')
+			{
+				executeRequete("UPDATE bar SET id_membre = '$id_membre', siret ='$siret', nom_bar = '$nom_bar', photo = '$photo_bdd', description= '$description', nom_gerant = '$nom', prenom_gerant = '$prenom', ville = '$ville', cp = '$cp', adresse = '$adresse', telephone= '$telephone', email = '$email' WHERE id_bar = '$_GET[id_bar]'");
+				header('location:gestion_bar.php?mod=ok&affichage=affichage');
+			}
+			else
+			{
+				executeRequete("INSERT INTO bar (id_membre, siret, nom_bar, photo, description, nom_gerant, prenom_gerant, ville, cp, adresse, telephone, email) VALUES ( '$id_membre', '$siret', '$nom_bar', '$photo_bdd', '$description', '$nom', '$prenom', '$ville', '$cp', '$adresse', '$telephone', '$email')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
+				header('location:gestion_bar.php?add=ok&affichage=affichage');
+			}
 			
-			executeRequete("INSERT INTO bar (id_membre, siret, nom_bar, photo, description, nom_gerant, prenom_gerant, ville, cp, adresse, telephone, email) VALUES ( '$id_membre', '$siret', '$nom_bar', '$photo_bdd', '$description', '$nom', '$prenom', '$ville', '$cp', '$adresse', '$telephone', '$email')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
-			header('location:gestion_bar.php?add=ok&affichage=affichage');
 		}	
 	}
 }
@@ -108,7 +116,12 @@ if(!empty($_POST))
 //MESSAGE DE VALIDATION AJOUT
 if(isset($_GET['add']) && $_GET['add'] == 'ok')
 {
-	$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Bar enregistré avec succès!</div>';
+	$msg .='<div class="msg_success">Bar enregistré !</div>';
+}
+//MESSAGE DE VALIDATION AJOUT
+if(isset($_GET['mod']) && $_GET['mod'] == 'ok')
+{
+	$msg .='<div class="msg_success">Bar modifié !</div>';
 }
 
 
@@ -196,23 +209,23 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 		}
 		elseif($colonne->name == 'email')
 		{
-			echo '<th class="text-center" colspan="3">E-mail</a></th>'; 
+			echo '<th class="text-center" colspan="3">E-mail</th>'; 
 		}
-		//elseif($colonne->name == 'description')
-	//	{
-		//	echo '<th colspan="3" class="text-center">'. ucfirst($colonne->name).'</th>'; 
-	//	}
-		
-
-		elseif((($colonne->name != 'description') && ($colonne->name != 'photo')) && $colonne->name != 'prenom_gerant')
+		elseif(($colonne->name == 'description') || ($colonne->name == 'adresse'))
+		{
+			echo '<th colspan="2" class="text-center">'. ucfirst($colonne->name).'</th>'; 
+		}
+		elseif((($colonne->name != 'description') && ($colonne->name != 'photo')) && ($colonne->name != 'prenom_gerant' && $colonne->name != 'adresse'))
 		{
 
 			if($colonne->name == 'nom_gerant')
 			{
 				echo '<th class="text-center" colspan="2"><a href="?affichage=affichage&orderby='. $colonne->name ; 
 			}	
-
-			echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
+			else
+			{
+				echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
+			}
 			if(isset($_GET['asc']))
 			{
 				echo '&desc=desc';
@@ -227,7 +240,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			{
 				echo ' class="active" ';
 			}
-			elseif($colonne->name == 'id_bar') 
+			if($colonne->name == 'id_bar') 
 			{
 				echo '>Id</a></th>'; 
 			}
@@ -237,7 +250,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}
 			elseif($colonne->name == 'nom_gerant')
 			{
-				echo '>Gérant</th>'; 
+				echo '>Gérant</a></th>'; 
 			}
 			else
 			{
@@ -245,7 +258,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}
 		}		
 	}
-	echo'<th></th></tr>';
+	echo'<th></th><th></th></tr>';
 
 	while ($ligne = $resultat->fetch_assoc())
 	{
@@ -268,14 +281,26 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			{
 				echo ucfirst($valeur) .'</td>';
 			}
-			elseif($indice != 'description')
+			elseif($indice == 'adresse')
 			{
-				echo '<td >'.$valeur.'</td>';
+				echo '<td colspan="2">' . ucfirst($valeur).'</td>';	
+			}
+			elseif($indice == 'email')
+			{
+				echo '<td colspan="3">' . ucfirst($valeur).'</td>';	
+			}
+			elseif($indice == 'description')
+			{
+				echo '<td colspan="2">'.substr($valeur, 0, 70).'</td>';
+			}
+			else
+			{
+				echo '<td >'.ucfirst($valeur).'</td>';
 			}
 		}
 		echo '<td><a href="?action=suppression&id_bar='.$ligne['id_bar'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
 		
-		//echo '<td><a href="?action=modification&id_produit='.$ligne['id_bar'] .'" class="btn_edit">éditer</a></td>';
+		echo '<td><a href="?action=modification&id_bar='.$ligne['id_bar'] .'" class="btn_edit">éditer</a></td>';
 		echo '</tr>';
 	}						
 	echo '</table><br />';
@@ -284,23 +309,28 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	echo '</div>';
 }
 
-//FORM AJOUT
-
-if(isset($_GET['action']) &&  $_GET['action']=='ajout') 
+//FORM AJOUT / MODIF
+	
+if(isset($_GET['action']) &&  (($_GET['action']=='modification') || ($_GET['action']) == 'ajouter'))
 {
+	if(isset($_GET['id_bar']))
+	{
+		$bar = executeRequete("SELECT * FROM bar WHERE id_bar = '$_GET[id_bar]' ");
+		$bar_actuel = $bar->fetch_assoc();
+	}
 
-?>		
-	<form class="form" method="post" action="" enctype="multipart/form-data"> <!--enctype pour ajout eventuel d'un champs photo -->
-	<fieldset>
-		<legend>Nouveau bar</legend>
-		 
-		<input type="hidden" name="id_bar" id="id_bar" value="<?php if(isset($bar_actuel['id_bar'])){ echo $bar_actuel['id_bar']; }?>" /><!-- On met un input caché pour pouvoir identifier le membre lors de la modification (REPLACE se base sur l'id uniquement(PRIMARY KEY)) /!\SECURITE : On est ici dans un back-office, on peut donc se permettre une certaine confiance en l'utilisateur, mais les champs cachés ne sont pas sécurisés pour l'acces public il faut faire des controles securités sur les url -->
+	?>		
+	<form class="form" method="post" action="" enctype="multipart/form-data">
+		<fieldset>
+			<legend>Ajouter / Modifier un bar</legend>
+			 
+			<input type="hidden" name="id_bar" id="id_bar" value="<?php if(isset($bar_actuel['id_bar'])){ echo $bar_actuel['id_bar']; }?>" />
 			<label for="nom_bar">Nom de l'établissement</label>
-			<input required type="text" id="nom_bar" name="nom_bar"  maxlength="50" value="<?php if(isset($_POST['nom_bar'])) {echo $_POST['nom_bar'];}?>" placeholder="Puzzle Bar" /><br />
+			<input required type="text" id="nom_bar" name="nom_bar"  maxlength="50" value="<?php if(isset($_POST['nom_bar'])) {echo $_POST['nom_bar'];} elseif(isset($bar_actuel['nom_bar'])){ echo $bar_actuel['nom_bar']; }?>" placeholder="Puzzle Bar" /><br />
 
 			<label for="siret">SIRET</label>
-			<input required type="siret" id="siret" name="siret"  maxlength="14" /><br /> 
-				
+			<input required type="siret" id="siret" name="siret"  maxlength="14" value="<?php if(isset($_POST['siret'])) {echo $_POST['siret'];} elseif(isset($bar_actuel['siret'])){ echo $bar_actuel['siret']; }?>"/><br /> 
+		
 			<label for="id_membre">Compte membre lié au bar</label>
 			<select required id="id_membre" name="id_membre">
 			<?php
@@ -310,7 +340,7 @@ if(isset($_GET['action']) &&  $_GET['action']=='ajout')
 				while($ligne = $resultat -> fetch_assoc())
 				{
 					echo '<option value="'.$ligne['id_membre'].'"';
-					if(isset($_GET['id_membre']) && $_GET['id_membre'] == $ligne['id_membre'])
+					if((isset($_GET['id_membre']) && $_GET['id_membre'] == $ligne['id_membre']) || (isset($bar_actuel['id_membre']) && $bar_actuel['id_membre'] == $ligne['id_membre']))
 					{
 						echo 'selected';
 					}
@@ -332,49 +362,56 @@ if(isset($_GET['action']) &&  $_GET['action']=='ajout')
 			}
 
 			?>
+		
 			<label for="photo">Photo </label>
 			<input type="file" name="photo" id="photo"><br />
 			<?php 
-			if(isset($bar_actuel)) // on affiche la photo actuelle par defaut
+		/*	if(isset($_POST['photo'])) // on affiche la photo actuelle par defaut
 			{
 				echo '<label>Photo actuelle</label><br />';
 				echo '<img src="'. $_POST['photo'].'" width="140"/><br />';
 				echo '<input type="hidden" name="photo_actuelle" value="'. $_POST['photo'].'" /><br />';
+			} */
+			if(isset($bar_actuel['photo'])) // on affiche la photo actuelle par defaut
+			{
+				echo '<label>Photo actuelle</label><br />';
+				echo '<img src="'. $bar_actuel['photo'].'" width="140"/><br />';
+				echo '<input type="hidden" name="photo_actuelle" id="photo_actuelle" value="'. $bar_actuel['photo'].'" /><br />';
 			}
 			?>	
 			<label for="description">Description </label><br />
-			<textarea id="description" name="description" maxlength="200" class="description_form" ><?php if(isset($_POST['description'])) {echo $_POST['description'];} ?></textarea>
+			<textarea id="description" name="description" maxlength="200" class="description_form" ><?php if(isset($_POST['description'])) {echo $_POST['description'];} elseif(isset($bar_actuel['description'])){ echo $bar_actuel['description']; }?> </textarea>
 			
 			<label for="nom">Nom du gérant</label>
-			<input required type="text" id="nom" name="nom" maxlength="45" value="<?php if(isset($_POST['nom'])) {echo $_POST['nom'];}  if(isset($_GET['id_membre'])){ echo $membre['nom'];}?>" placeholder="Durand" required /><br />
+			<input required type="text" id="nom" name="nom" maxlength="45" value="<?php if(isset($_POST['nom'])) {echo $_POST['nom'];}  if(isset($bar_actuel['nom_gerant'])){ echo $bar_actuel['nom_gerant'];}?>" placeholder="Durand" required /><br />
 			
 			<label for="prenom">Prénom du gérant</label>
-			<input required  type="text" id="prenom"  maxlength="30" name="prenom" value="<?php if(isset($_POST['prenom'])) {echo $_POST['prenom'];} if(isset($_GET['id_membre'])){ echo $membre['prenom'];}?>" placeholder="Jean"  required /><br />
+			<input required  type="text" id="prenom"  maxlength="30" name="prenom" value="<?php if(isset($_POST['prenom'])) {echo $_POST['prenom'];} if(isset($bar_actuel['prenom_gerant'])){ echo $bar_actuel['prenom_gerant'];}?>" placeholder="Jean"  required /><br />
 			
 			<h3>Coordonnées de l'établissement</h3>
 			<label for="email">Email</label>
-			<input required  type="email" id="email" name="email" maxlength="60" value="<?php if(isset($_POST['email'])) {echo $_POST['email'];}?>" placeholder="monmail@mail.com"  required /><br />
+			<input required  type="email" id="email" name="email" maxlength="60" value="<?php if(isset($_POST['email'])) {echo $_POST['email'];} elseif(isset($bar_actuel['email'])){ echo $bar_actuel['email']; }?>" placeholder="monmail@mail.com"  required /><br />
 
 			<label for="telephone">Téléphone</label>
-			<input required  type="text" id="telephone" name="telephone" maxlength="10" value="<?php if(isset($_POST['telephone'])) {echo $_POST['telephone'];}?>" placeholder="O111223344" required/><br />
+			<input required  type="text" id="telephone" name="telephone" maxlength="10" value="<?php if(isset($_POST['telephone'])) {echo $_POST['telephone'];} elseif(isset($bar_actuel['telephone'])){ echo $bar_actuel['telephone']; }?>" placeholder="O111223344" required/><br />
 
 
 			<label for="ville">Ville</label>
-			<input required  type="text" id="ville" name="ville" value="<?php if(isset($_POST['ville'])) {echo $_POST['ville'];}?>" placeholder="Maville" required /><br />
+			<input required  type="text" id="ville" name="ville" value="<?php if(isset($_POST['ville'])) {echo $_POST['ville'];} elseif(isset($bar_actuel['ville'])){ echo $bar_actuel['ville']; }?>" placeholder="Maville" required /><br />
 		
 			<label for="cp">Code Postal</label>
-			<input required  type="text" id="cp" name="cp" minlength="5" maxlength="5" value="<?php if(isset($_POST['cp'])) {echo $_POST['cp'];}?>" placeholder="99999" required/><br />
+			<input required  type="text" id="cp" name="cp" minlength="5" maxlength="5" value="<?php if(isset($_POST['cp'])) {echo $_POST['cp'];} elseif(isset($bar_actuel['cp'])){ echo $bar_actuel['cp']; }?>" placeholder="99999" required/><br />
 			
 			<label for="adresse">Adresse</label>
-			<textarea required type="text" id="adresse" name="adresse" maxlength="100" placeholder="86 rue de la Ville" required><?php if(isset($_POST['adresse'])) {echo $_POST['adresse'];}?></textarea><br />
+			<textarea required type="text" id="adresse" name="adresse" maxlength="100" placeholder="86 rue de la Ville" required><?php if(isset($_POST['adresse'])) {echo $_POST['adresse'];} elseif(isset($bar_actuel['adresse'])){ echo $bar_actuel['adresse']; }?></textarea><br />
 			
 			<br />
-			<input type="submit" id="ajouter" name="ajouter" value="Ajouter" class="button" /><br />
+			<input type="submit" id="enregistrer" name="enregistrer" value="Enregistrer" class="button" /><br />
 			<br />
 			<a class="button " href="<?php echo RACINE_SITE; ?>admin/gestion_bar.php?affichage=affichage">Retour aux bars</a><br />
 			<br />
-			</fieldset>
-		</form>		
+		</fieldset>
+	</form>				
 	
 	
 	<br />
