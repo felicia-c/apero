@@ -136,10 +136,11 @@ function affichagePaginationGestion($items_par_page, $table, $lien) // arguments
 				echo '&desc=desc&';
 			}
 
-			echo 'page='.$i.'"> '.$i.' </a>';
+			echo 'page='.$i.'">'.$i.'</a>';
 		}
 	}
 	echo '</p>';
+	return $page_actuelle;
 }
 
 
@@ -262,7 +263,7 @@ function utilisateurEstConnecte()
 
 function utilisateurEstConnecteEtEstAdmin()
 {
-	if(utilisateurEstConnecte() && $_SESSION['utilisateur']['statut'] == 1) //on controle s'il est bien connecte et en plus si son statut est celui de l'admin (ici statut à 1 = admin)
+	if(utilisateurEstConnecte() && $_SESSION['utilisateur']['statut'] == 1) // ACCES BO
 	{
 		return TRUE; 
 	}
@@ -273,9 +274,23 @@ function utilisateurEstConnecteEtEstAdmin()
 
 // -----------------
 
+function utilisateurEstConnecteEtEstGerantEtAdmin()
+{
+	if(utilisateurEstConnecte() && $_SESSION['utilisateur']['statut'] == 2) // ACCES AU BO ET GESTION DE SES BARS/PROMO DEPUIS LE PROFIL
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+
+}
+
+//------------------
 function utilisateurEstConnecteEtEstGerant()
 {
-	if(utilisateurEstConnecte() && $_SESSION['utilisateur']['statut'] == 3)
+	if(utilisateurEstConnecte() && $_SESSION['utilisateur']['statut'] == 3) // ACCES A SES BARS ET PROMO (MODIF/AJOUT/SUPPRESSION) DEPUIS LE PROFIL
 	{
 		return TRUE;
 	}
@@ -642,7 +657,7 @@ function afficheProduits($req)
 		echo '<div class ="produit  bg_color1">
 		<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="noborder_lien"><h2>'. $mon_produit['titre'] .'</h2></a>
 			<div class="img_produit">
-				<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="noborder_lien"><img src="'. $mon_produit['photo'].'" style=" width: 200px; max-width: 100%;" /></a>
+				<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="noborder_lien"><img class="make-it-slow make-it-fast box" src="'. $mon_produit['photo'].'" style=" width: 200px; max-width: 100%;" /></a>
 			</div>
 			<div class="infos_produit">
 				
