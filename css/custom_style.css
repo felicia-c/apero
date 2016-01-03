@@ -66,6 +66,9 @@ body{
 h1, h2, h3, h4{
     font-family: 'nunitobold', helvetica;
 }
+h2{
+    font-size: 1.2em;
+}
 p{
     margin: 0;
 }
@@ -362,6 +365,9 @@ table tbody tr:first-child{
     border: 1px solid #b4b8bb;
 }
 
+.tr_active{
+    background-color: rgba(92, 154, 132, 0.25) !important;
+}
 .teal{
     color: teal;
 }
