@@ -51,15 +51,13 @@ function paginationGestion($items_par_page, $table, $resultat) // attend 2 argum
 		
 		if($page_actuelle > $nbre_pages)
 		{
-			$page_actuelle = $nbre_page;
+			$page_actuelle = $nbre_pages;
 		}
 	}
 	else
 	{
 		$page_actuelle = 1;
-		
 	}
-	
 	$premiere_entree= abs(($page_actuelle-1)*$items_par_page); // On calcule la première entrée à lire
 
 	if(isset($_GET['orderby']))
@@ -75,9 +73,7 @@ function paginationGestion($items_par_page, $table, $resultat) // attend 2 argum
 	{
 		$resultat .= " DESC";
 	}
-	
 	$resultat .= " LIMIT $premiere_entree, $items_par_page";
-	
 	return $resultat;
 }
 
@@ -113,7 +109,7 @@ function affichagePaginationGestion($items_par_page, $table, $lien) // arguments
 		}
 		else //liens page 1, 2, etc
 		{
-			if(isset($lien))
+			if(!empty($lien))
 			{
 				echo $lien;
 			}
@@ -140,7 +136,6 @@ function affichagePaginationGestion($items_par_page, $table, $lien) // arguments
 		}
 	}
 	echo '</p>';
-	return $page_actuelle;
 }
 
 
@@ -752,3 +747,66 @@ function affichePromoBar($req)
 			</div>';
 	}
 }
+
+// TABLEAU
+
+function enteteTableau($resultat)
+{
+	echo '<tr>';
+	$nbcol = $resultat->field_count; 
+	for($i= 0; $i < $nbcol; $i++) 
+	{
+		$colonne= $resultat->fetch_field(); 	
+		if($colonne->name == 'photo')
+		{
+			echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
+		}
+		elseif ($colonne->name == 'adresse')
+		{
+			echo '<th colspan ="2">'. ucfirst($colonne->name).'</th>';
+		}
+		else
+		{
+			echo '<th style="text-align: center;"><a href="?affichage=affichage&action=commandes&orderby='. $colonne->name ; 
+
+			if(isset($_GET['asc']))
+			{
+				echo '&desc=desc';
+			}
+			else
+			{
+				echo '&asc=asc';
+			}
+			echo '"'; 
+			if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
+			{
+				echo ' class="actif" ';
+			}
+			
+			elseif($colonne->name == 'id_promo_produit')
+			{
+				echo '>Promo</a></th>'; 
+			}
+			elseif($colonne->name == 'id_produit')
+			{
+				echo '>Id Produit</a></th>'; 
+			}
+			elseif($colonne->name == 'id_membre')
+			{
+				echo '> Id Membre </a></th>';
+			}
+			elseif($colonne->name == 'prenom')
+			{
+				echo '> Prénom </a></th>';
+			}
+			else
+			{
+				echo '>'. ucfirst($colonne->name).'</a></th>'; 		
+			}
+		}	
+	}
+	echo '<th></th>
+		</tr>';
+}
+
+
