@@ -9,8 +9,6 @@ if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAd
 	header("location:../connexion.php");
 }
 
-
-
 if(!empty($_POST))
 {
  // SECURITE 
@@ -93,9 +91,18 @@ if(!empty($_POST))
 			extract($_POST);
 			$resultat = executeRequete("SELECT statut FROM membre WHERE id_membre = '$id_membre' ");
 			$statut = $resultat -> fetch_assoc();
-			if($statut['statut'] != 3)
+			if(($statut['statut'] != 3) && $statut['statut'] != 2)
 			{
-				executeRequete("UPDATE membre SET statut = 3 WHERE id_membre='$_POST[id_membre]'");
+				if($statut['statut'] == 1)
+				{
+					executeRequete("UPDATE membre SET statut = 2 WHERE id_membre='$_POST[id_membre]'");
+				}
+				else
+				{
+					executeRequete("UPDATE membre SET statut = 3 WHERE id_membre='$_POST[id_membre]'");
+				}
+
+				
 			}
 			if($_GET['action'] == 'modification')
 			{
@@ -262,7 +269,12 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 
 	while ($ligne = $resultat->fetch_assoc())
 	{
-		echo '<tr>';
+		echo '<tr '; 
+		if(isset($_GET['id_bar']) && ($_GET['id_bar'] == $ligne['id_bar']))
+		{
+			echo ' class="tr_active" ';
+		}
+		echo '>';
 		foreach($ligne AS $indice => $valeur)
 		{
 				if($indice == 'photo')
@@ -291,7 +303,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}
 			elseif($indice == 'description')
 			{
-				echo '<td colspan="2">'.substr($valeur, 0, 70).'</td>';
+				echo '<td colspan="2">'.substr($valeur, 0, 40).'</td>';
 			}
 			else
 			{
