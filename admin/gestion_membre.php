@@ -212,51 +212,9 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	$req .= "SELECT * FROM membre"; 
 	$req = paginationGestion(10, 'membre', $req);
 	$resultat = executeRequete($req);
-
-	$nbcol = $resultat->field_count; 
-
-	for($i= 0; $i < $nbcol; $i++) 
-	{
-		 $colonne= $resultat->fetch_field(); 
-		
-		if ($colonne->name == 'adresse')
-		{
-			echo '<th colspan ="2">'. ucfirst($colonne->name).'</th>';
-		}
-		elseif(($colonne->name != 'mdp') && ($colonne->name != 'photo'))
-		{
-			echo '<th style="text-align: center;"><a href="?affichage=affichage&orderby='. $colonne->name;
-			if(isset($_GET['asc']))
-			{
-				echo '&desc=desc';
-			}
-			else
-			{
-				echo '&asc=asc';
-			}
-			echo '"';
-			if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
-			{
-				echo ' class="actif" ';
-			}
-			if($colonne->name == 'id_membre')
-			{
-				echo '> Id </a></th>';
-			}
-			elseif($colonne->name == 'prenom')
-			{
-				echo '> Prénom </a></th>';
-			}
-			else
-			{
-				echo '>'. ucfirst($colonne->name).'</a></th>'; 
-			}
-		}
-	}
 	
-	echo '<th></th>
-	</tr>';
-
+	enteteTableau($resultat);
+	
 	while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
 	{
 		echo '<tr '; 
@@ -308,41 +266,147 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}
 			elseif(($indice != 'mdp') && ($indice != 'photo'))
 			{
-			echo '<td >'.ucfirst($valeur).'</td>';	
+			echo '<td ><a class="lien_tr" href="?affichage=affichage&action=detail&id_membre='.$ligne['id_membre'].'" >'.ucfirst($valeur).'</a></td>';	
 			}
 		}
 		echo '<td>
 				<a class="btn_delete" href="?affichage=affichage&action=suppression&id_membre='.$ligne['id_membre'] .'" onClick="return(confirm(\'Voulez-vous vraiment supprimer le membre n°'.$ligne['id_membre'] .' ? (il sera désinscrit de la newsletter)\'));"> X </a>
 			</td>
 		</tr> ';
-			/* 
-			<td>
-				<a class="btn_edit" href="?action=modifier&id_membre='.$ligne['id_membre'] .'" >éditer</a>
-			</td> */
-		
 	}	
-	
 	echo '</table>
 		<br />';
 	affichagePaginationGestion(10, 'membre', '');
+	echo '<br />';
 }
 
+// DETAILS MEMBRE
+
+if(isset($_GET['action']) && $_GET['action'] == 'detail') 
+{
+	echo '<div class="box_info">
+	<table>
+		<tr>';
+	if(isset($_GET['id_membre']))
+	{
+		$resultat = executeRequete("SELECT * FROM commande WHERE id_membre = '".$_GET['id_membre']."'");
+
+		enteteTableau($resultat);
+
+		while ($ligne = $resultat->fetch_assoc()) 
+		{
+			echo '<tr '; 
+			if(isset($_GET['id_commande']) &&  $_GET['id_commande'] == $ligne['id_commande'])
+			{
+				echo ' class="tr_active" ';
+			}
+			echo '>';
+
+			foreach($ligne AS $indice => $valeur)
+			{
+				
+				if($indice == 'id_commande')//Lien au niveau de l'id pour afficher les details de la commande
+				{
+					echo '<td><a href="?affichage=affichage&action=detail&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; 
+				}
+				elseif($indice == 'date') // affichage du timestamp de la commande en format fr
+				{
+					echo '<td>';
+						$date = date_create_from_format('Y-m-d H:i:s', $valeur);
+					echo date_format($date, 'd/m/Y H:i') . '</td>';
+				}
+				elseif($indice == 'montant') // affichage du timestamp de la commande en format fr
+				{		
+					echo  '<td>'.$valeur. ' € </td>';
+				}
+				else
+				{
+					echo '<td >'.$valeur.'</td>';
+				}
+			}
+			echo '<td>
+			<a class="btn_delete" href="?affichage=affichage&action=detail&action=suppression&id_membre='.$_GET['id_membre'].'&id_commande='.$ligne['id_commande'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
+				</td>
+			</tr>';
+		}						
+		echo '</table>
+		<br />
+		</div>';
+	}
+
+	if(isset($_GET['id_commande']))
+	{
+		echo '<div class="box_info">
+		<table>
+			<tr>';
+		$resultat = executeRequete("SELECT * FROM details_commande WHERE id_commande = '".$_GET['id_commande']."'");
+
+		enteteTableau($resultat);
+		while ($ligne = $resultat->fetch_assoc()) 
+		{
+			echo '<tr '; 
+			if(isset($_GET['id_produit']) && ($_GET['id_produit'] == $ligne['id_produit']))
+			{
+				echo ' class="tr_active" ';
+			}
+			echo '>';
+			
+			foreach($ligne AS $indice => $valeur) 
+			{	
+				if($indice == 'id_produit')
+				{
+					echo '<td><a href="?affichage=affichage&action=detail&id_produit='.$ligne['id_produit'].'&id_membre='.$_GET['id_membre'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; 
+				}
+				elseif($indice == 'prix') // affichage du timestamp de la commande en format fr
+				{		
+					echo  '<td>'.$valeur. ' € </td>';
+				}
+				else
+				{
+					echo '<td >'.$valeur.'</td>';
+				}
+			}
+			echo '<td></td>';
+			echo '</tr>';
+		}					
+		echo '</table></div><br />';
+	}
+	
+	if(isset($_GET['id_produit']))
+	{
+			echo '<div class="box_info">
+		<table  class="large_table">
+			<tr>';
+		$resultat = executeRequete("SELECT * FROM produit WHERE id_produit = '".$_GET['id_produit']."'");
+
+		enteteTableau($resultat);
+		while ($ligne = $resultat->fetch_assoc()) 
+		{
+			echo '<tr>';
+			
+			foreach($ligne AS $indice => $valeur) 
+			{	
+				if($indice == 'description')
+				{
+					echo '<td>'. substr($valeur, 0, 20).'...</td>';
+				}
+				elseif($indice == 'photo')
+				{
+					echo '<td ><img src="'.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
+				}
+				else
+				{
+					echo '<td >'.$valeur.'</td>';
+				}
+			}
+			echo '<td></td></tr>';
+		}					
+		echo '</table><br />';
+	}
+
+}
 if(isset($_GET['action']) && $_GET['action']=='ajout') 
 {
-
-	if(isset($_GET['id_membre']) && isset($_GET['action']) && $_GET['action']=='modifier')
-	{
-		$id_membre = intval($_GET['id_membre']);
-		if(!$id_membre)
-		{
-			$msg .= '<div class="msg_erreur">Une erreur est survenue</div>';
-		}
-		else
-		{
-			$resultat = executeRequete("SELECT * FROM membre WHERE id_membre = $id_membre");
-			$membre_actuel = $resultat->fetch_assoc();
-		}
-	}
 	?>
 		
 	<form class="form" method="post" action="" enctype="multipart/form-data"> <!--enctype pour ajout eventuel d'un champs photo -->
@@ -363,7 +427,9 @@ if(isset($_GET['action']) && $_GET['action']=='ajout')
 			<label for="statut">Statut </label>
 			<select required id="statut" name="statut">
 				<option value="0"<?php if(isset($_POST['statut']) && $_POST['statut'] == "0"){ echo 'selected';} ?> >Membre</option>
-				<option  value="1"<?php if(isset($_POST['statut']) && $_POST['statut'] == "1"){ echo 'selected';} ?> >Administrateur</option>
+				<option  value="1"<?php if(isset($_POST['statut']) && $_POST['statut'] == "1"){ echo 'selected';} ?> >Administrateur (accès au BO)</option>
+				<option value="2"<?php if(isset($_POST['statut']) && $_POST['statut'] == "2"){ echo 'selected';} ?> >Barman & Admin (accès au BO)</option>
+				<option  value="3"<?php if(isset($_POST['statut']) && $_POST['statut'] == "3"){ echo 'selected';} ?> >Barman</option>
 			</select><br />	
 				
 			<label for="nom">Nom</label>
