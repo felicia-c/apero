@@ -183,29 +183,34 @@ if(isset($_GET['affichage']) &&  $_GET['affichage']=='affichage')
 			
 	while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
 	{
-		echo '<tr>';
-			foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
+		echo '<tr '; 
+		if(isset($_GET['id_promo_bar']) && ($_GET['id_promo_bar'] == $ligne['id_promo_bar']))
+		{
+			echo ' class="tr_active" ';
+		}
+		echo '>';
+		foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
+		{
+			if($indice == 'id_bar')
 			{
-				if($indice == 'id_bar')
-				{
-					echo '<td><a href="?action=detail&id_bar='.$ligne['id_bar'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details de la commande
-				}
-				
-				elseif($indice == 'id_promo')
-				{
-					echo '<td><a href="?action=detail&categorie='.$ligne['categorie'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details du membre
-				}	
-				elseif (($indice == 'date_debut') || ($indice == 'date_fin'))
-				{
-					echo '<td>';
-						$date = date_create_from_format('Y-m-d', $valeur);
-					echo date_format($date, 'd/m/Y') . '</td>';
-				}					
-				else
-				{
-					echo '<td >'.$valeur.'</td>';
-				}
+				echo '<td><a href="?action=detail&id_bar='.$ligne['id_bar'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details de la commande
 			}
+			
+			elseif($indice == 'id_promo')
+			{
+				echo '<td><a href="?action=detail&categorie='.$ligne['categorie'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details du membre
+			}	
+			elseif (($indice == 'date_debut') || ($indice == 'date_fin'))
+			{
+				echo '<td>';
+					$date = date_create_from_format('Y-m-d', $valeur);
+				echo date_format($date, 'd/m/Y') . '</td>';
+			}					
+			else
+			{
+				echo '<td >'.$valeur.'</td>';
+			}
+		}
 		echo '<td>
 				<a class="btn_delete" href="?affichage=affichage&action=suppression&id_promo_bar='.$ligne['id_promo_bar'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
 			</td>

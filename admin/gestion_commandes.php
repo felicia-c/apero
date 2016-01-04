@@ -218,7 +218,12 @@ echo '<br /><br />';
 				}
 				while ($ligne = $resultat->fetch_assoc()) 
 				{
-					echo '<tr>';
+					echo '<tr '; 
+				if(isset($_GET['id_commande']) && ($_GET['id_commande'] == $ligne['id_commande']))
+				{
+					echo ' class="tr_active" ';
+				}
+				echo '>';
 					foreach($ligne AS $indice => $valeur)
 					{
 						if($indice == 'id_commande')
@@ -293,16 +298,16 @@ echo '<br /><br />';
 			{
 				echo '<h3 id="detail_commande">Détail de la commande N°'.$_GET['id_commande'].' </h3>';
 				$resultat = executeRequete("SELECT * FROM details_commande WHERE id_commande= '$_GET[id_commande]'");
-				echo'<table>'; 
-					echo '<tr>';
-			$nbcol = $resultat->field_count; 
- 
-			for($i= 0; $i < $nbcol; $i++) 
-			{
-				$colonne= $resultat->fetch_field(); 	
-				echo '<th>'. $colonne->name.'</th>'; 
-			}	
-			echo'</tr>';
+				echo'<table>
+					<tr>';
+				$nbcol = $resultat->field_count; 
+	 
+				for($i= 0; $i < $nbcol; $i++) 
+				{
+					$colonne= $resultat->fetch_field(); 	
+					echo '<th>'. $colonne->name.'</th>'; 
+				}	
+				echo'</tr>';
 			}
 			else
 			{
@@ -311,7 +316,8 @@ echo '<br /><br />';
 				$req = paginationGestion(10,'details_commande',$req);  // PAGINATION + TRI
 				$resultat = executeRequete($req);
 				$nbcol = $resultat->field_count; 
-				echo'<table>';
+				echo'<table>
+					<tr>';
 				for($i= 0; $i < $nbcol; $i++) 
 				{
 					$colonne= $resultat->fetch_field(); 	
@@ -338,7 +344,12 @@ echo '<br /><br />';
 			
 			while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
 			{
-				echo '<tr>';
+				echo '<tr '; 
+				if(isset($_GET['id_produit']) && ($_GET['id_produit'] == $ligne['id_produit']))
+				{
+					echo ' class="tr_active" ';
+				}
+				echo '>';
 				
 				foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
 				{
@@ -409,33 +420,38 @@ echo '<br /><br />';
 			
 			while ($ligne = $resultat->fetch_assoc()) 
 			{
-				echo '<tr>';
-					foreach($ligne AS $indice => $valeur)
+				echo '<tr '; 
+				if(isset($_GET['id_commande']) && ($_GET['id_commande'] == $ligne['id_commande']))
+				{
+					echo ' class="tr_active" ';
+				}
+				echo '>';
+				foreach($ligne AS $indice => $valeur)
+				{
+					
+					if($indice == 'id_commande')//Lien au niveau de l'id pour afficher les details de la commande
 					{
-						
-						if($indice == 'id_commande')//Lien au niveau de l'id pour afficher les details de la commande
-						{
-							echo '<td><a href="?action=detail&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; 
-						}
-						elseif($indice == 'id_membre')//Lien au niveau de l'id pour afficher les details du membre
-						{
-							echo '<td><a href="?action=detail&info=membre&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; 
-						}
-						elseif($indice == 'date') // affichage du timestamp de la commande en format fr
-						{
-							echo '<td>';
-								$date = date_create_from_format('Y-m-d H:i:s', $valeur);
-							echo date_format($date, 'd/m/Y H:i') . '</td>';
-						}
-						elseif($indice == 'montant') // affichage du timestamp de la commande en format fr
-						{		
-							echo  '<td>'.$valeur. ' € </td>';
-						}
-						else
-						{
-							echo '<td >'.$valeur.'</td>';
-						}
+						echo '<td><a href="?action=detail&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; 
 					}
+					elseif($indice == 'id_membre')//Lien au niveau de l'id pour afficher les details du membre
+					{
+						echo '<td><a href="?action=detail&info=membre&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; 
+					}
+					elseif($indice == 'date') // affichage du timestamp de la commande en format fr
+					{
+						echo '<td>';
+							$date = date_create_from_format('Y-m-d H:i:s', $valeur);
+						echo date_format($date, 'd/m/Y H:i') . '</td>';
+					}
+					elseif($indice == 'montant') // affichage du timestamp de la commande en format fr
+					{		
+						echo  '<td>'.$valeur. ' € </td>';
+					}
+					else
+					{
+						echo '<td >'.$valeur.'</td>';
+					}
+				}
 				echo '<td>
 				<a class="btn_delete" href="?affichage=affichage&action=commandes&action=suppression&id_commande='.$ligne['id_commande'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
 					</td>

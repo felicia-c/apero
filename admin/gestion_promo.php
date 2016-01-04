@@ -125,7 +125,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	for($i= 0; $i < $nbcol; $i++) 
 	{
 		$colonne= $resultat->fetch_field(); 	
-		echo '<th style="text-align: center;"><a href="?affichage=affichage&detail=produit&';
+		echo '<th style="text-align: center;"><a href="?affichage=affichage&detail=produit';
 		if(isset($_GET['id_promo_produit']))
 		{
 			echo 'id_promo_produit='.$_GET['id_promo_produit'];
@@ -222,9 +222,9 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	}				
 	echo '</table>
 		<br />';
-	if(isset($_GET['detail']) && $_GET['detail'] == 'produit')
+	if((isset($_GET['detail']) && $_GET['detail'] == 'produit') && isset($_GET['id_promo_produit']))
 	{
-		$lien = '<a href="?affichage=affichage&detail=produit&id_promo_produit='.$_GET['id_promo_produit'].'&';
+		$lien = '<a href="?affichage=affichage&detail=produit&id_promo_produit='.$_GET['id_promo_produit'];
 	}
 	else
 	{
@@ -240,121 +240,120 @@ if((isset($_GET['detail']) && $_GET['detail'] == 'produit') && isset($_GET['id_p
 	echo'<h3>Produits concernés par le code promo N° '.$_GET['id_promo_produit'].'</h3>';
 	echo '<table id="details">';
 	$resultat = executeRequete("SELECT * FROM produit WHERE id_promo_produit = '$_GET[id_promo_produit]'");
-if(!$resultat)
-{
-	echo '<div class="msg_erreur">Ce code promo n\'est actif sur aucun produit</div>';
-}
-else
-{
-
-	$nbcol = $resultat->field_count; 
-	for($i= 0; $i < $nbcol; $i++) 
+	if(!$resultat)
 	{
-		$colonne= $resultat->fetch_field(); 
-		if($colonne->name == 'photo')
-		{
-				echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
-		}
-		elseif(($colonne->name != 'description') && ($colonne->name != 'photo'))
-		{
-			echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
-			if(isset($_GET['asc']))
-			{
-				echo '&desc=desc';
-			}
-			else
-			{
-				echo '&asc=asc';
-			}
-
-			echo '"'; 
-			if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
-			{
-				echo ' class="active" ';
-			}
-			if($colonne->name == 'id_promo_produit')
-			{
-				echo '>Promo</a></th>'; 
-			}
-			elseif($colonne->name == 'id_produit')
-			{
-				echo '>Id</a></th>'; 
-			}
-			else
-			{
-				echo '>'. ucfirst($colonne->name).'</a></th>'; 		
-			}
-		}		
+		echo '<div class="msg_erreur">Ce code promo n\'est actif sur aucun produit</div>';
 	}
-	echo'<th></th><th></th></tr>';
-	
-		while ($ligne = $resultat->fetch_assoc()) 
-		{
-			if(!$ligne)
-			{
-				echo 'NO RESULT';
-			}
+	else
+	{
 
-			echo '<tr>';
-			foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
+		$nbcol = $resultat->field_count; 
+		for($i= 0; $i < $nbcol; $i++) 
+		{
+			$colonne= $resultat->fetch_field(); 
+			if($colonne->name == 'photo')
 			{
-				if($indice == 'photo')
-				{
-					echo '<td ><img src="'.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
-				}
-				elseif($indice == 'stock')
-				{
-					echo '<td > x '.$valeur.'</td>';
-				}
-				elseif($indice == 'prix')
-				{
-					echo '<td >'.$valeur.'€</td>';
-				}
-				elseif($indice != 'description' && $indice != 'promo_produit')
-				{
-					echo '<td >'.$valeur.'</td>';
-				}
+					echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
 			}
-			echo '<td><a href="?action=suppression&id_produit='.$ligne['id_produit'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
+			elseif(($colonne->name != 'description') && ($colonne->name != 'photo'))
+			{
+				echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
+				if(isset($_GET['asc']))
+				{
+					echo '&desc=desc';
+				}
+				else
+				{
+					echo '&asc=asc';
+				}
+
+				echo '"'; 
+				if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
+				{
+					echo ' class="active" ';
+				}
+				if($colonne->name == 'id_promo_produit')
+				{
+					echo '>Promo</a></th>'; 
+				}
+				elseif($colonne->name == 'id_produit')
+				{
+					echo '>Id</a></th>'; 
+				}
+				else
+				{
+					echo '>'. ucfirst($colonne->name).'</a></th>'; 		
+				}
+			}		
+		}
+		echo'<th></th><th></th></tr>';
 		
-			echo '<td><a href="?action=modification&id_produit='.$ligne['id_produit'] .'" class="btn_edit">éditer</a></td>';
-			echo '</tr>';
-		}						
-		echo '</table><br />';
-	}	
-}
+			while ($ligne = $resultat->fetch_assoc()) 
+			{
+				if(!$ligne)
+				{
+					echo 'NO RESULT';
+				}
+
+				echo '<tr>';
+				foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
+				{
+					if($indice == 'photo')
+					{
+						echo '<td ><img src="'.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
+					}
+					elseif($indice == 'stock')
+					{
+						echo '<td > x '.$valeur.'</td>';
+					}
+					elseif($indice == 'prix')
+					{
+						echo '<td >'.$valeur.'€</td>';
+					}
+					elseif($indice != 'description' && $indice != 'promo_produit')
+					{
+						echo '<td >'.$valeur.'</td>';
+					}
+				}
+				echo '<td><a href="?action=suppression&id_produit='.$ligne['id_produit'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
+			
+				echo '<td><a href="?action=modification&id_produit='.$ligne['id_produit'] .'" class="btn_edit">éditer</a></td>';
+				echo '</tr>';
+			}						
+			echo '</table><br />';
+		}	
+	}
 // FORM AJOUT / MODIF
 	if(isset($_GET['action']) && ($_GET['action']=='ajout' || $_GET['action'] == 'modifier') )
 	{	
 		echo'<form method="post" action="" id="form_inscription" class="form" >
-				<fieldset>
+			<fieldset>
 				<legend>';
-			if($_GET['action'] == 'modifier')
-			{
-				$resultat = executeRequete("SELECT * FROM promo_produit WHERE id_promo_produit = '$_GET[id_promo_produit]' "); // Recup les infos sur la promo à modifier
-				$promo_actuelle = $resultat -> fetch_assoc(); 
-				echo 'Modification de la promo N° '. $promo_actuelle['id_promo_produit'] ;
-			}
-			elseif($_GET['action'] == 'ajout')
-			{
-				echo 'Nouvelle Promotion';
-			}
-
-			echo '</legend>
-				<label for="code_promo">Code Promo</label><br />
-				<input type="text" id="code_promo" name="code_promo" required value="'; if(isset($_POST['code_promo'])) {echo $_POST['code_promo'];} elseif(isset($promo_actuelle)){ echo $promo_actuelle['code_promo']; } echo '" /><br /><br />
+		if($_GET['action'] == 'modifier')
+		{
+			$resultat = executeRequete("SELECT * FROM promo_produit WHERE id_promo_produit = '$_GET[id_promo_produit]' "); // Recup les infos sur la promo à modifier
+			$promo_actuelle = $resultat -> fetch_assoc(); 
+			echo 'Modification de la promo N° '. $promo_actuelle['id_promo_produit'] ;
+		}
+		elseif($_GET['action'] == 'ajout')
+		{
+			echo 'Nouvelle Promotion';
+		}
+		echo '</legend>
+			<label for="code_promo">Code Promo</label><br />
+			<input type="text" id="code_promo" name="code_promo" required value="'; if(isset($_POST['code_promo'])) {echo $_POST['code_promo'];} elseif(isset($promo_actuelle)){ echo $promo_actuelle['code_promo']; } echo '" /><br /><br />
+			
+			<label for="reduction">Reduction (en %)</label><br />
+			<input type="text" id="reduction" name="reduction" required value="'; if(isset($_POST['reduction'])) {echo $_POST['reduction'];} elseif(isset($promo_actuelle)){ echo $promo_actuelle['reduction'];} echo '" /><br /><br />
 				
-				<label for="reduction">Reduction (en %)</label><br />
-				<input type="text" id="reduction" name="reduction" required value="'; if(isset($_POST['reduction'])) {echo $_POST['reduction'];} elseif(isset($promo_actuelle)){ echo $promo_actuelle['reduction'];} echo '" /><br /><br />
-					
-				<input type="submit" id="enregistrer" class="button" name="enregistrer" value="Enregistrer" />
-			</fieldset>	
-		</form>
-		<br />
-	</div>
+			<input type="submit" id="enregistrer" class="button" name="enregistrer" value="Enregistrer" />
+		</fieldset>	
+	</form>
 	<br />
-	<br />';
-	}
+</div>
+<br />
+<br />';
+}
 require_once("../inc/footer.inc.php");	
 ?>					
 					

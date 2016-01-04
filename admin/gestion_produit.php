@@ -23,7 +23,7 @@ require_once("../inc/init.inc.php");
 	}
 	
 	executeRequete("DELETE FROM produit WHERE id_produit='$_GET[id_produit]'");
-	$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Produit N°'. $_GET['id_produit'] .' supprimé avec succès!/div>';
+	$msg .='<div class="msg_success">Produit N°'. $_GET['id_produit'] .' supprimé !</div>';
 	$_GET['affichage'] = 'affichage'; // afficher les produits une fois qu'on a validé le formulaire 
 
 }
@@ -77,16 +77,30 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 			if(isset($_GET['action']) && $_GET['action'] == 'modification')
 			{
 				executeRequete("UPDATE produit SET categorie='$categorie', titre='$titre', description='$description', couleur='$couleur', taille='$taille', sexe='$sexe', photo='$photo_bdd', prix='$prix',stock='$stock', id_promo_produit = '$id_promo_produit' WHERE id_produit='$_POST[id_produit]'");
+				header('location:gestion_produit.php?affichage=affichage&mod=ok&id_produit='.$_GET['id_produit'].'');
 			}
 			else
 			{
 				executeRequete("INSERT INTO produit (reference, categorie, titre, description, couleur, taille, sexe, photo, prix, stock, id_promo_produit) VALUES ( '$reference', '$categorie', '$titre', '$description', '$couleur', '$taille', '$sexe', '$photo_bdd', '$prix', '$stock', '$id_promo_produit')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
+				header('location:gestion_produit.php?affichage=affichage&add=ok');
 			}
-			$_GET['affichage'] = 'affichage'; // afficher les produits une fois qu'on a validé le formulaire
+			//$_GET['affichage'] = 'affichage'; // afficher les produits une fois qu'on a validé le formulaire
 		}	
 	}
 }
 // FIN ENREGISTREMENT DES PRODUITS
+
+//MESSAGE DE VALIDATION AJOUT
+if(isset($_GET['add']) && $_GET['add'] == 'ok')
+{
+	$msg .='<div class="msg_success">Produit enregistré !</div>';
+}
+//MESSAGE DE VALIDATION MODIF
+if(isset($_GET['mod']) && $_GET['mod'] == 'ok')
+{
+	$msg .='<div class="msg_success">Produit modifié !</div>';
+}
+
 
 require_once("../inc/header.inc.php");
 
@@ -141,11 +155,11 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {
 	echo '<br />
 		<br />
-		<table class="large_table">
+		<table class="large_table" id="details">
 			<tr>'; 
 	$req = "SELECT * FROM produit";
 
-	$req = paginationGestion(7, 'produit', $req);
+	$req = paginationGestion(5, 'produit', $req);
 	$resultat = executeRequete($req); 
 	$nbcol = $resultat->field_count; 
 
@@ -168,7 +182,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 				echo '&asc=asc';
 			}
 
-			echo '"'; 
+			echo '#details"'; 
 			if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
 			{
 				echo ' class="active" ';
@@ -191,7 +205,12 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 
 	while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
 	{
-		echo '<tr>';
+		echo '<tr '; 
+		if(isset($_GET['id_produit']) && ($_GET['id_produit'] == $ligne['id_produit']))
+		{
+			echo ' class="tr_active" ';
+		}
+		echo '>';
 		foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
 		{
 			if($indice == 'photo')
@@ -233,7 +252,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	echo '</table><br />';
 	echo '</div>';
 
-	affichagePaginationGestion(7, 'produit', '');
+	affichagePaginationGestion(5, 'produit', '');
 }
 
 /******** FORMULAIRE ENREGISTREMENT / MODIFICATION PRODUITSS *******/ 
@@ -271,22 +290,22 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 			</legend>
 			 <input type="hidden" name="id_produit" id="id_produit" value="<?php if(isset($produit_actuel['id_produit'])){ echo $produit_actuel['id_produit']; }?>" /><!-- On met un input caché pour pouvoir identifier l'article lors de la modification (REPLACE se base sur l'id uniquement(PRIMARY KEY)) /!\SECURITE : On est ici dans un back-office, on peut donc se permettre une certaine confiance en l'utilisateur, mais les champs cachés ne sont pas sécurisés pour l'acces public il faut faire des controles securités sur les url -->
 			 <label for="reference">Réference </label>
-			 <input type="text" id="reference" name="reference" value="<?php if(isset($_POST['reference'])) {echo $_POST['reference'];} if(isset($produit_actuel['reference'])){ echo $produit_actuel['reference']; }?>" />
+			 <input required type="text" id="reference" name="reference" value="<?php if(isset($_POST['reference'])) {echo $_POST['reference'];} if(isset($produit_actuel['reference'])){ echo $produit_actuel['reference']; }?>" />
 			
 			<label for="categorie">Catégorie </label>
-			 <input type="text" id="categorie" name="categorie"  value="<?php if(isset($_POST['categorie'])) {echo $_POST['categorie'];} if(isset($produit_actuel['categorie'])){ echo $produit_actuel['categorie']; }?>"/>
+			 <input required type="text" id="categorie" name="categorie"  value="<?php if(isset($_POST['categorie'])) {echo $_POST['categorie'];} if(isset($produit_actuel['categorie'])){ echo $produit_actuel['categorie']; }?>"/>
 			
 			<label for="titre">Titre </label>
-			 <input class="form-control" type="text" id="titre" name="titre" value="<?php if(isset($_POST['titre'])) {echo $_POST['titre'];} if(isset($produit_actuel['titre'])){ echo $produit_actuel['titre']; }?>"/>
+			 <input required class="form-control" type="text" id="titre" name="titre" value="<?php if(isset($_POST['titre'])) {echo $_POST['titre'];} if(isset($produit_actuel['titre'])){ echo $produit_actuel['titre']; }?>"/>
 			
 			<label for="description">Description </label><br />
-			 <textarea id="description" name="description" class="description_form" ><?php if(isset($_POST['description'])) {echo $_POST['description'];} if(isset($produit_actuel['description'])){ echo $produit_actuel['description']; }?></textarea>
+			 <textarea required id="description" name="description" class="description_form" ><?php if(isset($_POST['description'])) {echo $_POST['description'];} if(isset($produit_actuel['description'])){ echo $produit_actuel['description']; }?></textarea>
 			
 			<label for="couleur">Couleur </label>
-			 <input type="text" id="couleur" name="couleur"  value="<?php if(isset($_POST['couleur'])) {echo $_POST['couleur'];} if(isset($produit_actuel['couleur'])){ echo $produit_actuel['couleur']; }?>" />
+			 <input required type="text" id="couleur" name="couleur"  value="<?php if(isset($_POST['couleur'])) {echo $_POST['couleur'];} if(isset($produit_actuel['couleur'])){ echo $produit_actuel['couleur']; }?>" />
 			
 			<label for="taille">Taille </label>
-			 <select id="taille" name="taille" >
+			 <select required id="taille" name="taille" >
 				<option >S</option>
 				<option <?php if((isset($_POST['taille']) && $_POST['taille'] == "M") ||(isset($produit_actuel['taille'])&& $produit_actuel['taille'] == "M")) { echo 'selected';} ?> >M</option>
 				<option <?php if((isset($_POST['taille']) && $_POST['taille'] == "L") ||(isset($produit_actuel['taille'])&& $produit_actuel['taille'] == "L")) { echo 'selected';} ?> >L</option>
@@ -295,11 +314,11 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 			<br />
 			
 			<label for="sexe">Sexe </label><br /> <!--cas par défaut + une valeur checkée si le formulaire a dejà été rempli-->
-				<input   type="radio" name="sexe" value="m"  class="inline" <?php if((isset($_POST['sexe']) && $_POST['sexe'] == "m") ||(isset($produit_actuel['sexe'])&& $produit_actuel['sexe'] == "m")) { echo 'checked';} elseif(!isset($_POST['sexe']) && !isset($produit_actuel['sexe'])){echo 'checked';} ?> /> Homme &nbsp;
+				<input type="radio" name="sexe" value="m"  class="inline" <?php if((isset($_POST['sexe']) && $_POST['sexe'] == "m") ||(isset($produit_actuel['sexe'])&& $produit_actuel['sexe'] == "m")) { echo 'checked';} elseif(!isset($_POST['sexe']) && !isset($produit_actuel['sexe'])){echo 'checked';} ?> /> Homme &nbsp;
 				<input  <?php if((isset($_POST['sexe']) && $_POST['sexe'] == "f") ||(isset($produit_actuel['sexe'])&& $produit_actuel['sexe'] == "f")) { echo 'checked';} ?> type="radio" name="sexe" value="f"  class="inline" /> Femme<br /><br />
 			
 			<label for="photo">Photo </label>
-			<input type="file" name="photo" id="photo"><br />
+			<input required type="file" name="photo" id="photo"><br />
 			<?php 
 			if(isset($produit_actuel)) // on affiche la photo actuelle par defaut
 			{
@@ -310,7 +329,7 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 			
 			?>
 			<label for="id_promo_produit">Code promo</label><br />
-				<select id="id_promo_produit" name="id_promo_produit"  >
+				<select required id="id_promo_produit" name="id_promo_produit"  >
 					<option value="" >Pas de code promo</option>
 				<?php
 					$resultat = executeRequete('SELECT * FROM promo_produit ORDER BY reduction ASC');
@@ -328,10 +347,10 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 				?>					
 				</select>
 			<label for="prix">Prix </label>
-			<input type="text" id="prix" name="prix"  value="<?php if(isset($_POST['prix'])) {echo $_POST['prix'];} if(isset($produit_actuel['prix'])){ echo $produit_actuel['prix']; }?>" /><br />
+			<input required type="text" id="prix" name="prix"  value="<?php if(isset($_POST['prix'])) {echo $_POST['prix'];} if(isset($produit_actuel['prix'])){ echo $produit_actuel['prix']; }?>" /><br />
 			
 			<label for="stock">Stock </label>
-			<input type="text" id="stock" name="stock"  value="<?php if(isset($_POST['stock'])) {echo $_POST['stock'];} if(isset($produit_actuel['stock'])){ echo $produit_actuel['stock']; }?>" /><br />
+			<input required type="text" id="stock" name="stock"  value="<?php if(isset($_POST['stock'])) {echo $_POST['stock'];} if(isset($produit_actuel['stock'])){ echo $produit_actuel['stock']; }?>" /><br />
 			
 			<input type="submit" id="enregistrement" name="enregistrement" value="<?php echo ucfirst($_GET['action']); ?>" class="btn" />
 			
