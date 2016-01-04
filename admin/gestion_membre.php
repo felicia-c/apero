@@ -9,6 +9,9 @@ if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAd
 }
 
 if(!empty($_POST))
+{
+	
+	if(isset($_GET['action']) && $_GET['action'] == 'ajout')
 	{
 	 // SECURITE 
 		
@@ -85,32 +88,58 @@ if(!empty($_POST))
 		{
 			$msg .= '<div class="msg_erreur">Le code postal doit contenir 5 caractères</div>';
 		}
-		
+		if(strlen($_POST['statut']) != 1) 
+		{
+			$msg .= '<div class="msg_erreur">Le statut est trop long !</div>';
+		}
 		//FIN SECURITE
 		if($_POST['mdp2'] != $_POST['mdp'] )
 		{
 			$msg .= '<div class="msg_erreur">Veuillez confirmer votre mot de passe</div>';
 		}
 	
-	
+	}
 	
 	if(empty($msg)) //si pas d'erreur
 	{
-		$membre= executeRequete("SELECT * FROM membre WHERE pseudo='$_POST[pseudo]'");
-		if($membre -> num_rows > 0) //si le pseudo est deja utilisé
+		extract($_POST);
+		if(isset($_GET['action']) && $_GET['action'] == 'ajout')
 		{
-			$msg .='<div class="msg_erreur">Ce pseudo est déjà utilisé !</div>';
+			$membre= executeRequete("SELECT * FROM membre WHERE pseudo='$_POST[pseudo]' AND id_membre != '$_POST[id_membre]' ");
+			if($membre -> num_rows > 0) //si le pseudo est deja utilisé
+			{
+				$msg .='<div class="msg_erreur">Ce pseudo est déjà utilisé !</div>';
+			}
+			else
+			{
+				executeRequete("INSERT INTO membre (pseudo, mdp, nom, prenom, email, sexe, ville, cp, adresse, statut) VALUES ('$pseudo', '$mdp', '$nom', '$prenom', '$email', '$sexe', '$ville', '$cp', '$adresse', '$statut')"); //requete d'inscription 
+				header('location:gestion_membre.php?add=ok&affichage=affichage&id_membre='.$mysqli->insert_id.'');
+				exit;
+			}
 		}
-		else{
-		
-			extract($_POST);
-			$ajout = executeRequete("INSERT INTO membre (pseudo, mdp, nom, prenom, email, sexe, ville, cp, adresse, statut) VALUES ('$pseudo', '$mdp', '$nom', '$prenom', '$email', '$sexe', '$ville', '$cp', '$adresse', '$statut')"); //requete d'inscription 
-			$msg .='<div class="msg_success">Inscription réussie ! 
-						<a href="'.RACINE_SITE.'admin/gestion_bar.php?action=ajout&id_membre='.$mysqli->insert_id.'" >Associer un bar à ce nouveau membre</a><br />
-					</div>';
+		else
+		{
+			executeRequete("UPDATE membre SET statut = '$statut' WHERE id_membre = '$id_membre'");
+			header('location:gestion_membre.php?mod=ok&affichage=affichage&id_membre='.$id_membre.'');
+			exit;
 		}
 	}
 }
+
+//FIN ENREGISTREMENT
+
+//MESSAGE DE VALIDATION AJOUT
+if(isset($_GET['add']) && $_GET['add'] == 'ok')
+{
+	$msg .='<div class="msg_success">Inscription réussie ! <a href="'.RACINE_SITE.'admin/gestion_bar.php?action=ajout&id_membre='.$mysqli->insert_id.'" >Associer un bar à ce nouveau membre</a><br /></div>';
+}
+//MESSAGE DE VALIDATION MODIF
+if(isset($_GET['mod']) && $_GET['mod'] == 'ok')
+{
+	$msg .='<div class="msg_success">Statut modifié !</div>';
+}
+
+
 // SUPPRESSION
 
 if(isset($_GET['action']) && $_GET['action'] == 'suppression')
@@ -168,7 +197,8 @@ else
 // FIN LIENS
 echo $msg;
 
-echo '<br /><br /><div id="large_table">';
+echo '<br /><br />
+	<div id="large_table">';
 	
 /////////AFFICHAGE DE TOUS LES MEMBRES///////////
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
@@ -191,7 +221,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 		
 		if ($colonne->name == 'adresse')
 		{
-			echo '<th colspan ="2">'. $colonne->name.'</th>';
+			echo '<th colspan ="2">'. ucfirst($colonne->name).'</th>';
 		}
 		elseif(($colonne->name != 'mdp') && ($colonne->name != 'photo'))
 		{
@@ -213,6 +243,10 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			{
 				echo '> Id </a></th>';
 			}
+			elseif($colonne->name == 'prenom')
+			{
+				echo '> Prénom </a></th>';
+			}
 			else
 			{
 				echo '>'. ucfirst($colonne->name).'</a></th>'; 
@@ -221,8 +255,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	}
 	
 	echo '<th></th>
-
-		</tr>';
+	</tr>';
 
 	while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
 	{
@@ -240,23 +273,38 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}
 			elseif ($indice == 'statut')
 			{
-				
-				if($valeur == '0')
-				{
-					echo '<td>Membre</td>';
-				}
-				if($valeur == '1')
-				{
-					echo '<td>Admin</td>';
-				}
-				if($valeur == '2')
-				{
-					echo '<td>Barman-Admin</td>';
-				}
-				if($valeur == '3')
-				{
-					echo '<td>Barman</td>';
-				}
+				echo '<td>
+				<form method="post" action="" >			
+					<input type="hidden" name="id_membre" value="'.$ligne['id_membre'].'" />
+					<select required id="statut" name="statut">
+						<option value="0"';
+					if(isset($ligne['statut'])&& $ligne['statut'] == '0')
+					{ 
+						echo 'selected';
+					} 
+					echo '>Membre</option>
+						<option  value="1"';
+					if(isset($ligne['statut'])&& $ligne['statut'] == '1')
+					{
+						echo 'selected';
+					}
+					echo'>Administrateur</option>
+						<option  value="2"';
+					if(isset($ligne['statut'])&& $ligne['statut'] == '2')
+					{
+						echo 'selected';
+					}
+					echo'>Admin et barman</option>
+						<option  value="3"';
+					if(isset($ligne['statut'])&& $ligne['statut'] == '3')
+					{
+						echo 'selected';
+					}
+					echo'>Barman</option>
+					</select>
+					<input type="submit" name="ok" value="ok" onClick="return(confirm(\'Voulez-vous vraiment modifier le statut du membre n°'.$ligne['id_membre'] .' ? \'));" />
+				</form>
+			</td>';
 			}
 			elseif(($indice != 'mdp') && ($indice != 'photo'))
 			{
@@ -264,14 +312,14 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}
 		}
 		echo '<td>
-		<a class="btn_delete" href="?affichage=affichage&action=suppression&id_membre='.$ligne['id_membre'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));">
-		X</a>
-			</td></tr>';
-	/*		<td>
-		<a href="?action=modifier&id_membre='.$ligne['id_membre'] .'" >
-		<img src="'.RACINE_SITE.'image/modif-icon.png" width="30px" alt="Modifier" title="Modifier" ></a>
+				<a class="btn_delete" href="?affichage=affichage&action=suppression&id_membre='.$ligne['id_membre'] .'" onClick="return(confirm(\'Voulez-vous vraiment supprimer le membre n°'.$ligne['id_membre'] .' ? (il sera désinscrit de la newsletter)\'));"> X </a>
 			</td>
-		; */
+		</tr> ';
+			/* 
+			<td>
+				<a class="btn_edit" href="?action=modifier&id_membre='.$ligne['id_membre'] .'" >éditer</a>
+			</td> */
+		
 	}	
 	
 	echo '</table>
@@ -279,14 +327,27 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	affichagePaginationGestion(10, 'membre', '');
 }
 
-if(isset($_GET['action']) &&  $_GET['action']=='ajout') 
+if(isset($_GET['action']) && $_GET['action']=='ajout') 
 {
 
+	if(isset($_GET['id_membre']) && isset($_GET['action']) && $_GET['action']=='modifier')
+	{
+		$id_membre = intval($_GET['id_membre']);
+		if(!$id_membre)
+		{
+			$msg .= '<div class="msg_erreur">Une erreur est survenue</div>';
+		}
+		else
+		{
+			$resultat = executeRequete("SELECT * FROM membre WHERE id_membre = $id_membre");
+			$membre_actuel = $resultat->fetch_assoc();
+		}
+	}
 	?>
 		
 	<form class="form" method="post" action="" enctype="multipart/form-data"> <!--enctype pour ajout eventuel d'un champs photo -->
 		<fieldset>
-			<legend>Nouveau membre administrateur</legend>
+			<legend>Nouveau membre / administrateur</legend>
 		 
 			<input type="hidden" name="id_membre" id="id_membre" value="<?php if(isset($membre_actuel['id_membre'])){ echo $membre_actuel['id_membre']; }?>" /><!-- On met un input caché pour pouvoir identifier le membre lors de la modification (REPLACE se base sur l'id uniquement(PRIMARY KEY)) /!\SECURITE : On est ici dans un back-office, on peut donc se permettre une certaine confiance en l'utilisateur, mais les champs cachés ne sont pas sécurisés pour l'acces public il faut faire des controles securités sur les url -->
 			<label for="pseudo">Pseudo</label>
@@ -301,10 +362,9 @@ if(isset($_GET['action']) &&  $_GET['action']=='ajout')
 				
 			<label for="statut">Statut </label>
 			<select required id="statut" name="statut">
-				<option value="0"<?php if((isset($_POST['statut']) && $_POST['statut'] == "0") ||(isset($article_actuel['statut'])&& $article_actuel['statut'] == "0")) { echo 'selected';} ?> >Membre</option>
-				<option  value="1"<?php if((isset($_POST['statut']) && $_POST['statut'] == "1") ||(isset($article_actuel['statut'])&& $article_actuel['statut'] == "1")) { echo 'selected';} ?> >Administrateur</option>
-			</select><br>	
-				
+				<option value="0"<?php if(isset($_POST['statut']) && $_POST['statut'] == "0"){ echo 'selected';} ?> >Membre</option>
+				<option  value="1"<?php if(isset($_POST['statut']) && $_POST['statut'] == "1"){ echo 'selected';} ?> >Administrateur</option>
+			</select><br />	
 				
 			<label for="nom">Nom</label>
 			<input required type="text" id="nom" name="nom" value="<?php if(isset($_POST['nom'])) {echo $_POST['nom'];}?>" placeholder="Durand" required /><br />
@@ -312,11 +372,8 @@ if(isset($_GET['action']) &&  $_GET['action']=='ajout')
 			<label for="prenom">Prénom</label>
 			<input required  type="text" id="prenom" name="prenom" value="<?php if(isset($_POST['prenom'])) {echo $_POST['prenom'];}?>" placeholder="Jean"  required /><br />
 			
-			
 			<label for="email">Email</label>
 			<input required  type="text" id="email" name="email" value="<?php if(isset($_POST['email'])) {echo $_POST['email'];}?>" placeholder="monmail@mail.com"  required /><br />
-			
-			
 			
 			<label for="sexe">Sexe </label><br /> <!--On met un cas par défaut + une valeur checkée si le formulaire a dejà été rempli-->
 			<select required  id="sexe" name="sexe" required >
@@ -347,7 +404,8 @@ if(isset($_GET['action']) &&  $_GET['action']=='ajout')
 	<br />
 <?php
 }
-echo '</div><br /><br /><br />';
+echo '</div>
+	<br /><br /><br />';
 
 
 	
