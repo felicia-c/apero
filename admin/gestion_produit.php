@@ -155,55 +155,17 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {
 	echo '<br />
 		<br />
-		<table class="large_table" id="details">
-			<tr>'; 
+		<table class="large_table" id="details">'; 
 	$req = "SELECT * FROM produit";
 
 	$req = paginationGestion(5, 'produit', $req);
 	$resultat = executeRequete($req); 
-	$nbcol = $resultat->field_count; 
 
-	for($i= 0; $i < $nbcol; $i++) 
-	{
-		$colonne= $resultat->fetch_field(); 
-		if($colonne->name == 'photo')
-		{
-				echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
-		}
-		elseif(($colonne->name != 'description') && ($colonne->name != 'photo'))
-		{
-			echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
-			if(isset($_GET['asc']))
-			{
-				echo '&desc=desc';
-			}
-			else
-			{
-				echo '&asc=asc';
-			}
+	$dont_link = null; // entete du tablau sans order by
+	$dont_show = 'description'; // colonne non affichée
+	enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
 
-			echo '#details"'; 
-			if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
-			{
-				echo ' class="active" ';
-			}
-			if($colonne->name == 'id_promo_produit')
-			{
-				echo '>Promo</a></th>'; 
-			}
-			elseif($colonne->name == 'id_produit')
-			{
-				echo '>Id</a></th>'; 
-			}
-			else
-			{
-				echo '>'. ucfirst($colonne->name).'</a></th>'; 		
-			}
-		}		
-	}
-	echo'<th></th><th></th></tr>';
-
-	while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
+	while ($ligne = $resultat->fetch_assoc())
 	{
 		echo '<tr '; 
 		if(isset($_GET['id_produit']) && ($_GET['id_produit'] == $ligne['id_produit']))
@@ -211,7 +173,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			echo ' class="tr_active" ';
 		}
 		echo '>';
-		foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
+		foreach($ligne AS $indice => $valeur)
 		{
 			if($indice == 'photo')
 			{
