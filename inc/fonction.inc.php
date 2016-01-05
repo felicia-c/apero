@@ -65,6 +65,7 @@ function paginationGestion($items_par_page, $table, $resultat) // attend 2 argum
 		$orderby = $_GET['orderby'];
 		$resultat .= " ORDER BY $orderby";
 	}
+	
 	if(isset($_GET['asc']))
 	{
 		$resultat .= " ASC";
@@ -73,6 +74,7 @@ function paginationGestion($items_par_page, $table, $resultat) // attend 2 argum
 	{
 		$resultat .= " DESC";
 	}
+
 	$resultat .= " LIMIT $premiere_entree, $items_par_page";
 	return $resultat;
 }
@@ -117,7 +119,6 @@ function affichagePaginationGestion($items_par_page, $table, $lien) // arguments
 			{
 				echo '<a href="?affichage=affichage&';
 			}
-		
 			if(isset($_GET['orderby']))
 			{
 				$orderby = $_GET['orderby'];
@@ -132,7 +133,7 @@ function affichagePaginationGestion($items_par_page, $table, $lien) // arguments
 				echo '&desc=desc&';
 			}
 
-			echo 'page='.$i.'">'.$i.'</a>';
+			echo 'page='.$i.'#details">'.$i.'</a>';
 		}
 	}
 	echo '</p>';
@@ -503,9 +504,6 @@ function ajouterArticleDansPanier($id_produit, $quantite, $prix)
 	}
 }
 
-
-
-
 // fonction permettant d'obtenir le montant total HT (hors promo)
 
 function totalHt()
@@ -620,27 +618,6 @@ function AfficheDateFr($date1, $date2, $stringAuChoix)
 }
 
 
-//fonction permettant de verifier si la date d'arrivée entrée et bien antérieure à la date de départ (page gestion produits / ajout /modif)				
-function coherenceDates($date1, $date2)
-{
-	//$date1 = new DateTime($date1);
-	//$date2 = new DateTime($date2);
-	
-	
-	// $date1 = date_create_from_format('d/M/Y H:i:s', $date1_str);
-	// $date2 = date_create_from_format('d/M/Y H:i:s', $date2_str);
-	
-	$date1 = strtotime($date1);
-	$date2 = strtotime($date2);
-	$date1 = time($date1);
-	$date2 = time($date2);
-
-	if($date1 < $date2)
-	{
-		return TRUE;
-	}
-}
-
 //// VIEW ////
 function afficheProduits($req)
 {
@@ -750,42 +727,106 @@ function affichePromoBar($req)
 
 // TABLEAU
 
-function enteteTableau($resultat)
+function enteteTableau($resultat, $dont_show, $dont_link)
 {
 	echo '<tr>';
 	$nbcol = $resultat->field_count; 
 	for($i= 0; $i < $nbcol; $i++) 
 	{
 		$colonne= $resultat->fetch_field(); 	
-		if($colonne->name == 'photo')
-		{
-			echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
-		}
-		elseif ($colonne->name == 'adresse')
-		{
-			echo '<th colspan ="2">'. ucfirst($colonne->name).'</th>';
-		}
-		else
-		{
-			echo '<th style="text-align: center;"><a href="?affichage=affichage&action=commandes&orderby='. $colonne->name ; 
-
-			if(isset($_GET['asc']))
+		if($colonne->name != $dont_show)
+		{	
+			if(isset($dont_link))
 			{
-				echo '&desc=desc';
+				echo '<th class="text-center" ';
 			}
 			else
 			{
-				echo '&asc=asc';
+				if($colonne->name == 'photo')
+				{
+					echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
+				}
+
+				elseif ($colonne->name == 'adresse')
+				{
+					echo '<th colspan ="2">'. ucfirst($colonne->name).'</th>';
+				}
+				elseif($colonne->name == 'email')
+				{
+					echo '<th class="text-center" colspan="1">E-mail</th>'; 
+				}
+				elseif($colonne->name != 'prenom_gerant' && $colonne->name != 'mdp')
+				{
+					if($colonne->name == 'nom_gerant')
+					{
+						echo '<th class="text-center" colspan="2"><a href="?affichage=affichage&orderby='. $colonne->name ; 
+					}
+					else
+					{
+						echo '<th style="text-align: center;"><a href="?affichage=affichage&action=commandes&orderby='. $colonne->name ; 
+					}
+					// infos $_GET
+					if(isset($_GET['id_promo_produit']))
+					{
+						echo '&id_promo_produit='.$_GET['id_promo_produit'];
+					}
+					if(isset($_GET['id_promo_bar']))
+					{
+						echo '&id_promo_bar='.$_GET['id_promo_bar'];
+					}
+					if(isset($_GET['id_membre']))
+					{
+						echo '&id_membre='.$_GET['id_membre'];
+					}
+					if(isset($_GET['id_bar']))
+					{
+						echo '&id_bar='.$_GET['id_bar'];
+					}
+					if(isset($_GET['id_produit']))
+					{
+						echo '&id_produit='.$_GET['id_produit'];
+					}
+					if(isset($_GET['id_commande']))
+					{
+						echo '&id_commande='.$_GET['id_commande'];
+					}
+					if(isset($_GET['id_detail_commande']))
+					{
+						echo '&id_details_commande='.$_GET['id_details_commande'];
+					}
+					if(isset($_GET['id_avis']))
+					{
+						echo '&id_avis='.$_GET['id_avis'];
+					}
+					
+					//Tri
+					if(isset($_GET['asc']))
+					{
+						echo '&desc=desc';
+					}
+					else
+					{
+						echo '&asc=asc';
+					}
+
+					//ancre
+					echo '#details"'; 
+					
+					//actif
+					if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
+					{
+						echo ' class="actif" ';
+					}
+				}
 			}
-			echo '"'; 
-			if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
-			{
-				echo ' class="actif" ';
-			}
-			
-			elseif($colonne->name == 'id_promo_produit')
+			//affichage
+			if($colonne->name == 'id_promo_produit')
 			{
 				echo '>Promo</a></th>'; 
+			}
+			elseif($colonne->name == 'code_promo')
+			{
+				echo '> Code promo </a></th>'; 
 			}
 			elseif($colonne->name == 'id_produit')
 			{
@@ -798,6 +839,22 @@ function enteteTableau($resultat)
 			elseif($colonne->name == 'prenom')
 			{
 				echo '> Prénom </a></th>';
+			}
+			elseif($colonne->name == 'nom_gerant')
+			{
+				echo '>Gérant</a></th>'; 
+			}
+			elseif($colonne->name == 'date_debut')
+			{
+				echo '>Début</a></th>'; 
+			}
+			elseif($colonne->name == 'date_fin')
+			{
+				echo '>Fin</a></th>'; 
+			}
+			elseif($colonne->name == 'categorie_produit')
+			{
+				echo '>Cat.Produit</a></th>'; 
 			}
 			else
 			{
