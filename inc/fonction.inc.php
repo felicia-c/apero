@@ -733,135 +733,135 @@ function enteteTableau($resultat, $dont_show, $dont_link)
 	$nbcol = $resultat->field_count; 
 	for($i= 0; $i < $nbcol; $i++) 
 	{
-		$colonne= $resultat->fetch_field(); 	
-		if($colonne->name != $dont_show)
-		{	
-			if(isset($dont_link))
+		$colonne= $resultat->fetch_field();
+			
+			if(($colonne->name != $dont_show) && ($colonne->name != 'prenom_gerant' && $colonne->name != 'mdp'))
 			{
-				echo '<th class="text-center" ';
-			}
-			else
-			{
-				if($colonne->name == 'photo')
+				if($dont_link == null)
 				{
-					echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
-				}
-
-				elseif ($colonne->name == 'adresse')
-				{
-					echo '<th colspan ="2">'. ucfirst($colonne->name).'</th>';
-				}
-				elseif($colonne->name == 'email')
-				{
-					echo '<th class="text-center" colspan="1">E-mail</th>'; 
-				}
-				elseif($colonne->name != 'prenom_gerant' && $colonne->name != 'mdp')
-				{
-					if($colonne->name == 'nom_gerant')
+					if($colonne->name == 'photo')
 					{
-						echo '<th class="text-center" colspan="2"><a href="?affichage=affichage&orderby='. $colonne->name ; 
+						echo '<th class="text-center" width="150" '; 
+					}
+					elseif ($colonne->name == 'adresse')
+					{
+						echo '<th colspan ="2" ';
+					}
+					elseif($colonne->name == 'email')
+					{
+						echo '<th class="text-center" colspan="1" '; 
 					}
 					else
 					{
-						echo '<th style="text-align: center;"><a href="?affichage=affichage&action=commandes&orderby='. $colonne->name ; 
-					}
-					// infos $_GET
-					if(isset($_GET['id_promo_produit']))
-					{
-						echo '&id_promo_produit='.$_GET['id_promo_produit'];
-					}
-					if(isset($_GET['id_promo_bar']))
-					{
-						echo '&id_promo_bar='.$_GET['id_promo_bar'];
-					}
-					if(isset($_GET['id_membre']))
-					{
-						echo '&id_membre='.$_GET['id_membre'];
-					}
-					if(isset($_GET['id_bar']))
-					{
-						echo '&id_bar='.$_GET['id_bar'];
-					}
-					if(isset($_GET['id_produit']))
-					{
-						echo '&id_produit='.$_GET['id_produit'];
-					}
-					if(isset($_GET['id_commande']))
-					{
-						echo '&id_commande='.$_GET['id_commande'];
-					}
-					if(isset($_GET['id_detail_commande']))
-					{
-						echo '&id_details_commande='.$_GET['id_details_commande'];
-					}
-					if(isset($_GET['id_avis']))
-					{
-						echo '&id_avis='.$_GET['id_avis'];
-					}
-					
-					//Tri
-					if(isset($_GET['asc']))
-					{
-						echo '&desc=desc';
-					}
-					else
-					{
-						echo '&asc=asc';
-					}
+						if($colonne->name == 'nom_gerant')
+						{
+							echo '<th class="text-center" colspan="2"><a href="?affichage=affichage&orderby='. $colonne->name ; 
+						}
+						else
+						{
+							echo '<th style="text-align: center;"><a href="?affichage=affichage&action=commandes&orderby='. $colonne->name ; 
+						}
+						// infos $_GET
+						if(isset($_GET['id_promo_produit']))
+						{
+							echo '&id_promo_produit='.$_GET['id_promo_produit'];
+						}
+						if(isset($_GET['id_promo_bar']))
+						{
+							echo '&id_promo_bar='.$_GET['id_promo_bar'];
+						}
+						if(isset($_GET['id_membre']))
+						{
+							echo '&id_membre='.$_GET['id_membre'];
+						}
+						if(isset($_GET['id_bar']))
+						{
+							echo '&id_bar='.$_GET['id_bar'];
+						}
+						if(isset($_GET['id_produit']))
+						{
+							echo '&id_produit='.$_GET['id_produit'];
+						}
+						if(isset($_GET['id_commande']))
+						{
+							echo '&id_commande='.$_GET['id_commande'];
+						}
+						if(isset($_GET['id_detail_commande']))
+						{
+							echo '&id_details_commande='.$_GET['id_details_commande'];
+						}
+						if(isset($_GET['id_avis']))
+						{
+							echo '&id_avis='.$_GET['id_avis'];
+						}
+						
+						//Tri
+						if(isset($_GET['asc']))
+						{
+							echo '&desc=desc';
+						}
+						else
+						{
+							echo '&asc=asc';
+						}
 
-					//ancre
-					echo '#details"'; 
-					
-					//actif
-					if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
-					{
-						echo ' class="actif" ';
+						//ancre
+						echo '#details"'; 
+						
+						//actif
+						if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
+						{
+							echo ' class="actif" ';
+						}
 					}
+				}	
+				else
+				{
+					echo '<th class="text-center" ';//entetes sans liens
+				}	
+				//affichage
+				if($colonne->name == 'id_promo_produit')
+				{
+					echo '>Promo</a></th>'; 
 				}
-			}
-			//affichage
-			if($colonne->name == 'id_promo_produit')
-			{
-				echo '>Promo</a></th>'; 
-			}
-			elseif($colonne->name == 'code_promo')
-			{
-				echo '> Code promo </a></th>'; 
-			}
-			elseif($colonne->name == 'id_produit')
-			{
-				echo '>Id Produit</a></th>'; 
-			}
-			elseif($colonne->name == 'id_membre')
-			{
-				echo '> Id Membre </a></th>';
-			}
-			elseif($colonne->name == 'prenom')
-			{
-				echo '> Prénom </a></th>';
-			}
-			elseif($colonne->name == 'nom_gerant')
-			{
-				echo '>Gérant</a></th>'; 
-			}
-			elseif($colonne->name == 'date_debut')
-			{
-				echo '>Début</a></th>'; 
-			}
-			elseif($colonne->name == 'date_fin')
-			{
-				echo '>Fin</a></th>'; 
-			}
-			elseif($colonne->name == 'categorie_produit')
-			{
-				echo '>Cat.Produit</a></th>'; 
-			}
-			else
-			{
-				echo '>'. ucfirst($colonne->name).'</a></th>'; 		
-			}
-		}	
-	}
+				elseif($colonne->name == 'code_promo')
+				{
+					echo '> Code promo </a></th>'; 
+				}
+				elseif($colonne->name == 'id_produit')
+				{
+					echo '>Id Produit</a></th>'; 
+				}
+				elseif($colonne->name == 'id_membre')
+				{
+					echo '> Id Membre </a></th>';
+				}
+				elseif($colonne->name == 'prenom')
+				{
+					echo '> Prénom </a></th>';
+				}
+				elseif($colonne->name == 'nom_gerant')
+				{
+					echo '>Gérant</a></th>'; 
+				}
+				elseif($colonne->name == 'date_debut')
+				{
+					echo '>Début</a></th>'; 
+				}
+				elseif($colonne->name == 'date_fin')
+				{
+					echo '>Fin</a></th>'; 
+				}
+				elseif($colonne->name == 'categorie_produit')
+				{
+					echo '>Cat.Produit</a></th>'; 
+				}
+				else
+				{
+					echo '>'. ucfirst($colonne->name).'</a></th>'; 		
+				}
+			}	
+		}		
 	echo '<th></th>
 		</tr>';
 }
