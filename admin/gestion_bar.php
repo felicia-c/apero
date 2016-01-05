@@ -125,7 +125,7 @@ if(isset($_GET['add']) && $_GET['add'] == 'ok')
 {
 	$msg .='<div class="msg_success">Bar enregistré !</div>';
 }
-//MESSAGE DE VALIDATION AJOUT
+//MESSAGE DE VALIDATION MODIF
 if(isset($_GET['mod']) && $_GET['mod'] == 'ok')
 {
 	$msg .='<div class="msg_success">Bar modifié !</div>';
@@ -199,73 +199,15 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {
 	echo '<br />
 		<br />
-		<table class="large_table">
-			<tr>';
+		<table class="large_table" id="details">';
 	$req = "SELECT * FROM bar";
 
-	$req = paginationGestion(7, 'bar', $req);
+	$req = paginationGestion(5, 'bar', $req);
 	$resultat = executeRequete($req); 
-	$nbcol = $resultat->field_count; 
-
-	for($i= 0; $i < $nbcol; $i++) 
-	{
-		$colonne= $resultat->fetch_field(); 
-		if($colonne->name == 'photo')
-		{
-				echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
-		}
-		elseif($colonne->name == 'email')
-		{
-			echo '<th class="text-center" colspan="3">E-mail</th>'; 
-		}
-		elseif(($colonne->name == 'description') || ($colonne->name == 'adresse'))
-		{
-			echo '<th colspan="2" class="text-center">'. ucfirst($colonne->name).'</th>'; 
-		}
-		elseif((($colonne->name != 'description') && ($colonne->name != 'photo')) && ($colonne->name != 'prenom_gerant' && $colonne->name != 'adresse'))
-		{
-
-			if($colonne->name == 'nom_gerant')
-			{
-				echo '<th class="text-center" colspan="2"><a href="?affichage=affichage&orderby='. $colonne->name ; 
-			}	
-			else
-			{
-				echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
-			}
-			if(isset($_GET['asc']))
-			{
-				echo '&desc=desc';
-			}
-			else
-			{
-				echo '&asc=asc';
-			}
-
-			echo '"'; 
-			if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
-			{
-				echo ' class="active" ';
-			}
-			if($colonne->name == 'id_bar') 
-			{
-				echo '>Id</a></th>'; 
-			}
-			elseif($colonne->name == 'id_membre')
-			{
-				echo '>Membre</a></th>';
-			}
-			elseif($colonne->name == 'nom_gerant')
-			{
-				echo '>Gérant</a></th>'; 
-			}
-			else
-			{
-				echo '>'. ucfirst($colonne->name).'</a></th>'; 		
-			}
-		}		
-	}
-	echo'<th></th><th></th></tr>';
+	
+	$dont_link = null; // entete du tablau sans order by
+	$dont_show = ''; // colonne non affichée
+	enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
 
 	while ($ligne = $resultat->fetch_assoc())
 	{
@@ -277,7 +219,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 		echo '>';
 		foreach($ligne AS $indice => $valeur)
 		{
-				if($indice == 'photo')
+			if($indice == 'photo')
 			{
 				echo '<td ><img src="'.$valeur.'" alt="'.$ligne['nom_bar'].'" title="'.$ligne['nom_bar'].'" class="thumbnail_tableau" width="80px" /></td>';
 			}
@@ -303,7 +245,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}
 			elseif($indice == 'description')
 			{
-				echo '<td colspan="2">'.substr($valeur, 0, 40).'</td>';
+				echo '<td>'.substr($valeur, 0, 40).'...</td>';
 			}
 			else
 			{
@@ -317,13 +259,13 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	}						
 	echo '</table><br />';
 
-	affichagePaginationGestion(7, 'produit', '');
+	affichagePaginationGestion(5, 'bar', '');
 	echo '</div>';
 }
 
 //FORM AJOUT / MODIF
 	
-if(isset($_GET['action']) &&  (($_GET['action']=='modification') || ($_GET['action']) == 'ajouter'))
+if(isset($_GET['action']) &&  (($_GET['action']=='modification') || ($_GET['action']) == 'ajout'))
 {
 	if(isset($_GET['id_bar']))
 	{
@@ -346,7 +288,7 @@ if(isset($_GET['action']) &&  (($_GET['action']=='modification') || ($_GET['acti
 			<label for="id_membre">Compte membre lié au bar</label>
 			<select required id="id_membre" name="id_membre">
 			<?php
-				$req = "SELECT id_membre, pseudo, nom, prenom FROM membre ORDER BY nom";
+				$req = "SELECT id_membre, pseudo, nom, prenom, statut FROM membre ORDER BY nom";
 				$resultat = executeRequete($req);
 				//$nb_ligne = count($resultat)
 				while($ligne = $resultat -> fetch_assoc())
@@ -360,7 +302,7 @@ if(isset($_GET['action']) &&  (($_GET['action']=='modification') || ($_GET['acti
 					{
 						echo 'selected';
 					}
-					echo ' >'.$ligne['id_membre'].' - '.$ligne['prenom'].' '.$ligne['nom'].' | '.$ligne['pseudo'].'</option>';
+					echo ' >'.$ligne['id_membre'].' - '.$ligne['prenom'].' '.$ligne['nom'].' | '.$ligne['pseudo'].' | '.$ligne['statut'].'</option>';
 				}
 						
 			echo '</select>
