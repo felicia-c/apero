@@ -109,13 +109,13 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	
 	echo '<h2><a href="?affichage=affichage" class="button active" >Tous les apéros ('. $donnees['nbre_promo'].')</a></h2>
 	<a href="?action=ajout" class="button"> > Ajouter un apéro</a><br />
-	<a href="'.RACINE_SITE.'admin/gestion_bar.php"> >Gestion Bars</a>';
+	<a href="'.RACINE_SITE.'admin/gestion_bar.php"> >Gestion Bars</a><br />';
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'ajout')
 {
 	echo '<h2><a href="?action=ajout" class="button active">Ajouter un apéro</a></h2>
 	<a href="?affichage=affichage" class="button" > > Tous les apéro</a><br />
-	<a href="'.RACINE_SITE.'admin/gestion_bar.php"> >Gestion Bars</a>';
+	<a href="'.RACINE_SITE.'admin/gestion_bar.php"> >Gestion Bars</a><br />';
 }
 else
 {
@@ -124,81 +124,40 @@ else
 		<h2><a href="'.RACINE_SITE.'admin/gestion_bar.php"> >Gestion Bars</a></h2>';
 }
 echo $msg;
-
+echo '<br />';
 //AFFICHAGE
 
 if(isset($_GET['affichage']) &&  $_GET['affichage']=='affichage')
 {
 
-	echo '<table>
-			<tr>'; 
+	echo '<table>'; 
 	$table= 'promo_bar';
 	$req .= "SELECT * FROM $table";
 	$req = paginationGestion(10, $table, $req);
-	$resultat = executeRequete($req); 
-	$nbcol = $resultat->field_count; 
+	$resultat = executeRequete($req);
 
-	for($i= 0; $i < $nbcol; $i++) 
-	{
-		$colonne= $resultat->fetch_field(); 
-		
-		echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
-		if(isset($_GET['asc']))
-		{
-			echo '&desc=desc';
-		}
-		else
-		{
-			echo '&asc=asc';
-		}
-
-		echo '"'; 
-		if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
-		{
-			echo ' class="active" ';
-		}
-		if($colonne->name == 'id_promo_bar')
-		{
-			echo '>Promo</a></th>'; 
-		}
-		elseif($colonne->name == 'id_bar')
-		{
-			echo '>Bar</a></th>'; 
-		}
-		elseif($colonne->name == 'date_debut')
-		{
-			echo '>Début</a></th>'; 
-		}
-		elseif($colonne->name == 'date_fin')
-		{
-			echo '>Fin</a></th>'; 
-		}
-		else
-		{
-			echo '>'. ucfirst($colonne->name).'</a></th>'; 		
-		}
-				
-	}
-	echo'<th></th><th></th></tr>';
+	$dont_link = null; // entete du tablau sans order by
+	$dont_show = ''; // colonne non affichée
+	enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
 			
-	while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
+	while ($ligne = $resultat->fetch_assoc())
 	{
 		echo '<tr '; 
-		if(isset($_GET['id_promo_bar']) && ($_GET['id_promo_bar'] == $ligne['id_promo_bar']))
+		if(isset($_GET['id_bar']) && ($_GET['id_bar'] == $ligne['id_bar']))
 		{
 			echo ' class="tr_active" ';
 		}
 		echo '>';
-		foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
+		foreach($ligne AS $indice => $valeur)
 		{
 			if($indice == 'id_bar')
 			{
-				echo '<td><a href="?action=detail&id_bar='.$ligne['id_bar'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details de la commande
+				echo '<td><a href="?affichage=affichage&action=detail&id_bar='.$ligne['id_bar'].'">'.$valeur.'</a></td>';
 			}
 			
 			elseif($indice == 'id_promo')
 			{
-				echo '<td><a href="?action=detail&categorie='.$ligne['categorie'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details du membre
+				echo '<td><a href="?affichage=affichage&action=detail&categorie='.$ligne['categorie'].'">'.$valeur.'</a></td>';
 			}	
 			elseif (($indice == 'date_debut') || ($indice == 'date_fin'))
 			{
@@ -223,84 +182,35 @@ if(isset($_GET['affichage']) &&  $_GET['affichage']=='affichage')
 		<br />';
 		
 	affichagePaginationGestion(10, $table, '');
+	echo '</div>';
 }
 
 
 // DETAILs DES BARS
-elseif(isset($_GET['id_bar']))
+if(isset($_GET['id_bar']))
 {
 	if((isset($_GET['action']) && $_GET['action'] == 'detail'))
 	{
-		echo '<table>
-				<tr>';
+		echo '<div class="box_info"><table class="large_table">';
 		//On affiche les infos du bar associé a l'apero:
 		$resultat = executeRequete("SELECT * FROM bar WHERE id_bar = '$_GET[id_bar]'");
 		$nbcol = $resultat->field_count;
 		
-		for($i = 0; $i < $nbcol ; $i++)
-		{
-			$colonne= $resultat->fetch_field(); 
-			if($colonne->name == 'photo')
-			{
-				echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
-			}
-			elseif($colonne->name == 'email')
-			{
-				echo '<th class="text-center" colspan="3">E-mail</a></th>'; 
-			}
-	/*			elseif($colonne->name == 'description')
-			{
-				echo '<th colspan="3" class="text-center">'. ucfirst($colonne->name).'</th>'; 
-			}*/
-			
-			elseif((($colonne->name != 'description') && ($colonne->name != 'photo')) && $colonne->name != 'prenom_gerant')
-			{
-				if($colonne->name == 'nom_gerant')
-				{
-					echo '<th class="text-center" colspan="2"><a href="?affichage=affichage&orderby='. $colonne->name ; 
-				}	
-
-				echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
-				if(isset($_GET['asc']))
-				{
-					echo '&desc=desc';
-				}
-				else
-				{
-					echo '&asc=asc';
-				}
-
-				echo '"'; 
-				if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
-				{
-					echo ' class="active" ';
-				}
-				elseif($colonne->name == 'id_bar') 
-				{
-					echo '>Id</a></th>'; 
-				}
-				elseif($colonne->name == 'id_membre')
-				{
-					echo '>Membre</a></th>';
-				}
-				elseif($colonne->name == 'nom_gerant')
-				{
-					echo '>Gérant</th>'; 
-				}
-				else
-				{
-					echo '>'. ucfirst($colonne->name).'</a></th>'; 		
-				}
-			}
-		}		
-		echo'</tr>';
+		$dont_link = 'nono'; // entete du tablau sans order by
+		$dont_show = 'description'; // colonne non affichée
+		enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
 
 		while ($ligne = $resultat->fetch_assoc())
 		{
-			echo '<tr>';
+			echo '<tr ';
+			if(isset($_GET['id_bar']) && ($_GET['id_bar'] == $ligne['id_bar']))
+			{
+				echo ' class="tr_active" ';
+			}
+			echo '>';
 			foreach($ligne AS $indice => $valeur)
 			{
-					if($indice == 'photo')
+				if($indice == 'photo')
 				{
 					echo '<td ><img src="'.$valeur.'" alt="'.$ligne['nom_bar'].'" title="'.$ligne['nom_bar'].'" class="thumbnail_tableau" width="80px" /></td>';
 				}
@@ -308,9 +218,9 @@ elseif(isset($_GET['id_bar']))
 				//{
 			//		echo '<td colspan="3">' . substr($valeur, 0, 70) . '...</td>'; //Pour couper la description (affiche une description de 70 caracteres maximum)
 			//	}
-				elseif($indice == 'nom_gerant')
+				elseif($indice == 'nom_gerant' || $indice == 'adresse')
 				{
-					echo '<td colspan="2">' . ucfirst($valeur).' ';	
+					echo '<td colspan="">' . ucfirst($valeur).' ';	
 				}
 				elseif($indice == 'prenom_gerant')
 				{
@@ -337,65 +247,26 @@ elseif(isset($_GET['id_bar']))
 
 	$req = "SELECT * FROM promo_bar WHERE id_bar = '$_GET[id_bar]'";
 	$resultat = executeRequete($req); 
-	$nbcol = $resultat->field_count; 
-	echo '<table></tr>';
-	for($i= 0; $i < $nbcol; $i++) 
-	{
-		$colonne= $resultat->fetch_field(); 
-		
-		echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
-		if(isset($_GET['asc']))
-		{
-			echo '&desc=desc';
-		}
-		else
-		{
-			echo '&asc=asc';
-		}
-
-		echo '"'; 
-		if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
-		{
-			echo ' class="active" ';
-		}
-		if($colonne->name == 'id_promo_bar')
-		{
-			echo '>Promo</a></th>'; 
-		}
-		elseif($colonne->name == 'id_bar')
-		{
-			echo '>Bar</a></th>'; 
-		}
-		elseif($colonne->name == 'date_debut')
-		{
-			echo '>Début</a></th>'; 
-		}
-		elseif($colonne->name == 'date_fin')
-		{
-			echo '>Fin</a></th>'; 
-		}
-		else
-		{
-			echo '>'. ucfirst($colonne->name).'</a></th>'; 		
-		}
-				
-	}
-	echo'<th></th><th></th></tr>';
+	
+	echo '<table>';
+	$dont_link = 'nono'; // entete du tablau sans order by
+	$dont_show = ''; // colonne non affichée
+	enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
 			
-	while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
+	while ($ligne = $resultat->fetch_assoc())
 	{
 		echo '<tr>';
-			foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
+			foreach($ligne AS $indice => $valeur) 
 			{
 				if($indice == 'id_bar')
 				{
-					echo '<td><a href="?action=detail&id_bar='.$ligne['id_bar'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details de la commande
+					echo '<td>'.$valeur.'</td>'; //Lien au niveau de l'id pour afficher les details de la commande
 				}
 				
-				elseif($indice == 'id_promo')
-				{
-					echo '<td><a href="?action=detail&categorie='.$ligne['categorie'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details du membre
-				}	
+				//elseif($indice == 'categorie_produit')
+				//{
+				//	echo '<td><a href="?affichage=affichage&action=detail&id_bar='.$ligne['id_bar'].'&id_promo_bar='.$ligne['id_promo_bar'].'&categorie='.$ligne['categorie_produit'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details du membre
+				//}	
 				elseif (($indice == 'date_debut') || ($indice == 'date_fin'))
 				{
 					echo '<td>';
@@ -416,7 +287,7 @@ elseif(isset($_GET['id_bar']))
 		</tr>';
 	}						
 	echo '</table>
-		<br />';
+		<br /></div>';
 }
 
 //FORM AJOUT / MODIF
@@ -425,8 +296,9 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 
 
 ?>		
-	<form class="form" method="post" action="" enctype="multipart/form-data"> <!--enctype pour ajout eventuel d'un champs photo -->
-	<fieldset>
+	<div class="box_info">
+		<form class="form" method="post" action="" enctype="multipart/form-data"> <!--enctype pour ajout eventuel d'un champs photo -->
+			<fieldset>
 	<?php
 	
 		if(isset($_GET['id_promo_bar']) && (isset($_GET['action']) && ($_GET['action']=='modifier')))
