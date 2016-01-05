@@ -4,13 +4,13 @@ require_once("../inc/init.inc.php");
 $titre_page = "Gestion des membres";
 
 //Redirection si l'utilisateur n'est pas admin
-if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAdmin()){
+if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAdmin())
+{
 	header("location:../connexion.php");
 }
 
 if(!empty($_POST))
 {
-	
 	if(isset($_GET['action']) && $_GET['action'] == 'ajout')
 	{
 	 // SECURITE 
@@ -198,7 +198,7 @@ else
 echo $msg;
 
 echo '<br /><br />
-	<div id="large_table">';
+	<div id="box_info">';
 	
 /////////AFFICHAGE DE TOUS LES MEMBRES///////////
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
@@ -206,16 +206,17 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	$resultat_membres = executeRequete("SELECT COUNT(id_membre) AS nbre_membres FROM membre");
 	$membres =$resultat_membres -> fetch_assoc();	
 	
-	echo '<table>
-		<tr>';
+	echo '<table class="large_table" id="details">';
 
 	$req .= "SELECT * FROM membre"; 
-	$req = paginationGestion(10, 'membre', $req);
+	$req = paginationGestion(5, 'membre', $req);
 	$resultat = executeRequete($req);
+
+	$dont_link = null; // entete du tablau sans order by
+	$dont_show = 'photo'; // colonne non affichée
+	enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
 	
-	enteteTableau($resultat);
-	
-	while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
+	while ($ligne = $resultat->fetch_assoc()) 
 	{
 		echo '<tr '; 
 		if(isset($_GET['id_membre']) && ($_GET['id_membre'] == $ligne['id_membre']))
@@ -223,12 +224,14 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			echo ' class="tr_active" ';
 		}
 		echo '>';
-		foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
+		foreach($ligne AS $indice => $valeur)
 		{
 			if ($indice == 'adresse')
 			{
 				echo '<td colspan ="2">'. $valeur.'</td>';
 			}
+
+			//FORM MODIF STATUT
 			elseif ($indice == 'statut')
 			{
 				echo '<td>
@@ -266,7 +269,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}
 			elseif(($indice != 'mdp') && ($indice != 'photo'))
 			{
-			echo '<td ><a class="lien_tr" href="?affichage=affichage&action=detail&id_membre='.$ligne['id_membre'].'" >'.ucfirst($valeur).'</a></td>';	
+			echo '<td ><a class="lien_tr" href="?affichage=affichage&action=detail&id_membre='.$ligne['id_membre'].'#details" >'.ucfirst($valeur).'</a></td>';	
 			}
 		}
 		echo '<td>
@@ -276,22 +279,24 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	}	
 	echo '</table>
 		<br />';
-	affichagePaginationGestion(10, 'membre', '');
+	affichagePaginationGestion(5, 'membre', '');
 	echo '<br />';
 }
 
-// DETAILS MEMBRE
-
+// COMMANDES MEMBRE
 if(isset($_GET['action']) && $_GET['action'] == 'detail') 
 {
-	echo '<div class="box_info">
-	<table>
-		<tr>';
 	if(isset($_GET['id_membre']))
 	{
+		echo '<div class="box_info">
+			<h3>Commandes du membre n°'.$_GET['id_membre'].'</h3>
+			<table>';
+	
 		$resultat = executeRequete("SELECT * FROM commande WHERE id_membre = '".$_GET['id_membre']."'");
 
-		enteteTableau($resultat);
+		$dont_link = 'nono'; // entete du tablau sans order by
+		$dont_show = ''; // colonne non affichée
+		enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
 
 		while ($ligne = $resultat->fetch_assoc()) 
 		{
@@ -307,7 +312,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 				
 				if($indice == 'id_commande')//Lien au niveau de l'id pour afficher les details de la commande
 				{
-					echo '<td><a href="?affichage=affichage&action=detail&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; 
+					echo '<td><a href="?affichage=affichage&action=detail&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].'#details">'.$valeur.'</a></td>'; 
 				}
 				elseif($indice == 'date') // affichage du timestamp de la commande en format fr
 				{
@@ -333,15 +338,15 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 		<br />
 		</div>';
 	}
-
+//DETAILS COMMANDE
 	if(isset($_GET['id_commande']))
 	{
 		echo '<div class="box_info">
-		<table>
-			<tr>';
+		<table>';
 		$resultat = executeRequete("SELECT * FROM details_commande WHERE id_commande = '".$_GET['id_commande']."'");
-
-		enteteTableau($resultat);
+		$dont_link = 'nono'; // entete du tablau sans order by
+		$dont_show = ''; // colonne non affichée
+		enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
 		while ($ligne = $resultat->fetch_assoc()) 
 		{
 			echo '<tr '; 
@@ -355,7 +360,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 			{	
 				if($indice == 'id_produit')
 				{
-					echo '<td><a href="?affichage=affichage&action=detail&id_produit='.$ligne['id_produit'].'&id_membre='.$_GET['id_membre'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; 
+					echo '<td><a href="?affichage=affichage&action=detail&id_produit='.$ligne['id_produit'].'&id_membre='.$_GET['id_membre'].'&id_commande='.$ligne['id_commande'].'#details">'.$valeur.'</a></td>'; 
 				}
 				elseif($indice == 'prix') // affichage du timestamp de la commande en format fr
 				{		
@@ -371,15 +376,16 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 		}					
 		echo '</table></div><br />';
 	}
-	
+// DETAILS PRODUITS	
 	if(isset($_GET['id_produit']))
 	{
 			echo '<div class="box_info">
-		<table  class="large_table">
-			<tr>';
+		<table  class="large_table">';
 		$resultat = executeRequete("SELECT * FROM produit WHERE id_produit = '".$_GET['id_produit']."'");
-
-		enteteTableau($resultat);
+		
+		$dont_link = 'nono'; // entete du tablau sans order by
+		$dont_show = ''; // colonne non affichée
+		enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
 		while ($ligne = $resultat->fetch_assoc()) 
 		{
 			echo '<tr>';
@@ -403,8 +409,9 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 		}					
 		echo '</table><br />';
 	}
-
 }
+
+// FORM AJOUT
 if(isset($_GET['action']) && $_GET['action']=='ajout') 
 {
 	?>
