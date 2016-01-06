@@ -50,11 +50,11 @@
                   <li><a href="'.RACINE_SITE.'connexion.php">connexion</a></li>';
           } 
 
-          if(utilisateurEstConnecteEtEstGerant())
+          if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdmin())
           {
             echo '<li><a href="'.RACINE_SITE.'bar/gestion_promo_bar.php">gérer mes promos</a></li>';
           }
-          if(utilisateurEstConnecteEtEstAdmin())
+          if(utilisateurEstConnecteEtEstAdmin() || utilisateurEstConnecteEtEstGerantEtAdmin())
           {
             echo '<li><a href="'.RACINE_SITE.'admin/gestion_produit.php">gestion produits</a></li>
                   <li><a href="'.RACINE_SITE.'admin/gestion_membre.php">gestion membres</a></li>

@@ -753,13 +753,14 @@ function enteteTableau($resultat, $dont_show, $dont_link)
 					}
 					else
 					{
+
 						if($colonne->name == 'nom_gerant')
 						{
 							echo '<th class="text-center" colspan="2"><a href="?affichage=affichage&orderby='. $colonne->name ; 
 						}
 						else
 						{
-							echo '<th style="text-align: center;"><a href="?affichage=affichage&action=commandes&orderby='. $colonne->name ; 
+							echo '<th  style="text-align: center;"><a href="?affichage=affichage&action=commandes&orderby='. $colonne->name ; 
 						}
 						// infos $_GET
 						if(isset($_GET['id_promo_produit']))
@@ -818,23 +819,14 @@ function enteteTableau($resultat, $dont_show, $dont_link)
 				else
 				{
 					echo '<th class="text-center" ';//entetes sans liens
-				}	
+				}
+				$name_bdd = $colonne->name;	
+				$entete = str_replace('_', ' ', $name_bdd); 
+				
 				//affichage
 				if($colonne->name == 'id_promo_produit')
 				{
 					echo '>Promo</a></th>'; 
-				}
-				elseif($colonne->name == 'code_promo')
-				{
-					echo '> Code promo </a></th>'; 
-				}
-				elseif($colonne->name == 'id_produit')
-				{
-					echo '>Id Produit</a></th>'; 
-				}
-				elseif($colonne->name == 'id_membre')
-				{
-					echo '> Id Membre </a></th>';
 				}
 				elseif($colonne->name == 'prenom')
 				{
@@ -858,7 +850,7 @@ function enteteTableau($resultat, $dont_show, $dont_link)
 				}
 				else
 				{
-					echo '>'. ucfirst($colonne->name).'</a></th>'; 		
+					echo '> '.ucfirst($entete).' </a></th>';		
 				}
 			}	
 		}		
