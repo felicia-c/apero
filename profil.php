@@ -223,15 +223,14 @@ echo '</div>
 
 if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdmin())
 {
-	echo '<div class="box_info">
+	echo '<div class="box_info" id="details">
 			<h4 class=orange>Vos bars</h4>';
 	$id_utilisateur = $_SESSION['utilisateur']['id_membre'];
-	$req = "SELECT * FROM bar WHERE id_membre = '$id_utilisateur' ORDER BY id_membre DESC";
+	$req = "SELECT id_bar, id_membre, nom_bar, photo, nom_gerant, prenom_gerant, cp, telephone, email FROM bar WHERE id_membre = '$id_utilisateur' ORDER BY id_membre DESC";
 
 	$resultat = executeRequete($req);
-	$nbcol = $resultat->field_count; 
-	echo '<table>
-			<tr>';
+	//$nbcol = $resultat->field_count; 
+	echo '<table>';
 
 	$nb_bars = $resultat -> num_rows;
 
@@ -243,65 +242,10 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 	}
 	else
 	{
-		for($i= 0; $i < $nbcol; $i++) 
-		{
-			$colonne= $resultat->fetch_field(); 
-			if($colonne->name == 'photo')
-			{
-					echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
-			}
-			elseif($colonne->name == 'email')
-			{
-				echo '<th class="text-center" colspan="3">E-mail</a></th>'; 
-			}
-			//elseif($colonne->name == 'description')
-		//	{
-			//	echo '<th colspan="3" class="text-center">'. ucfirst($colonne->name).'</th>'; 
-		//	}
-			elseif((($colonne->name != 'description') && ($colonne->name != 'siret')) && ($colonne->name != 'prenom_gerant') && ($colonne->name != 'ville' && $colonne->name != 'adresse'))
-			//elseif ($colonne->name != ('description' || 'siret' || 'prenom_gerant' || 'ville' || 'cp'))
-			{
-
-				if($colonne->name == 'nom_gerant')
-				{
-					echo '<th class="text-center" colspan="2"><a href="?affichage=affichage&orderby='. $colonne->name ; 
-				}	
-
-				echo '<th class="text-center"><a href="?affichage=affichage&orderby='. $colonne->name ; 
-				if(isset($_GET['asc']))
-				{
-					echo '&desc=desc';
-				}
-				else
-				{
-					echo '&asc=asc';
-				}
-
-				echo '"'; 
-				if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
-				{
-					echo ' class="active" ';
-				}
-				elseif($colonne->name == 'id_bar') 
-				{
-					echo '>Id</a></th>'; 
-				}
-				elseif($colonne->name == 'id_membre')
-				{
-					echo '>Membre</a></th>';
-				}
-				elseif($colonne->name == 'nom_gerant')
-				{
-					echo '>Gérant</th>'; 
-				}
-				else
-				{
-					echo '>'. ucfirst($colonne->name).'</a></th>'; 		
-				}
-			}		
-		}
-		echo'<th></th><th></th></tr>';
-
+		$dont_link = ''; // entete du tablau sans order by
+		$dont_show = 'prenom_gerant'; // colonne non affichée
+		enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
+	
 		while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
 		{
 			echo '<tr>';
