@@ -52,7 +52,7 @@
 
           if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdmin())
           {
-            echo '<li><a href="'.RACINE_SITE.'bar/gestion_promo_bar.php">gérer mes promos</a></li>';
+            echo '<li><a href="'.RACINE_SITE.'mes_promos.php">gérer mes promos</a></li>';
           }
           if(utilisateurEstConnecteEtEstAdmin() || utilisateurEstConnecteEtEstGerantEtAdmin())
           {
