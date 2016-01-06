@@ -35,241 +35,155 @@ $resultat = executeRequete("SELECT SUM(montant) AS total,
 										ROUND(AVG(montant),2) AS panier_moyen,
 										MAX(date) AS der_commande 
 								FROM commande");
-				$commandes = $resultat -> fetch_assoc();
+$commandes = $resultat -> fetch_assoc();
 echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $commandes['nbre_commandes'].' | Commande moyenne : '.$commandes['panier_moyen'].'€</h3><br />';
-	$resultat = executeRequete("SELECT COUNT(id_commande) AS nbre_commandes FROM commande");
-	$donnees =$resultat -> fetch_assoc();	
+$resultat = executeRequete("SELECT COUNT(id_commande) AS nbre_commandes FROM commande");
+$donnees =$resultat -> fetch_assoc();	
 
-	if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
-	{	
-		
-		echo '<h2><a href="?affichage=affichage&action=commandes" class="button active" >Toutes les commandes ('. $donnees['nbre_commandes'].')</a></h2>
-		<a href="?affichage=affichage&action=detail" class="button">Détails des commandes</a><br />';
-	}
-	elseif(isset($_GET['action']) && $_GET['action'] == 'detail')
-	{
-		$resultat_details = executeRequete("SELECT COUNT(id_details_commande) AS nbre_details FROM  details_commande");
-		$details =$resultat_details -> fetch_assoc();	
-		echo '<h2><a href="?affichage=affichage&action=detail" class="button active">Détails des commandes ('. $details['nbre_details'].')</a></h2>
-		<a href="?affichage=affichage&action=commandes" class="button" >Toutes les commandes</a>';
-	}
-	else
-	{
-		echo '<h2><a href="?affichage=affichage&action=commandes" class="button" >Toutes les commandes</a></h2>
-			<h2><a href="?affichage=affichage&action=detail" class="button">Détails des commandes</a></h2><br />';
-	}
+if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
+{	
+	
+	echo '<h2><a href="?affichage=affichage&action=commandes" class="button active" >Toutes les commandes ('. $donnees['nbre_commandes'].')</a></h2>
+	<a href="?affichage=affichage&action=detail" class="button">Détails des commandes</a><br />';
+}
+elseif(isset($_GET['action']) && $_GET['action'] == 'detail')
+{
+	$resultat_details = executeRequete("SELECT COUNT(id_details_commande) AS nbre_details FROM  details_commande");
+	$details =$resultat_details -> fetch_assoc();	
+	echo '<h2><a href="?affichage=affichage&action=detail" class="button active">Détails des commandes ('. $details['nbre_details'].')</a></h2>
+	<a href="?affichage=affichage&action=commandes" class="button" >Toutes les commandes</a>';
+}
+else
+{
+	echo '<h2><a href="?affichage=affichage&action=commandes" class="button" >Toutes les commandes</a></h2>
+		<h2><a href="?affichage=affichage&action=detail" class="button">Détails des commandes</a></h2><br />';
+}
 
-	echo $msg; 
+echo $msg; 
 echo '<br /><br />';
 /////AFFiCHAGE DETAILS COMMANDE
 
-	if(isset($_GET['action']) && $_GET['action'] == 'detail')
-	{		
-
+if(isset($_GET['action']) && $_GET['action'] == 'detail')
+{		
 	// DETAILs DES PRODUITS
-			if((isset($_GET['info']) && $_GET['info'] == 'detailproduit') && (isset($_GET['action'])&& $_GET['action'] == 'detail'))
+	if((isset($_GET['info']) && $_GET['info'] == 'detailproduit') && (isset($_GET['action'])&& $_GET['action'] == 'detail'))
+	{
+		echo '
+			<h4>Détail du produit N° '.$_GET['id_produit'].'</h4>';
+		$resultat = executeRequete("SELECT * FROM produit WHERE id_produit = '$_GET[id_produit]'");
+		// $produit = $resultat -> fetch_assoc();
+		echo'<table>';
+		
+		$dont_link = 'nono'; // entete du tablau sans order by
+		$dont_show = 'description'; // colonne non affichée
+		enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
+		
+		while ($ligne = $resultat->fetch_assoc())
+		{
+			echo '<tr>';
+			foreach($ligne AS $indice => $valeur)
 			{
-				echo '
-					<h4>Détail du produit N° '.$_GET['id_produit'].'</h4>';
-				$resultat = executeRequete("SELECT * FROM produit WHERE id_produit = '$_GET[id_produit]'");
-				// $produit = $resultat -> fetch_assoc();
-				$nbcol = $resultat->field_count;
-				echo'<table><tr>';
-				
-				for($i= 0; $i < $nbcol; $i++) 
+				if($indice == 'photo')
 				{
-					$colonne= $resultat->fetch_field(); 
-					if($colonne->name == 'photo')
+					echo '<td ><img src="'.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
+				}
+				elseif($indice == 'id_promo_produit')
+				{
+					if(!empty($valeur))
 					{
-							echo '<th class="text-center" width="150">'. ucfirst($colonne->name).'</th>'; 
+						$resultat_promo = executeRequete("SELECT * FROM promo_produit WHERE id_promo_produit = '$ligne[id_promo_produit]'");
+						$promo = $resultat_promo -> fetch_assoc();
+						echo '<td >'.$promo['code_promo'].' ('.$promo['id_promo_produit'].') <br /> -'. $promo['reduction'].'%</td>';
 					}
-					elseif(($colonne->name != 'description') && ($colonne->name != 'photo'))
+					else
 					{
-						echo '<th class="text-center">';
-						if($colonne->name == 'id_promo_produit')
+						echo '<td >PAS DE PROMO</td>';
+					}	
+				}
+				elseif($indice == 'stock')
+				{
+					echo '<td > x '.$valeur.'</td>';
+				}
+				elseif($indice == 'prix')
+				{
+					echo '<td >'.$valeur.'€</td>';
+				}
+				elseif($indice != 'description')
+				{
+					echo '<td >'.$valeur.'</td>';
+				}
+			}
+		}
+		echo '</tr></table><br />';
+		
+	}	
+// DETAILs DES MEMBRES
+	if(isset($_GET['id_membre']))
+	{
+		if((isset($_GET['action']) && $_GET['action'] == 'detail') && (isset($_GET['info']) == 'membre'))
+		{
+			//On affiche les infos du membre associé à la commande :
+			
+			$resultat = executeRequete("SELECT * FROM membre WHERE id_membre = '$_GET[id_membre]'");
+			echo'<table>';
+			
+			$dont_link = 'nono'; // entete du tablau sans order by
+			$dont_show = 'photo'; // colonne non affichée
+			enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
+			while ($ligne = $resultat->fetch_assoc())  
+			{
+				echo '<tr>';
+				foreach($ligne AS $indice => $valeur)
+				{
+					if ($indice == 'adresse')
+					{
+						echo '<td colspan ="">'. $valeur.'</td>';
+					}
+						elseif ($indice == 'statut')
+					{
+						if($valeur == '1')
 						{
-							echo 'Promo</a></th>'; 
-						}
-						elseif($colonne->name == 'id_produit')
-						{
-							echo 'Id</a></th>'; 
+							echo '<td>Admin</td>';
 						}
 						else
 						{
-							echo ucfirst($colonne->name).'</a></th>'; 		
-						}
-					}		
-				}
-				while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
-				{
-					echo '<tr>';
-					foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
-					{
-						if($indice == 'photo')
-						{
-							echo '<td ><img src="'.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
-						}
-						elseif($indice == 'id_promo_produit')
-						{
-							if(!empty($valeur))
-							{
-								$resultat_promo = executeRequete("SELECT * FROM promo_produit WHERE id_promo_produit = '$ligne[id_promo_produit]'");
-								$promo = $resultat_promo -> fetch_assoc();
-								echo '<td >'.$promo['code_promo'].' ('.$promo['id_promo_produit'].') <br /> -'. $promo['reduction'].'%</td>';
-							}
-							else
-							{
-								echo '<td >PAS DE PROMO</td>';
-							}	
-						}
-						elseif($indice == 'stock')
-						{
-							echo '<td > x '.$valeur.'</td>';
-						}
-						elseif($indice == 'prix')
-						{
-							echo '<td >'.$valeur.'€</td>';
-						}
-						elseif($indice != 'description')
-						{
-							echo '<td >'.$valeur.'</td>';
+							echo '<td>Membre</td>';
 						}
 					}
+					elseif(($indice != 'mdp') && ($indice != 'photo'))
+					{
+						echo '<td >'.ucfirst($valeur).'</td>';	
+					}
 				}
-				echo '</tr></table><br />';
-				
 			}
+			echo '</tr>
+			</table>
+			<br />';
+			$resultat_membre_commande = executeRequete("SELECT COUNT(id_commande) AS nbre_commandes FROM commande WHERE id_membre = '$_GET[id_membre]'");
+			$membre_commandes = $resultat_membre_commande -> fetch_assoc();
+			echo '<h3>Toutes les commandes de ce membre ('. $membre_commandes['nbre_commandes'].')</h3>
+			<!-- LES COMMANDES / MEMBRE -->';				
+			// On affiche toutes les commandes associées à ce membre :
 			
-			
-	// DETAILs DES MEMBRES
-		if(isset($_GET['id_membre']))
-		{
-			if((isset($_GET['action']) && $_GET['action'] == 'detail') && (isset($_GET['info']) == 'membre'))
+			$resultat = executeRequete("SELECT * FROM commande WHERE id_membre = '$_GET[id_membre]'");
+
+			echo'<table>';
+			$dont_link = 'nono'; // entete du tablau sans order by
+			$dont_show = ''; // colonne non affichée
+			enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
+			while ($ligne = $resultat->fetch_assoc()) 
 			{
-				//On affiche les infos du membre associé à la commande :
-				
-				$resultat = executeRequete("SELECT * FROM membre WHERE id_membre = '$_GET[id_membre]'");
-				$nbcol = $resultat->field_count;
-				echo'<table>
-						<tr>';
-				
-				for($i= 0; $i < $nbcol; $i++) 
-				{
-					$colonne= $resultat->fetch_field(); 
-					if ($colonne->name == 'adresse')
-					{
-						echo '<th colspan ="2">'. $colonne->name.'</th>';
-					}
-					elseif(($colonne->name != 'mdp') && ($colonne->name != 'photo'))
-					{
-						echo '<th>'. $colonne->name.'</th>'; 
-					}
-					
-				}
-				while ($ligne = $resultat->fetch_assoc())  
-				{
-					echo '<tr>';
-					foreach($ligne AS $indice => $valeur)
-					{
-						if ($indice == 'adresse')
-						{
-							echo '<td colspan ="2">'. $valeur.'</td>';
-						}
-							elseif ($indice == 'statut')
-						{
-							if($valeur == '1')
-							{
-								echo '<td>Admin</td>';
-							}
-							else
-							{
-								echo '<td>Membre</td>';
-							}
-							
-						}
-						elseif(($indice != 'mdp') && ($indice != 'photo'))
-						{
-							echo '<td >'.ucfirst($valeur).'</td>';	
-						}
-						
-					}
-				}
-				echo '</tr>
-				</table>
-				<br />';
-					$resultat_membre_commande = executeRequete("SELECT COUNT(id_commande) AS nbre_commandes FROM commande WHERE id_membre = '$_GET[id_membre]'");
-					$membre_commandes = $resultat_membre_commande -> fetch_assoc();
-				echo '<h3>Toutes les commandes de ce membre ('. $membre_commandes['nbre_commandes'].')</h3>
-	<!-- LES COMMANDES / MEMBRE -->';				
-				// On affiche toutes les commandes associées à ce membre :
-				
-				$resultat = executeRequete("SELECT * FROM commande WHERE id_membre = '$_GET[id_membre]'");
-		
-				$nbcol = $resultat->field_count;
-				echo'<table>
-						<tr>';
-				
-				for($i= 0; $i < $nbcol; $i++) 
-				{
-					$colonne= $resultat->fetch_field(); 
-
-					echo '<th>'. $colonne->name.'</th>'; 
-
-				}
-				while ($ligne = $resultat->fetch_assoc()) 
-				{
-					echo '<tr '; 
+				echo '<tr '; 
 				if(isset($_GET['id_commande']) && ($_GET['id_commande'] == $ligne['id_commande']))
 				{
 					echo ' class="tr_active" ';
 				}
 				echo '>';
-					foreach($ligne AS $indice => $valeur)
-					{
-						if($indice == 'id_commande')
-						{
-							echo '<td><a href="?action=detail&info=membre&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details de la commande
-						}
-						elseif($indice == 'date')
-						{
-							$date= date_create_from_format('Y-m-d H:i:s', $ligne['date']);
-				
-							echo '<td>'.date_format($date, 'd/m/Y H:i').'</td>';
-						}
-						else
-						{
-							echo '<td>'.$valeur.'</td>';
-						}
-					}
-				}
-				echo '</tr></table><br />';
-				
-			}
-		}	
-			
-	// AFFICHAGE INFOS COMMANDE			
-		if((isset($_GET['info']) && $_GET['info'] == 'infocommande') && (isset($_GET['action'])&& $_GET['action'] == 'detail'))
-		{
-			echo '<h4>Infos de la commande N° '.$_GET['id_commande'].'</h4>';
-			$resultat = executeRequete("SELECT * FROM commande WHERE id_commande = '$_GET[id_commande]'");
-			
-			$nbcol = $resultat->field_count;
-			echo'<table>
-					<tr>';
-			
-			for($i= 0; $i < $nbcol; $i++) 
-			{
-				$colonne= $resultat->fetch_field(); 	
-				echo '<th>'. $colonne->name.'</th>'; 
-			}
-			while ($ligne = $resultat->fetch_assoc()) 
-			{
-				echo '<tr>';
 				foreach($ligne AS $indice => $valeur)
 				{
-					if($indice == 'id_membre')
+					if($indice == 'id_commande')
 					{
-						echo '<td><a href="?action=detail&info=membre&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details du membre
+						echo '<td><a href="?action=detail&info=membre&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details de la commande
 					}
 					elseif($indice == 'date')
 					{
@@ -279,110 +193,142 @@ echo '<br /><br />';
 					}
 					else
 					{
-						echo '<td >'.$valeur.'</td>';
+						echo '<td>'.$valeur.'</td>';
 					}
 				}
+				echo '<td></td>
+			</tr>';
 			}
-			
-			echo '</tr>
-			</table>
-			<br />';
-			
+			echo '</table><br />';	
 		}
-// AFFICHAGE DETAILS COMMANDE(s)
-		if(isset($_GET['action']) && ($_GET['action'] == 'detail'))
+	}	
+		
+	// AFFICHAGE INFOS COMMANDE			
+	if((isset($_GET['info']) && $_GET['info'] == 'infocommande') && (isset($_GET['action'])&& $_GET['action'] == 'detail'))
+	{
+		echo '<h4>Infos de la commande N° '.$_GET['id_commande'].'</h4>';
+		$resultat = executeRequete("SELECT * FROM commande WHERE id_commande = '$_GET[id_commande]'");
+
+		echo'<table>';
+		
+		$dont_link = 'nono'; // entete du tablau sans order by
+		$dont_show = 'description'; // colonne non affichée
+		enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
+		while ($ligne = $resultat->fetch_assoc()) 
 		{
-			echo '<br />';
-
-			if(isset($_GET['id_commande']) && ($_GET['action'] != 'suppression'))
+			echo '<tr>';
+			foreach($ligne AS $indice => $valeur)
 			{
-				echo '<h3 id="detail_commande">Détail de la commande N°'.$_GET['id_commande'].' </h3>';
-				$resultat = executeRequete("SELECT * FROM details_commande WHERE id_commande= '$_GET[id_commande]'");
-				echo'<table>
-					<tr>';
-				$nbcol = $resultat->field_count; 
-	 
-				for($i= 0; $i < $nbcol; $i++) 
+				if($indice == 'id_membre')
 				{
-					$colonne= $resultat->fetch_field(); 	
-					echo '<th>'. $colonne->name.'</th>'; 
-				}	
-				echo'</tr>';
-			}
-			else
-			{
-				//$resultat = executeRequete("SELECT * FROM details_commande");
-				$req .= "SELECT * FROM details_commande";
-				$req = paginationGestion(10,'details_commande',$req);  // PAGINATION + TRI
-				$resultat = executeRequete($req);
-				$nbcol = $resultat->field_count; 
-				echo'<table>
-					<tr>';
-				for($i= 0; $i < $nbcol; $i++) 
-				{
-					$colonne= $resultat->fetch_field(); 	
-					echo '<th style="text-align: center;"><a href="?affichage=affichage&action=detail&orderby='. $colonne->name ; 
-					if(isset($_GET['asc']))
-					{
-						echo '&desc=desc';
-					}
-					else
-					{
-						echo '&asc=asc';
-					}
-						
-					echo '"'; 
-					if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
-					{
-						echo ' class="actif" ';
-					}
-					echo '>'. ucfirst($colonne->name).'</a></th>';  	
+					echo '<td><a href="?action=detail&info=membre&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details du membre
 				}
-				echo '</tr>';
-			}
-
-			
-			while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
-			{
-				echo '<tr '; 
-				if(isset($_GET['id_produit']) && ($_GET['id_produit'] == $ligne['id_produit']))
+				elseif($indice == 'date')
 				{
-					echo ' class="tr_active" ';
+					$date= date_create_from_format('Y-m-d H:i:s', $ligne['date']);
+		
+					echo '<td>'.date_format($date, 'd/m/Y H:i').'</td>';
 				}
-				echo '>';
-				
-				foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
+				else
 				{
-						
-					if($indice == 'id_produit')
-					{
-						echo '<td><a href="?action=detail&info=detailproduit&id_produit='.$ligne['id_produit'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details de la commande
-					}
-					elseif($indice == 'id_commande')
-					{
-						echo '<td><a href="?action=detail&info=infocommande&id_commande='.$ligne['id_commande'].'&id_produit='.$ligne['id_produit'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les infos de la commande
-					}
-						
-					else
-					{
-						echo '<td >'.$valeur.'</td>';
-					}
+					echo '<td >'.$valeur.'</td>';
 				}
-				
-				echo '</tr>';
-			}					
-			echo '</table><br />';
-			if(isset($_GET['action']) && ($_GET['action'] == 'detail') && !isset($_GET['id_commande']))
-			{
-				$lien = '<a href="?affichage=affichage&action=detail&';
-				affichagePaginationGestion(10, 'details_commande', $lien);
 			}
-			echo '</div>
-			</div>';
-			
-		}		
-
+		}
+		
+		echo '<td></td></tr>
+		</table>
+		<br />';
+		
 	}
+	// AFFICHAGE DETAILS COMMANDE(s)
+	if(isset($_GET['action']) && ($_GET['action'] == 'detail'))
+	{
+		echo '<br />';
+
+		if(isset($_GET['id_commande']) && ($_GET['action'] != 'suppression'))
+		{
+			echo '<h3 id="detail_commande">Détail de la commande N°'.$_GET['id_commande'].' </h3>';
+			$resultat = executeRequete("SELECT * FROM details_commande WHERE id_commande= '$_GET[id_commande]'");
+			echo'<table id="details">';
+			$dont_link = 'nono'; // entete du tablau sans order by
+			$dont_show = ''; // colonne non affichée
+			enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
+		}
+		else
+		{
+			//$resultat = executeRequete("SELECT * FROM details_commande");
+			$req .= "SELECT * FROM details_commande";
+			$req = paginationGestion(5,'details_commande',$req);  // PAGINATION + TRI
+			$resultat = executeRequete($req);
+			$nbcol = $resultat->field_count; 
+			echo'<table>
+				<tr>';
+			for($i= 0; $i < $nbcol; $i++) 
+			{
+				$colonne= $resultat->fetch_field(); 	
+				echo '<th style="text-align: center;"><a href="?affichage=affichage&action=detail&orderby='. $colonne->name ; 
+				if(isset($_GET['asc']))
+				{
+					echo '&desc=desc';
+				}
+				else
+				{
+					echo '&asc=asc';
+				}
+					
+				echo '"'; 
+				if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
+				{
+					echo ' class="actif" ';
+				}
+				echo '>'. ucfirst($colonne->name).'</a></th>';  	
+			}
+			echo '<td></td></tr>';
+		}
+
+		
+		while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
+		{
+			echo '<tr '; 
+			if(isset($_GET['id_produit']) && ($_GET['id_produit'] == $ligne['id_produit']))
+			{
+				echo ' class="tr_active" ';
+			}
+			echo '>';
+			
+			foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
+			{
+					
+				if($indice == 'id_produit')
+				{
+					echo '<td><a href="?action=detail&info=detailproduit&id_produit='.$ligne['id_produit'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details de la commande
+				}
+				elseif($indice == 'id_commande')
+				{
+					echo '<td><a href="?action=detail&info=infocommande&id_commande='.$ligne['id_commande'].'&id_produit='.$ligne['id_produit'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les infos de la commande
+				}
+					
+				else
+				{
+					echo '<td >'.$valeur.'</td>';
+				}
+			}
+			
+			echo '<td></td></tr>';
+		}					
+		echo '</table><br />';
+		if(isset($_GET['action']) && ($_GET['action'] == 'detail') && !isset($_GET['id_commande']))
+		{
+			$lien = '<a href="?affichage=affichage&action=detail&';
+			affichagePaginationGestion(5, 'details_commande', $lien);
+		}
+		echo '</div>
+		</div>';
+		
+	}		
+
+}
 
 //AFFICHAGE DE TOUTES LES COMMANDES
 	if((isset($_GET['affichage']) && $_GET['affichage'] == 'affichage') && (isset($_GET['action']) && $_GET['action'] == 'commandes'))
