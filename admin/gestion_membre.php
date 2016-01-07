@@ -14,6 +14,29 @@ foreach($_GET AS $indice => $valeur )
 	$_GET[$indice] = htmlentities($valeur, ENT_QUOTES); 
 }
 
+
+//pagination liens
+$page='';
+$orderby=''; 
+$asc_desc='';
+
+if(isset($_GET['page']))
+{
+	$page.= '&page='.$_GET['page'];
+}
+if(isset($_GET['orderby']))
+{
+	$orderby.= '&orderby='.$_GET['orderby'];
+}
+if(isset($_GET['asc']))
+{
+	$asc_desc.= '&asc='.$_GET['asc'];
+}
+elseif(isset($_GET['desc']))
+{
+	$asc_desc.='&desc='.$_GET['desc'];
+}
+
 if(!empty($_POST))
 {
 	if(isset($_GET['action']) && $_GET['action'] == 'ajout')
