@@ -14,12 +14,18 @@ if(isset($_GET['action']) && $_GET['action'] == 'promos')
 	echo '</div>';
 }
 else
-{
-	echo '<div class="block_inline">
+{	
+		$table='bar';	
+		$req="SELECT * FROM $table";
+		$req = paginationGestion(4, $table, $req);
+		$lien = "";
+	echo '<div class="block_inline box_info">
 			<h2>les bars</h2>';
-		$req="SELECT * FROM bar";
+
 		afficheVignetteBar($req);
+
 	echo '</div>';
+	affichagePaginationGestion(4, $table, $lien);
 }
 echo '<br /><br />';
 
