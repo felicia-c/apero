@@ -8,6 +8,44 @@ $titre_page = 'Gestion promos bars';
 if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAdmin()){
 	header("location:../connexion.php");
 }
+foreach($_GET AS $indice => $valeur )
+{
+	$_GET[$indice] = htmlentities($valeur, ENT_QUOTES); 
+}
+
+foreach($_GET AS $indice => $valeur )
+{
+	$_GET[$indice] = htmlentities($valeur, ENT_QUOTES); 
+}
+
+if(isset($_GET['page']))
+{
+	$page= '&page='.$_GET['page'];
+}
+else
+{
+	$page='';
+}
+if(isset($_GET['orderby']))
+{
+	$orderby= '&orderby='.$_GET['orderby'];
+}
+else
+{
+	$orderby='';
+}
+if(isset($_GET['asc']))
+{
+	$asc_desc= '&asc='.$_GET['asc'];
+}
+elseif(isset($_GET['desc']))
+{
+	$asc_desc= '&desc='.$_GET['desc'];
+}
+else
+{
+	$asc_desc='';
+}
 
 
 if(isset($_POST['ajouter']) && $_POST['ajouter'] == 'Enregistrer')
@@ -130,7 +168,7 @@ echo '<br />';
 if(isset($_GET['affichage']) &&  $_GET['affichage']=='affichage')
 {
 
-	echo '<table>'; 
+	echo '<table id="details">'; 
 	$table= 'promo_bar';
 	$req .= "SELECT * FROM $table";
 	$req = paginationGestion(10, $table, $req);
@@ -152,12 +190,12 @@ if(isset($_GET['affichage']) &&  $_GET['affichage']=='affichage')
 		{
 			if($indice == 'id_bar')
 			{
-				echo '<td><a href="?affichage=affichage&action=detail&id_bar='.$ligne['id_bar'].'">'.$valeur.'</a></td>';
+				echo '<td><a href="?affichage=affichage&action=detail&id_bar='.$ligne['id_bar'].$page.''.$orderby.''.$asc_desc.'#details">'.$valeur.'</a></td>';
 			}
 			
 			elseif($indice == 'id_promo')
 			{
-				echo '<td><a href="?affichage=affichage&action=detail&categorie='.$ligne['categorie'].'">'.$valeur.'</a></td>';
+				echo '<td><a href="?affichage=affichage&action=detail&categorie='.$ligne['categorie'].$page.''.$orderby.''.$asc_desc.'#details">'.$valeur.'</a></td>';
 			}	
 			elseif (($indice == 'date_debut') || ($indice == 'date_fin'))
 			{
@@ -171,7 +209,7 @@ if(isset($_GET['affichage']) &&  $_GET['affichage']=='affichage')
 			}
 		}
 		echo '<td>
-				<a class="btn_delete" href="?affichage=affichage&action=suppression&id_promo_bar='.$ligne['id_promo_bar'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
+				<a class="btn_delete" href="?affichage=affichage&action=suppression&id_promo_bar='.$ligne['id_promo_bar'] .$page.''.$orderby.''.$asc_desc.'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
 			</td>
 			<td>
 				<a class="btn_edit" href="?action=modifier&id_promo_bar='.$ligne['id_promo_bar'] .'" >éditer</a>
@@ -231,7 +269,7 @@ if(isset($_GET['id_bar']))
 					echo '<td >'.$valeur.'</td>';
 				}
 			}
-			echo '<td><a href="?action=suppression&id_bar='.$ligne['id_bar'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
+			echo '<td><a href="?action=suppression&id_bar='.$ligne['id_bar'] .$page.''.$orderby.''.$asc_desc.'#details" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
 			
 			//echo '<td><a href="?action=modification&id_produit='.$ligne['id_bar'] .'" class="btn_edit">éditer</a></td>';
 			echo '</tr>';	
@@ -279,7 +317,7 @@ if(isset($_GET['id_bar']))
 				}
 			}
 		echo '<td>
-				<a class="btn_delete" href="?affichage=affichage&action=suppression&id_promo_bar='.$ligne['id_promo_bar'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
+				<a class="btn_delete" href="?affichage=affichage&action=suppression&id_promo_bar='.$ligne['id_promo_bar'] .$page.''.$orderby.''.$asc_desc.'#details" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
 			</td>
 			<td>
 				<a class="btn_edit" href="?action=modifier&id_promo_bar='.$ligne['id_promo_bar'] .'" >éditer</a>

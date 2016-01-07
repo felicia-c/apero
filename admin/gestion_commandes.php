@@ -8,6 +8,39 @@ if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAd
 	header("location:../connexion.php");
 }
 
+foreach($_GET AS $indice => $valeur )
+{
+	$_GET[$indice] = htmlentities($valeur, ENT_QUOTES); 
+}
+
+if(isset($_GET['page']))
+{
+	$page= '&page='.$_GET['page'];
+}
+else
+{
+	$page='';
+}
+if(isset($_GET['orderby']))
+{
+	$orderby= '&orderby='.$_GET['orderby'];
+}
+else
+{
+	$orderby='';
+}
+if(isset($_GET['asc']))
+{
+	$asc_desc= '&asc='.$_GET['asc'];
+}
+elseif(isset($_GET['desc']))
+{
+	$asc_desc= '&desc='.$_GET['desc'];
+}
+else
+{
+	$asc_desc='';
+}
  // SUPPRESSION DES COMMANDES
  
  if((isset($_GET['action']) && $_GET['action'] == 'suppression') && (isset($_GET['id_commande'])))
@@ -17,7 +50,7 @@ if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAd
 	executeRequete("DELETE FROM details_commande WHERE id_commande='$_GET[id_commande]'");
 	executeRequete("DELETE FROM commande WHERE id_commande='$_GET[id_commande]'");
 	   //suppression de la commande dans la table + affichage d'un msg de confirmation
-	header('location:gestion_commandes.php?id='.$_GET['id_commande'].'&rem=ok&affichage=affichage&action=commandes');
+	header('location:gestion_commandes.php?id='.$_GET['id_commande'].'&rem=ok&affichage=affichage&action=commandes'.$page.$orderby.$asc_desc.'');
 }
 
 if((isset($_GET['rem']) && $_GET['rem'] == 'ok') && (isset($_GET['id'])))
@@ -26,6 +59,8 @@ if((isset($_GET['rem']) && $_GET['rem'] == 'ok') && (isset($_GET['id'])))
 }
 
 $req ="";
+
+//AFFICHAGE
 require_once("../inc/header.inc.php");
 
 echo '<div class="box_info">
@@ -183,7 +218,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 				{
 					if($indice == 'id_commande')
 					{
-						echo '<td><a href="?action=detail&info=membre&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details de la commande
+						echo '<td><a href="?affichage=affichage&action=detail&info=membre&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].$page.$orderby.$asc_desc.'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details de la commande
 					}
 					elseif($indice == 'date')
 					{
@@ -221,7 +256,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 			{
 				if($indice == 'id_membre')
 				{
-					echo '<td><a href="?action=detail&info=membre&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details du membre
+					echo '<td><a href="?affichage=affichage&action=detail&info=membre&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].$page.$orderby.$asc_desc.'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details du membre
 				}
 				elseif($indice == 'date')
 				{
@@ -235,7 +270,6 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 				}
 			}
 		}
-		
 		echo '<td></td></tr>
 		</table>
 		<br />';
@@ -267,7 +301,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 			for($i= 0; $i < $nbcol; $i++) 
 			{
 				$colonne= $resultat->fetch_field(); 	
-				echo '<th style="text-align: center;"><a href="?affichage=affichage&action=detail&orderby='. $colonne->name ; 
+				echo '<th style="text-align: center;"><a href="?affichage=affichage&action=detail&orderby='. $colonne->name.$page ; 
 				if(isset($_GET['asc']))
 				{
 					echo '&desc=desc';
@@ -284,7 +318,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 				}
 				echo '>'. ucfirst($colonne->name).'</a></th>';  	
 			}
-			echo '<td></td></tr>';
+			echo '<th></th></tr>';
 		}
 
 		
@@ -302,11 +336,11 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 					
 				if($indice == 'id_produit')
 				{
-					echo '<td><a href="?action=detail&info=detailproduit&id_produit='.$ligne['id_produit'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details de la commande
+					echo '<td><a href="?affichage=affichage&action=detail&info=detailproduit&id_produit='.$ligne['id_produit'].'&id_commande='.$ligne['id_commande'].$page.''.$orderby.''.$asc_desc.'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details de la commande
 				}
 				elseif($indice == 'id_commande')
 				{
-					echo '<td><a href="?action=detail&info=infocommande&id_commande='.$ligne['id_commande'].'&id_produit='.$ligne['id_produit'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les infos de la commande
+					echo '<td><a href="?affichage=affichage&action=detail&info=infocommande&id_commande='.$ligne['id_commande'].'&id_produit='.$ligne['id_produit'].$page.''.$orderby.''.$asc_desc.'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les infos de la commande
 				}
 					
 				else
@@ -343,7 +377,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 			for($i= 0; $i < $nbcol; $i++) 
 			{
 					$colonne= $resultat->fetch_field(); 	
-					echo '<th style="text-align: center;"><a href="?affichage=affichage&action=commandes&orderby='. $colonne->name ; 
+					echo '<th style="text-align: center;"><a href="?affichage=affichage&action=commandes&orderby='. $colonne->name .$page.''; 
 					if(isset($_GET['asc']))
 					{
 						echo '&desc=desc';
@@ -377,11 +411,11 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 					
 					if($indice == 'id_commande')//Lien au niveau de l'id pour afficher les details de la commande
 					{
-						echo '<td><a href="?action=detail&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; 
+						echo '<td><a href="?action=detail&id_commande='.$ligne['id_commande'].$page.''.$orderby.''.$asc_desc.'">'.$valeur.'</a></td>'; 
 					}
 					elseif($indice == 'id_membre')//Lien au niveau de l'id pour afficher les details du membre
 					{
-						echo '<td><a href="?action=detail&info=membre&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].'">'.$valeur.'</a></td>'; 
+						echo '<td><a href="?action=detail&info=membre&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].$page.''.$orderby.''.$asc_desc.'">'.$valeur.'</a></td>'; 
 					}
 					elseif($indice == 'date') // affichage du timestamp de la commande en format fr
 					{
@@ -399,7 +433,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 					}
 				}
 				echo '<td>
-				<a class="btn_delete" href="?affichage=affichage&action=commandes&action=suppression&id_commande='.$ligne['id_commande'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
+				<a class="btn_delete" href="?affichage=affichage&action=commandes&action=suppression&id_commande='.$ligne['id_commande'] .$page.''.$orderby.''.$asc_desc.'" onClick="return(confirm(\'Voulez-vous vraiment supprimer la commande n° '.$ligne['id_commande'] .' ?\'));"> X </a>
 					</td>
 				</tr>';
 			}						

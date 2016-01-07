@@ -9,6 +9,40 @@ if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAd
 	header("location:../connexion.php");
 }
 
+foreach($_GET AS $indice => $valeur )
+{
+	$_GET[$indice] = htmlentities($valeur, ENT_QUOTES); 
+}
+
+if(isset($_GET['page']))
+{
+	$page= '&page='.$_GET['page'];
+}
+else
+{
+	$page='';
+}
+if(isset($_GET['orderby']))
+{
+	$orderby= '&orderby='.$_GET['orderby'];
+}
+else
+{
+	$orderby='';
+}
+if(isset($_GET['asc']))
+{
+	$asc_desc= '&asc='.$_GET['asc'];
+}
+elseif(isset($_GET['desc']))
+{
+	$asc_desc= '&desc='.$_GET['desc'];
+}
+else
+{
+	$asc_desc='';
+}
+
 if(!empty($_POST))
 {
  // SECURITE 
@@ -107,12 +141,12 @@ if(!empty($_POST))
 			if($_GET['action'] == 'modification')
 			{
 				executeRequete("UPDATE bar SET id_membre = '$id_membre', siret ='$siret', nom_bar = '$nom_bar', photo = '$photo_bdd', description= '$description', nom_gerant = '$nom', prenom_gerant = '$prenom', ville = '$ville', cp = '$cp', adresse = '$adresse', telephone= '$telephone', email = '$email' WHERE id_bar = '$_GET[id_bar]'");
-				header('location:gestion_bar.php?mod=ok&affichage=affichage');
+				header('location:gestion_bar.php?mod=ok&affichage=affichage'.''.$page.''.$orderby.''.$asc_desc.'');
 			}
 			else
 			{
 				executeRequete("INSERT INTO bar (id_membre, siret, nom_bar, photo, description, nom_gerant, prenom_gerant, ville, cp, adresse, telephone, email) VALUES ( '$id_membre', '$siret', '$nom_bar', '$photo_bdd', '$description', '$nom', '$prenom', '$ville', '$cp', '$adresse', '$telephone', '$email')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
-				header('location:gestion_bar.php?add=ok&affichage=affichage');
+				header('location:gestion_bar.php?add=ok&affichage=affichage'.''.$page.''.$orderby.''.$asc_desc.'');
 			}
 			
 		}	
@@ -147,7 +181,10 @@ if(isset($_GET['mod']) && $_GET['mod'] == 'ok')
 	
 	executeRequete("DELETE FROM bar WHERE id_bar='$_GET[id_bar]'");
 	$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Bar N°'. $_GET['id_bar'] .' supprimé avec succès!</div>';
-	$_GET['affichage'] = 'affichage'; 	
+	$_GET['affichage'] = 'affichage';
+	$page;
+	$orderby;
+	$asc_desc; 	
 
 }
 //FIN SUPPRESSION
@@ -252,9 +289,9 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 				echo '<td >'.ucfirst($valeur).'</td>';
 			}
 		}
-		echo '<td><a href="?action=suppression&id_bar='.$ligne['id_bar'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
+		echo '<td><a href="?action=suppression&id_bar='.$ligne['id_bar'].''.$page.''.$orderby.''.$asc_desc.'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
 		
-		echo '<td><a href="?action=modification&id_bar='.$ligne['id_bar'] .'" class="btn_edit">éditer</a></td>';
+		echo '<td><a href="?action=modification&id_bar='.$ligne['id_bar'].''.$page.''.$orderby.''.$asc_desc.'" class="btn_edit">éditer</a></td>';
 		echo '</tr>';
 	}						
 	echo '</table><br />';
@@ -262,6 +299,8 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	affichagePaginationGestion(5, 'bar', '');
 	echo '</div>';
 }
+
+
 
 //FORM AJOUT / MODIF
 	
@@ -362,7 +401,7 @@ if(isset($_GET['action']) &&  (($_GET['action']=='modification') || ($_GET['acti
 			<br />
 			<input type="submit" id="enregistrer" name="enregistrer" value="Enregistrer" class="button" /><br />
 			<br />
-			<a class="button " href="<?php echo RACINE_SITE; ?>admin/gestion_bar.php?affichage=affichage">Retour aux bars</a><br />
+			<a class="button " href="<?php echo RACINE_SITE; ?>admin/gestion_bar.php?affichage=affichage<?php echo $page.''.$orderby.''.$asc_desc ?>">Retour aux bars</a><br />
 			<br />
 		</fieldset>
 	</form>				

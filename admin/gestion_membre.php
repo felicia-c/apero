@@ -9,6 +9,11 @@ if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAd
 	header("location:../connexion.php");
 }
 
+foreach($_GET AS $indice => $valeur )
+{
+	$_GET[$indice] = htmlentities($valeur, ENT_QUOTES); 
+}
+
 if(!empty($_POST))
 {
 	if(isset($_GET['action']) && $_GET['action'] == 'ajout')
@@ -113,14 +118,14 @@ if(!empty($_POST))
 			else
 			{
 				executeRequete("INSERT INTO membre (pseudo, mdp, nom, prenom, email, sexe, ville, cp, adresse, statut) VALUES ('$pseudo', '$mdp', '$nom', '$prenom', '$email', '$sexe', '$ville', '$cp', '$adresse', '$statut')"); //requete d'inscription 
-				header('location:gestion_membre.php?add=ok&affichage=affichage&id_membre='.$mysqli->insert_id.'');
+				header('location:gestion_membre.php?add=ok&affichage=affichage&id_membre='.$mysqli->insert_id.''.$page.''.$orderby.''.$asc_desc.'');
 				exit;
 			}
 		}
 		else
 		{
 			executeRequete("UPDATE membre SET statut = '$statut' WHERE id_membre = '$id_membre'");
-			header('location:gestion_membre.php?mod=ok&affichage=affichage&id_membre='.$id_membre.'');
+			header('location:gestion_membre.php?mod=ok&affichage=affichage&id_membre='.$id_membre.$page.''.$orderby.''.$asc_desc.'');
 			exit;
 		}
 	}
@@ -269,11 +274,11 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}
 			elseif(($indice != 'mdp') && ($indice != 'photo'))
 			{
-			echo '<td ><a class="lien_tr" href="?affichage=affichage&action=detail&id_membre='.$ligne['id_membre'].'#details" >'.ucfirst($valeur).'</a></td>';	
+			echo '<td ><a class="lien_tr" href="?affichage=affichage&action=detail&id_membre='.$ligne['id_membre'].''.$page.''.$orderby.''.$asc_desc.'#details" >'.ucfirst($valeur).'</a></td>';	
 			}
 		}
 		echo '<td>
-				<a class="btn_delete" href="?affichage=affichage&action=suppression&id_membre='.$ligne['id_membre'] .'" onClick="return(confirm(\'Voulez-vous vraiment supprimer le membre n°'.$ligne['id_membre'] .' ? (il sera désinscrit de la newsletter)\'));"> X </a>
+				<a class="btn_delete" href="?affichage=affichage&action=suppression&id_membre='.$ligne['id_membre'].''.$page.''.$orderby.''.$asc_desc.'" onClick="return(confirm(\'Voulez-vous vraiment supprimer le membre n°'.$ligne['id_membre'] .' ? (il sera désinscrit de la newsletter)\'));"> X </a>
 			</td>
 		</tr> ';
 	}	
@@ -289,7 +294,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 	if(isset($_GET['id_membre']))
 	{
 		echo '<div class="box_info">
-			<h3>Commandes du membre n°'.$_GET['id_membre'].'</h3>
+			<h3 id="details_membre">Commandes du membre n°'.$_GET['id_membre'].'</h3>
 			<table>';
 	
 		$resultat = executeRequete("SELECT * FROM commande WHERE id_membre = '".$_GET['id_membre']."'");
@@ -312,7 +317,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 				
 				if($indice == 'id_commande')//Lien au niveau de l'id pour afficher les details de la commande
 				{
-					echo '<td><a href="?affichage=affichage&action=detail&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].'#details">'.$valeur.'</a></td>'; 
+					echo '<td><a href="?affichage=affichage&action=detail&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].''.$page.''.$orderby.''.$asc_desc.'#details_membre">'.$valeur.'</a></td>'; 
 				}
 				elseif($indice == 'date') // affichage du timestamp de la commande en format fr
 				{
@@ -320,7 +325,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 						$date = date_create_from_format('Y-m-d H:i:s', $valeur);
 					echo date_format($date, 'd/m/Y H:i') . '</td>';
 				}
-				elseif($indice == 'montant') // affichage du timestamp de la commande en format fr
+				elseif($indice == 'montant')
 				{		
 					echo  '<td>'.$valeur. ' € </td>';
 				}
@@ -330,7 +335,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 				}
 			}
 			echo '<td>
-			<a class="btn_delete" href="?affichage=affichage&action=detail&action=suppression&id_membre='.$_GET['id_membre'].'&id_commande='.$ligne['id_commande'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
+			<a class="btn_delete" href="?affichage=affichage&action=detail&action=suppression&id_membre='.$_GET['id_membre'].'&id_commande='.$ligne['id_commande'].''.$page.''.$orderby.''.$asc_desc.'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
 				</td>
 			</tr>';
 		}						
@@ -350,7 +355,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 		while ($ligne = $resultat->fetch_assoc()) 
 		{
 			echo '<tr '; 
-			if(isset($_GET['id_produit']) && ($_GET['id_produit'] == $ligne['id_produit']))
+			if(isset($_GET['id_details_commande']) && ($_GET['id_details_commande'] == $ligne['id_details_commande']))
 			{
 				echo ' class="tr_active" ';
 			}
@@ -360,7 +365,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 			{	
 				if($indice == 'id_produit')
 				{
-					echo '<td><a href="?affichage=affichage&action=detail&id_produit='.$ligne['id_produit'].'&id_membre='.$_GET['id_membre'].'&id_commande='.$ligne['id_commande'].'#details">'.$valeur.'</a></td>'; 
+					echo '<td><a href="?affichage=affichage&action=detail&id_produit='.$ligne['id_produit'].'&id_membre='.$_GET['id_membre'].'&id_commande='.$_GET['id_commande'].'&id_details_commande='.$ligne['id_details_commande'].''.$page.''.$orderby.''.$asc_desc.'#details_membre">'.$valeur.'</a></td>'; 
 				}
 				elseif($indice == 'prix') // affichage du timestamp de la commande en format fr
 				{		
@@ -379,10 +384,10 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 // DETAILS PRODUITS	
 	if(isset($_GET['id_produit']))
 	{
-			echo '<div class="box_info">
+		echo '<div class="box_info">
 		<table  class="large_table">';
 		$resultat = executeRequete("SELECT * FROM produit WHERE id_produit = '".$_GET['id_produit']."'");
-		
+
 		$dont_link = 'nono'; // entete du tablau sans order by
 		$dont_show = ''; // colonne non affichée
 		enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
