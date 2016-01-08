@@ -35,6 +35,7 @@ function debug($var, $mode = 1)
 
 
 // PAGINATION + TRI
+
 //-- Pagination et tri des pages gestion (requete simple sur 1 table)
 function paginationGestion($items_par_page, $table, $resultat) // attend 2 arguments obligatoires : le nombre de produits par page et la table 
 {	
@@ -119,18 +120,53 @@ function affichagePaginationGestion($items_par_page, $table, $lien) // arguments
 			{
 				echo '<a href="?affichage=affichage&';
 			}
+			if(isset($_GET['id_produit']))
+			{
+				$id = $_GET['id_produit'];
+				echo 'id_produit='.$id.'&';
+			}
+			if(isset($_GET['id_membre']))
+			{
+				$id = $_GET['id_membre'];
+				echo 'id_membre='.$id.'&';
+			}
+			if(isset($_GET['id_bar']))
+			{
+				$id = $_GET['id_bar'];
+				echo 'id_bar='.$id.'&';
+			}
+			if(isset($_GET['id_promo']))
+			{
+				$id = $_GET['id_promo'];
+				echo 'id_promo='.$id.'&';
+			}
+			if(isset($_GET['id_promo_bar']))
+			{
+				$id = $_GET['id_promo_bar'];
+				echo 'id_promo_bar='.$id.'&';
+			}
+			if(isset($_GET['id_commande']))
+			{
+				$id = $_GET['id_commande'];
+				echo 'id_commande='.$id.'&';
+			}
+			if(isset($_GET['id_details_commande']))
+			{
+				$id = $_GET['id_details_commande'];
+				echo 'id_details_commande='.$id.'&';
+			}
 			if(isset($_GET['orderby']))
 			{
 				$orderby = $_GET['orderby'];
-				echo 'orderby='.$orderby;
+				echo 'orderby='.$orderby.'&';
 			}
 			if(isset($_GET['asc']))
 			{
-				echo '&asc=asc&';
+				echo 'asc=asc&';
 			}
 			if(isset($_GET['desc']))
 			{
-				echo '&desc=desc&';
+				echo 'desc=desc&';
 			}
 
 			echo 'page='.$i.'#details">'.$i.'</a>';
@@ -601,7 +637,6 @@ function chaine_aleatoire($nb_car, $chaine = 'azertyuiopqsdfghjklmwxcvbn12345678
 	return $generation;
 }
 
-
 	
 /////////DATES //////
 
@@ -621,7 +656,6 @@ function AfficheDateFr($date1, $date2, $stringAuChoix)
 //// VIEW ////
 function afficheProduits($req)
 {
-
 	$resultat = executeRequete($req);
 	
 	while($mon_produit = $resultat -> fetch_assoc())
@@ -683,6 +717,7 @@ function afficheBar($req)
 
 function afficheVignetteBar($req)
 {
+
 	$resultat = executeRequete($req);
 
 	while($mon_bar = $resultat -> fetch_assoc())
@@ -741,7 +776,7 @@ function enteteTableau($resultat, $dont_show, $dont_link)
 				{
 					if($colonne->name == 'photo')
 					{
-						echo '<th class="text-center" width="150" '; 
+						echo '<th class="text-center" width="100" '; 
 					}
 					elseif ($colonne->name == 'adresse')
 					{
