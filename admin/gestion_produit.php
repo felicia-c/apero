@@ -53,7 +53,14 @@ elseif(isset($_GET['desc']))
 	$_GET['affichage'] = 'affichage'; // afficher les produits une fois qu'on a validé le formulaire 
 
 }
-						
+
+// MODIF STOCK
+
+if(isset($_POST['modif_stock']) && $_POST['modif_stock'] == 'modifier le stock')
+{
+	executeRequete("UPDATE taille_stock SET stock ='$_POST[stock]' WHERE id_taille_stock = '$_POST[id_taille_stock]'");
+	header('location:?affichage=affichage&mod=ok&id_produit='.$_POST['id_produit'].'');
+}				
  
 //ENREGISTREMENT DES PRODUITS
 if(isset($_POST['enregistrement'])) //nom du bouton valider	
@@ -153,8 +160,8 @@ $resultat= executeRequete("SELECT COUNT(id_produit) AS nbre_produits,
 
 $donnees = $resultat -> fetch_assoc();
 
-echo '<p class="orange">Vous avez '. $donnees_stock['stock_total'].' produits en stock | Prix moyen des articles en stock: '.$donnees['prix_moyen'].'€ 
-		<br />Valeur du stock: '. $donnees['valeur_stock'].'€</p>';
+echo '<p class="orange">Vous avez '. $donnees_stock['stock_total'].' articles en stock | Prix HT moyen des articles en stock: '.$donnees['prix_moyen'].'€ 
+		<br />Valeur du stock : '. $donnees['valeur_stock'].'€</p>';
 
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {	
@@ -226,29 +233,36 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 				echo '<td >'.$valeur.'</td>';
 			}
 		}
-		echo '<td><ul>';
-		$res_taille_stock = executeRequete("SELECT taille_stock.stock AS stock, taille.taille AS taille FROM taille_stock INNER JOIN taille ON taille_stock.id_taille = taille.id_taille WHERE id_produit = '$ligne[id_produit]'");
+		echo '<td><ul >';
+		$res_taille_stock = executeRequete("SELECT taille_stock.id_taille_stock, taille_stock.id_produit AS produit, taille_stock.stock AS stock, taille.taille AS taille FROM taille_stock INNER JOIN taille ON taille_stock.id_taille = taille.id_taille WHERE id_produit = '$ligne[id_produit]'");
 		while($ligne_taille_stock = $res_taille_stock -> fetch_assoc())
 		{
 			//$res_taille = executeRequete("SELECT taille FROM taille WHERE id_taille = '$valeur_taille_stock'");
 			//$taille = $res_taille -> fetch_assoc();
-			echo '<li>'.$ligne_taille_stock['taille'].' x '.$ligne_taille_stock['stock'].'</li>';
+			echo '<li style="width: 100%">';
+			echo '<form method="post" action="">
+				<input type="hidden" name="id_taille_stock" value="'.$ligne_taille_stock['id_taille_stock'].'" />
+				<input type="hidden" name="id_produit" value="'.$ligne_taille_stock['produit'].'" />
+				<p style="font-weight: bold; font-size: 2em; width: 40%; float: left;">'.$ligne_taille_stock['taille'].' x </p>
+				<input type="number" style="float: left; width: 30%" name="stock" value="'.$ligne_taille_stock['stock'].'" />
+				<input type="submit" style="width: 80%; padding: 1%;" name="modif_stock" value="modifier le stock" />
+			</form>';
+			echo '</li><br/>';
 			
 		}
 
-	
 		echo '</ul></td>';
 		echo '<td><a href="?action=suppression&id_produit='.$ligne['id_produit'].$page.''.$orderby.''.$asc_desc.'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
 	
 		echo '<td><a href="?action=modification&id_produit='.$ligne['id_produit'] .$page.''.$orderby.''.$asc_desc.'" class="btn_edit">éditer</a></td>';
 		echo '</tr>';
 	}
-	}						
+						
 	echo '</table><br />';
 	echo '</div>';
 
 	affichagePaginationGestion(5, 'produit', '');
-
+}
 
 
 
@@ -300,15 +314,15 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 			
 			<label for="couleur">Couleur </label>
 			 <input required type="text" id="couleur" name="couleur"  value="<?php if(isset($_POST['couleur'])) {echo $_POST['couleur'];} if(isset($produit_actuel['couleur'])){ echo $produit_actuel['couleur']; }?>" />
-			
-			<label for="taille">Taille </label>
+		
+		<!--	<label for="taille">Taille </label>
 			 <select required id="taille" name="taille" >
 				<option >S</option>
 				<option <?php if((isset($_POST['taille']) && $_POST['taille'] == "M") ||(isset($produit_actuel['taille'])&& $produit_actuel['taille'] == "M")) { echo 'selected';} ?> >M</option>
 				<option <?php if((isset($_POST['taille']) && $_POST['taille'] == "L") ||(isset($produit_actuel['taille'])&& $produit_actuel['taille'] == "L")) { echo 'selected';} ?> >L</option>
 				<option <?php if((isset($_POST['taille']) && $_POST['taille'] == "XL") ||(isset($produit_actuel['taille'])&& $produit_actuel['taille'] == "XL")) { echo 'selected';} ?> >XL</option>
 			</select>
-			<br />
+			<br /> -->
 			
 			<label for="sexe">Sexe </label><br /> <!--cas par défaut + une valeur checkée si le formulaire a dejà été rempli-->
 				<input type="radio" name="sexe" value="m"  class="inline" <?php if((isset($_POST['sexe']) && $_POST['sexe'] == "m") ||(isset($produit_actuel['sexe'])&& $produit_actuel['sexe'] == "m")) { echo 'checked';} elseif(!isset($_POST['sexe']) && !isset($produit_actuel['sexe'])){echo 'checked';} ?> /> Homme &nbsp;
@@ -346,8 +360,8 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 			<label for="prix">Prix </label>
 			<input required type="text" id="prix" name="prix"  value="<?php if(isset($_POST['prix'])) {echo $_POST['prix'];} if(isset($produit_actuel['prix'])){ echo $produit_actuel['prix']; }?>" /><br />
 			
-			<label for="stock">Stock </label>
-			<input required type="text" id="stock" name="stock"  value="<?php if(isset($_POST['stock'])) {echo $_POST['stock'];} if(isset($produit_actuel['stock'])){ echo $produit_actuel['stock']; }?>" /><br />
+			<!-- <label for="stock">Stock </label>
+			<input required type="text" id="stock" name="stock"  value="<?php if(isset($_POST['stock'])) {echo $_POST['stock'];} if(isset($produit_actuel['stock'])){ echo $produit_actuel['stock']; }?>" /><br /> -->
 			
 			<input type="submit" id="enregistrement" name="enregistrement" value="<?php echo ucfirst($_GET['action']); ?>" class="btn" />
 			
