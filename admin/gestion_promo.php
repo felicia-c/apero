@@ -11,6 +11,32 @@ if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAd
 	header("location:../connexion.php");
 }
 
+foreach($_GET AS $indice => $valeur )
+{
+	$_GET[$indice] = htmlentities($valeur, ENT_QUOTES); 
+}
+//pagination liens
+$page='';
+$orderby=''; 
+$asc_desc='';
+
+if(isset($_GET['page']))
+{
+	$page.= '&page='.$_GET['page'];
+}
+if(isset($_GET['orderby']))
+{
+	$orderby.= '&orderby='.$_GET['orderby'];
+}
+if(isset($_GET['asc']))
+{
+	$asc_desc.= '&asc='.$_GET['asc'];
+}
+elseif(isset($_GET['desc']))
+{
+	$asc_desc.='&desc='.$_GET['desc'];
+}
+
 
 if($_POST)
 {
@@ -26,9 +52,17 @@ if($_POST)
 	/////MODIF PROMO
 	if(empty($msg) && (isset($_GET['action']) && $_GET['action'] == 'modifier'))// Si $msg est vide, on modifie la promo en bdd
 	{
+		$promo= executeRequete("SELECT * FROM promo_produit WHERE code_promo ='$code_promo' ");
+		if($promo -> num_rows > 0) //si la requete retourne un enregistrement, alors le code promo est deja utilisé, on affiche un message
+		{
+			$msg .='<div class="msg_erreur">Ce code promo existe déjà</div>';
+		}
+		elseif(empty($msg))
+		{
 			$id_promo_produit = $_GET['id_promo_produit'];
 			executeRequete("UPDATE promo_produit SET code_promo = '$code_promo', reduction = '$reduction' WHERE id_promo_produit = '$id_promo_produit'");
-				$msg .='<div class="msg_success">Promo modifiée !</div>';
+			header('location:gestion_promo.php?affichage=affichage&add=ok&id_promo='.$_GET['id_promo'].''.$page.''.$orderby.''.$asc_desc.'');
+		}
 	}
 	
 	//////AJOUT PROMO
@@ -48,13 +82,24 @@ if($_POST)
 			
 				executeRequete("INSERT INTO promo_produit (code_promo, reduction) VALUES ('$code_promo', '$reduction')"); //requete d'inscription 
 						
-				$msg .='<div class="msg_success">Nouveau code promo enregistré</div>';
+				header('location:gestion_promo.php?affichage=affichage&add=ok&id_promo='.$mysqli->insert_id.''.$page.''.$orderby.''.$asc_desc.'');
 
 			}	
 		}
-
 	}
 }
+
+//MESSAGE DE VALIDATION AJOUT
+if(isset($_GET['add']) && $_GET['add'] == 'ok')
+{
+	$msg .='<div class="msg_success">Nouveau code promo enregistré</div>';
+}
+//MESSAGE DE VALIDATION MODIF
+if(isset($_GET['mod']) && $_GET['mod'] == 'ok')
+{
+	$msg .='<div class="msg_success">Promo modifiée</div>';
+}
+
 
 // SUPPRESSION DES PROMO
  
@@ -160,25 +205,10 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}	
 		} 
 
-		echo '<td><a class="btn_delete" href="?affichage=affichage';
-
-		if(isset($_GET['orderby']))
-		{
-			$orderby = $_GET['orderby'];
-			echo '&orderby='.$orderby;
-		}
-		if(isset($_GET['asc']))
-		{
-			echo '&asc=asc';
-		}
-		if(isset($_GET['desc']))
-		{
-			echo '&desc=desc';
-		}
-		echo '&action=suppression&id_promo_produit='.$ligne['id_promo_produit'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
+		echo '<td><a class="btn_delete" href="?affichage=affichage&action=suppression&id_promo_produit='.$ligne['id_promo_produit'].$page.''.$orderby.''.$asc_desc.'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
 			</td>
 				<td>
-		<a class="btn_edit" href="?action=modifier&id_promo_produit='.$ligne['id_promo_produit'] .'" >éditer</a>
+		<a class="btn_edit" href="?action=modifier&id_promo_produit='.$ligne['id_promo_produit'].$page.''.$orderby.''.$asc_desc.'" >éditer</a>
 			</td>
 		</tr>';	
 		

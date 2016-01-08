@@ -12,34 +12,26 @@ foreach($_GET AS $indice => $valeur )
 {
 	$_GET[$indice] = htmlentities($valeur, ENT_QUOTES); 
 }
+//pagination liens
+$page='';
+$orderby=''; 
+$asc_desc='';
 
 if(isset($_GET['page']))
 {
-	$page= '&page='.$_GET['page'];
-}
-else
-{
-	$page='';
+	$page.= '&page='.$_GET['page'];
 }
 if(isset($_GET['orderby']))
 {
-	$orderby= '&orderby='.$_GET['orderby'];
-}
-else
-{
-	$orderby='';
+	$orderby.= '&orderby='.$_GET['orderby'];
 }
 if(isset($_GET['asc']))
 {
-	$asc_desc= '&asc='.$_GET['asc'];
+	$asc_desc.= '&asc='.$_GET['asc'];
 }
 elseif(isset($_GET['desc']))
 {
-	$asc_desc= '&desc='.$_GET['desc'];
-}
-else
-{
-	$asc_desc='';
+	$asc_desc.='&desc='.$_GET['desc'];
 }
  // SUPPRESSION DES COMMANDES
  

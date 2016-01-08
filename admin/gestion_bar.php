@@ -13,34 +13,26 @@ foreach($_GET AS $indice => $valeur )
 {
 	$_GET[$indice] = htmlentities($valeur, ENT_QUOTES); 
 }
+//pagination liens
+$page='';
+$orderby=''; 
+$asc_desc='';
 
 if(isset($_GET['page']))
 {
-	$page= '&page='.$_GET['page'];
-}
-else
-{
-	$page='';
+	$page.= '&page='.$_GET['page'];
 }
 if(isset($_GET['orderby']))
 {
-	$orderby= '&orderby='.$_GET['orderby'];
-}
-else
-{
-	$orderby='';
+	$orderby.= '&orderby='.$_GET['orderby'];
 }
 if(isset($_GET['asc']))
 {
-	$asc_desc= '&asc='.$_GET['asc'];
+	$asc_desc.= '&asc='.$_GET['asc'];
 }
 elseif(isset($_GET['desc']))
 {
-	$asc_desc= '&desc='.$_GET['desc'];
-}
-else
-{
-	$asc_desc='';
+	$asc_desc.='&desc='.$_GET['desc'];
 }
 
 if(!empty($_POST))
@@ -141,12 +133,12 @@ if(!empty($_POST))
 			if($_GET['action'] == 'modification')
 			{
 				executeRequete("UPDATE bar SET id_membre = '$id_membre', siret ='$siret', nom_bar = '$nom_bar', photo = '$photo_bdd', description= '$description', nom_gerant = '$nom', prenom_gerant = '$prenom', ville = '$ville', cp = '$cp', adresse = '$adresse', telephone= '$telephone', email = '$email' WHERE id_bar = '$_GET[id_bar]'");
-				header('location:gestion_bar.php?mod=ok&affichage=affichage'.''.$page.''.$orderby.''.$asc_desc.'');
+				header('location:gestion_bar.php?mod=ok&affichage=affichage&id_bar='.$_GET['id_bar'].$page.''.$orderby.''.$asc_desc.'');
 			}
 			else
 			{
 				executeRequete("INSERT INTO bar (id_membre, siret, nom_bar, photo, description, nom_gerant, prenom_gerant, ville, cp, adresse, telephone, email) VALUES ( '$id_membre', '$siret', '$nom_bar', '$photo_bdd', '$description', '$nom', '$prenom', '$ville', '$cp', '$adresse', '$telephone', '$email')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
-				header('location:gestion_bar.php?add=ok&affichage=affichage'.''.$page.''.$orderby.''.$asc_desc.'');
+				header('location:gestion_bar.php?add=ok&affichage=affichage&id_bar='.$mysqli->insert_id.''.$page.''.$orderby.''.$asc_desc.'');
 			}
 			
 		}	

@@ -8,7 +8,33 @@ require_once("../inc/init.inc.php");
 	 header("location:../connexion.php");
 	exit();
  }
- 
+
+foreach($_GET AS $indice => $valeur )
+{
+	$_GET[$indice] = htmlentities($valeur, ENT_QUOTES); 
+}
+//pagination liens
+$page='';
+$orderby=''; 
+$asc_desc='';
+
+if(isset($_GET['page']))
+{
+	$page.= '&page='.$_GET['page'];
+}
+if(isset($_GET['orderby']))
+{
+	$orderby.= '&orderby='.$_GET['orderby'];
+}
+if(isset($_GET['asc']))
+{
+	$asc_desc.= '&asc='.$_GET['asc'];
+}
+elseif(isset($_GET['desc']))
+{
+	$asc_desc.='&desc='.$_GET['desc'];
+}
+
  // SUPPRESSION DES PRODUITS
  
  if(isset($_GET['action']) && $_GET['action'] == 'suppression')
@@ -77,12 +103,13 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 			if(isset($_GET['action']) && $_GET['action'] == 'modification')
 			{
 				executeRequete("UPDATE produit SET categorie='$categorie', titre='$titre', description='$description', couleur='$couleur', taille='$taille', sexe='$sexe', photo='$photo_bdd', prix='$prix',stock='$stock', id_promo_produit = '$id_promo_produit' WHERE id_produit='$_POST[id_produit]'");
-				header('location:gestion_produit.php?affichage=affichage&mod=ok&id_produit='.$_GET['id_produit'].'');
+				
+				header('location:gestion_produit.php?affichage=affichage&mod=ok&id_produit='.$_GET['id_produit'].''.$page.''.$orderby.''.$asc_desc.'');
 			}
 			else
 			{
 				executeRequete("INSERT INTO produit (reference, categorie, titre, description, couleur, taille, sexe, photo, prix, stock, id_promo_produit) VALUES ( '$reference', '$categorie', '$titre', '$description', '$couleur', '$taille', '$sexe', '$photo_bdd', '$prix', '$stock', '$id_promo_produit')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
-				header('location:gestion_produit.php?affichage=affichage&add=ok');
+				header('location:gestion_produit.php?affichage=affichage&add=ok&'.$mysqli->insert_id.''.$page.''.$orderby.''.$asc_desc.'');
 			}
 			//$_GET['affichage'] = 'affichage'; // afficher les produits une fois qu'on a validé le formulaire
 		}	
@@ -206,9 +233,9 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}
 		}
 
-		echo '<td><a href="?action=suppression&id_produit='.$ligne['id_produit'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
+		echo '<td><a href="?action=suppression&id_produit='.$ligne['id_produit'].$page.''.$orderby.''.$asc_desc.'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
 	
-		echo '<td><a href="?action=modification&id_produit='.$ligne['id_produit'] .'" class="btn_edit">éditer</a></td>';
+		echo '<td><a href="?action=modification&id_produit='.$ligne['id_produit'] .$page.''.$orderby.''.$asc_desc.'" class="btn_edit">éditer</a></td>';
 		echo '</tr>';
 	}						
 	echo '</table><br />';
@@ -217,7 +244,9 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	affichagePaginationGestion(5, 'produit', '');
 }
 
-/******** FORMULAIRE ENREGISTREMENT / MODIFICATION PRODUITSS *******/ 
+
+
+// FORMULAIRE AJOUT / MODIF 
 
 if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == 'modification') )
 {
@@ -280,18 +309,18 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 				<input  <?php if((isset($_POST['sexe']) && $_POST['sexe'] == "f") ||(isset($produit_actuel['sexe'])&& $produit_actuel['sexe'] == "f")) { echo 'checked';} ?> type="radio" name="sexe" value="f"  class="inline" /> Femme<br /><br />
 			
 			<label for="photo">Photo </label>
-			<input required type="file" name="photo" id="photo"><br />
+			<input type="file" name="photo" id="photo"><br />
 			<?php 
 			if(isset($produit_actuel)) // on affiche la photo actuelle par defaut
 			{
 					echo '<label>Photo actuelle</label><br />';
-					echo '<img src="'. $produit_actuel['photo'].'" width="140"/><br />';
-					echo '<input type="hidden" name="photo_actuelle" value="'. $produit_actuel['photo'].'" /><br />';
+					echo '<img src="'.$produit_actuel['photo'].'" width="140"/><br />';
+					echo '<input type="hidden" name="photo_actuelle" value="'.$produit_actuel['photo'].'" /><br />';
 			}
 			
 			?>
 			<label for="id_promo_produit">Code promo</label><br />
-				<select required id="id_promo_produit" name="id_promo_produit"  >
+				<select id="id_promo_produit" name="id_promo_produit"  >
 					<option value="" >Pas de code promo</option>
 				<?php
 					$resultat = executeRequete('SELECT * FROM promo_produit ORDER BY reduction ASC');
