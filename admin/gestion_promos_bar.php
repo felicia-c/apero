@@ -74,13 +74,13 @@ if(isset($_POST['ajouter']) && $_POST['ajouter'] == 'Enregistrer')
 		{
 			executeRequete("UPDATE promo_bar SET id_bar='$id_bar', categorie_produit='$categorie', date_debut='$date1_bdd', date_fin='$date2_bdd', description='$description' WHERE id_promo_bar='$_GET[id_promo_bar]'");
 			$msg .='<div class="msg_success"><h4>Produit modifié !</h4></div>';
-			header('location:gestion_promos_bar.php?mod=ok&affichage=affichage');
+			header('location:gestion_promos_bar.php?mod=ok&affichage=affichage&id_promo_bar='.$_GET['id_promo_bar'].''.$page.''.$orderby.''.$asc_desc.'');
 		} 
 	//AJOUT
 		else
 		{
 			executeRequete("INSERT INTO promo_bar (id_bar, categorie_produit, date_debut, date_fin, description) VALUES ( '$id_bar', '$categorie', '$date1_bdd', '$date2_bdd', '$description')"); 
-			header('location:gestion_promos_bar.php?add=ok&affichage=affichage');
+			header('location:gestion_promos_bar.php?add=ok&affichage=affichage'.$mysqli->insert_id.''.$page.''.$orderby.''.$asc_desc.'');
 		}
 	}
 }	

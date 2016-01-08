@@ -24,6 +24,20 @@
     font-style: normal;
 
 }*/
+
+
+@font-face {
+    font-family: 'blockberegular';
+    src: url('../fonts/ufonts.com_blockbe-webfont.eot');
+    src: url('../fonts/ufonts.com_blockbe-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/ufonts.com_blockbe-webfont.woff2') format('woff2'),
+         url('../fonts/ufonts.com_blockbe-webfont.woff') format('woff'),
+         url('../fonts/ufonts.com_blockbe-webfont.ttf') format('truetype'),
+         url('../fonts/ufonts.com_blockbe-webfont.svg#blockberegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
 @font-face {
     font-family: 'nunitoblack';
     src: url('../fonts/nunito-black-webfont.eot');
@@ -64,7 +78,7 @@ body{
     margin: 0 auto;
 }
 h1, h2, h3, h4{
-    font-family: 'nunitobold', helvetica;
+    font-family: 'blockberegular', helvetica;
 }
 h2{
     font-size: 1.2em;
@@ -81,7 +95,7 @@ ul, li{
 a,th{
     color: black;
     text-decoration: none;
-	font-family: 'nunitobold';
+	font-family: 'blockberegular';
 }
 a:hover,
 .active,
@@ -106,16 +120,19 @@ header nav li{
 }
 header nav li a{
     padding-bottom: 2px;
+    font-family: 'blockberegular';
 }
 #logo_header{
-    float: left;
-    margin: 1%;
+   float: left;
+   margin: 1%;
 }
 .msg_success{
-    color: teal;
+   color: teal;
+   text-align: center;
 }
 .msg_erreur{
-    color: tomato;
+   color: tomato;
+   text-align: center;
 }
 
 .box_info{
@@ -176,7 +193,8 @@ input[type=checkbox], input[type=radio]{
     display: inline-block;
 }
 input[type=submit]{
-    font-size: 1em;
+   font-size: 1em;
+   font-family: 'blockberegular';
 }
 label{
     width: 50%;
@@ -321,7 +339,7 @@ div.bar{
     margin: auto;
 }
 div.vignette_bar{
-    width: 30%;
+    width: 35%;
     display: inline-block;
 }
 .img_vignette{
