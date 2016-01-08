@@ -102,13 +102,12 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 			
 			if(isset($_GET['action']) && $_GET['action'] == 'modification')
 			{
-				executeRequete("UPDATE produit SET categorie='$categorie', titre='$titre', description='$description', couleur='$couleur', taille='$taille', sexe='$sexe', photo='$photo_bdd', prix='$prix',stock='$stock', id_promo_produit = '$id_promo_produit' WHERE id_produit='$_POST[id_produit]'");
-				
+				executeRequete("UPDATE produit SET categorie='$categorie', titre='$titre', description='$description', couleur='$couleur', sexe='$sexe', photo='$photo_bdd', prix='$prix', id_promo_produit = '$id_promo_produit' WHERE id_produit='$_POST[id_produit]'");
 				header('location:gestion_produit.php?affichage=affichage&mod=ok&id_produit='.$_GET['id_produit'].''.$page.''.$orderby.''.$asc_desc.'');
 			}
 			else
 			{
-				executeRequete("INSERT INTO produit (reference, categorie, titre, description, couleur, taille, sexe, photo, prix, stock, id_promo_produit) VALUES ( '$reference', '$categorie', '$titre', '$description', '$couleur', '$taille', '$sexe', '$photo_bdd', '$prix', '$stock', '$id_promo_produit')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
+				executeRequete("INSERT INTO produit (reference, categorie, titre, description, couleur, sexe, photo, prix, id_promo_produit) VALUES ( '$reference', '$categorie', '$titre', '$description', '$couleur', '$sexe', '$photo_bdd', '$prix', '$id_promo_produit')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
 				header('location:gestion_produit.php?affichage=affichage&add=ok&'.$mysqli->insert_id.''.$page.''.$orderby.''.$asc_desc.'');
 			}
 			//$_GET['affichage'] = 'affichage'; // afficher les produits une fois qu'on a validé le formulaire
@@ -139,24 +138,22 @@ require_once("../inc/header.inc.php");
 
 echo '<div class="box_info" >';
 
-// STATS
-$resultat = executeRequete("SELECT SUM(montant) AS total,
-										COUNT(id_commande) AS nbre_commandes,
-										ROUND(AVG(montant),0) AS panier_moyen,
-										MAX(date) AS der_commande 
-									FROM commande");
+// STATS	
+$resultat_stock = executeRequete("SELECT SUM(stock) AS stock_total FROM taille_stock");
+$donnees_stock = $resultat_stock -> fetch_assoc();
+$stock= $donnees_stock['stock_total'];
+$resultat = executeRequete("SELECT SUM(montant) AS total, COUNT(id_commande) AS nbre_commandes, ROUND(AVG(montant),0) AS panier_moyen, MAX(date) AS der_commande FROM commande");
 $commandes = $resultat -> fetch_assoc();
 echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $commandes['nbre_commandes'].' | Commande moyenne : '.$commandes['panier_moyen'].'€</h3>';
 $resultat= executeRequete("SELECT COUNT(id_produit) AS nbre_produits,
-									SUM(prix * stock) AS valeur_stock,
+									SUM(prix * $stock) AS valeur_stock,
 									ROUND(AVG(prix),0) AS prix_moyen,
-									MAX(prix) AS prix_max,
-									SUM(stock) AS stock_total
+									MAX(prix) AS prix_max	
 								FROM produit");
 
 $donnees = $resultat -> fetch_assoc();
 
-echo '<p class="orange">Vous avez '. $donnees['stock_total'].' produits en stock | Prix moyen des articles en stock: '.$donnees['prix_moyen'].'€ 
+echo '<p class="orange">Vous avez '. $donnees_stock['stock_total'].' produits en stock | Prix moyen des articles en stock: '.$donnees['prix_moyen'].'€ 
 		<br />Valeur du stock: '. $donnees['valeur_stock'].'€</p>';
 
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
@@ -187,7 +184,6 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 
 	$req = paginationGestion(5, 'produit', $req);
 	$resultat = executeRequete($req); 
-
 	$dont_link = null; // entete du tablau sans order by
 	$dont_show = 'description'; // colonne non affichée
 	enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
@@ -219,10 +215,8 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 					echo '<td >PAS DE PROMO</td>';
 				}	
 			}
-			elseif($indice == 'stock')
-			{
-				echo '<td > x '.$valeur.'</td>';
-			}
+
+		
 			elseif($indice == 'prix')
 			{
 				echo '<td >'.$valeur.'€</td>';
@@ -232,17 +226,29 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 				echo '<td >'.$valeur.'</td>';
 			}
 		}
+		echo '<td><ul>';
+		$res_taille_stock = executeRequete("SELECT taille_stock.stock AS stock, taille.taille AS taille FROM taille_stock INNER JOIN taille ON taille_stock.id_taille = taille.id_taille WHERE id_produit = '$ligne[id_produit]'");
+		while($ligne_taille_stock = $res_taille_stock -> fetch_assoc())
+		{
+			//$res_taille = executeRequete("SELECT taille FROM taille WHERE id_taille = '$valeur_taille_stock'");
+			//$taille = $res_taille -> fetch_assoc();
+			echo '<li>'.$ligne_taille_stock['taille'].' x '.$ligne_taille_stock['stock'].'</li>';
+			
+		}
 
+	
+		echo '</ul></td>';
 		echo '<td><a href="?action=suppression&id_produit='.$ligne['id_produit'].$page.''.$orderby.''.$asc_desc.'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
 	
 		echo '<td><a href="?action=modification&id_produit='.$ligne['id_produit'] .$page.''.$orderby.''.$asc_desc.'" class="btn_edit">éditer</a></td>';
 		echo '</tr>';
+	}
 	}						
 	echo '</table><br />';
 	echo '</div>';
 
 	affichagePaginationGestion(5, 'produit', '');
-}
+
 
 
 
