@@ -32,26 +32,23 @@ if(isset($_GET['id_produit']))
 	
 	$res_taille_stock = executeRequete("SELECT id_taille_stock, id_produit AS produit, stock AS stock, id_taille FROM taille_stock  WHERE id_produit = '$mon_produit[id_produit]'");
 	
-	echo '<label for="taille">Taille </label>
-			<select name="taille" required>';
+	echo '<label for="taille_stock">Taille </label>
+			<select name="taille_stock" required>';
 		
-			while($ligne_taille_stock = $res_taille_stock -> fetch_assoc())
+	while($ligne_taille_stock = $res_taille_stock -> fetch_assoc())
+	{
+		$res_taille= executeRequete("SELECT * FROM taille WHERE id_taille = '$ligne_taille_stock[id_taille]'");
+		$taille= $res_taille-> fetch_assoc();
+		//foreach($ligne_taille_stock AS $indice => $valeur)
+		//{
+			if($ligne_taille_stock['stock'] > 0)
 			{
-				$res_taille= executeRequete("SELECT * FROM taille WHERE id_taille = '$ligne_taille_stock[id_taille]'");
-				$taille= $res_taille-> fetch_assoc();
-				//foreach($ligne_taille_stock AS $indice => $valeur)
-				//{
-					if($ligne_taille_stock['stock'] > 0)
-					{
-						echo '<option value="'.$ligne_taille_stock['id_taille'].'">'.$taille['taille'].' | en stock: '.$ligne_taille_stock['stock'].' </option>';
-					}
-				//}
+				echo '<option value="'.$ligne_taille_stock['id_taille_stock'].'">'.$taille['taille'].' | en stock: '.$ligne_taille_stock['stock'].' </option>';
 			}
-				
-	//echo '<input type="hidden" name="id_taille_stock" value="'.$ligne_taille_stock['id_taille_stock'].'" />';
-	
-	
-	
+		//}
+	}
+		
+	//echo '<input type="hidden" name="taille_stock" value="'.$ligne_taille_stock['id_taille_stock'].'" />';
 	
 	echo '</select>';
 
