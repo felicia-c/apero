@@ -36,7 +36,7 @@ if($_POST)
 		{
 			for($i=0; $i < count($_SESSION['panier']['id_produit']); $i++) 
 			{
-				$id_taille_stock= $_SESSION['panier']['id_taille_stock'][$i];
+				$id_taille_stock= $_SESSION['panier']['taille_stock'][$i];
 				
 				$resultat_stock = executeRequete("SELECT stock, id_taille FROM taille_stock WHERE id_taille_stock = '$id_taille_stock'"); //on recupere le stock du produit 
 				$stock = $resultat_stock ->fetch_assoc();
@@ -52,9 +52,9 @@ if($_POST)
 					}
 					else // si le stock est à 0
 					{
-						$msg .= '<div class="msg_erreur">L\'article n° '. $_SESSION['panier']['id_produit'][$i] .' a été retiré de votre panier car nous sommes en rupture de stock.<br /> Veuillez vérifier votre commande</div>';
+						$msg .= '<div class="msg_erreur">L\'article n° '. $_SESSION['panier']['id_produit'][$i] .' en taille '. $stock['taille'] .' a été retiré de votre panier car nous sommes en rupture de stock.<br /> Veuillez vérifier votre commande</div>';
 				
-					retirerUnArticleDuPanier($_SESSION['panier']['id_taille_stock'][$i]);
+					retirerUnArticleDuPanier($_SESSION['panier']['taille_stock'][$i]);
 					
 					$i--; // On décrémente car la fonction retirerUnArticleDuPanier() a réorganisé le tableau array $_SESSION['panier'] au niveau des indices -> pour ne pas rater un article lors controle 
 					}
@@ -73,11 +73,15 @@ if($_POST)
 				executeRequete("INSERT INTO commande(montant, id_membre, date) VALUES ('".montantTotal()."', '".$_SESSION['utilisateur']['id_membre']."', now() )");  //on enregistre la commande dans la table BDD commande
 				$id_commande = $mysqli-> insert_id;
 
-				for($i=0; $i < count($_SESSION['panier']['id_produit']); $i++)
+				for($i=0; $i < count($_SESSION['panier']['taille_stock']); $i++)
 				{
 					if($_SESSION['panier']['quantite'][$i] > 0)
 					{
+						$quantite = $_SESSION['panier']['quantite'][$i];
+						$res=executeRequete("SELECT * FROM taille_stock WHERE id_taille_stock = '".$_SESSION['panier']['taille_stock'][$i]."' "); // on recupere la taille
+						$taille = $res -> fetch_assoc();
 						// pour chaque produit dans le panier -> une ligne dans details_commande + maj stock du produit;
+
 						if($_SESSION['panier']['prix_reduit'][$i] !== NULL)
 						{
 							$prix = $_SESSION['panier']['prix_reduit'][$i];
@@ -86,14 +90,14 @@ if($_POST)
 						{
 							$prix = $_SESSION['panier']['prix'][$i];
 						}
-						$quantite = $_SESSION['panier']['quantite'][$i];
-						executeRequete("INSERT INTO details_commande (id_commande, id_produit, quantite, prix) VALUES ('$id_commande', '". $_SESSION['panier']['id_produit'][$i]."', '$quantite', '$prix')");
 						
-						executeRequete("UPDATE produit SET stock= stock-".$_SESSION['panier']['quantite'][$i]." WHERE id_produit=". $_SESSION['panier']['id_produit'][$i]); // On modifie le stock dans la BDD produit
+						executeRequete("INSERT INTO details_commande (id_commande, id_produit, id_taille_produit, quantite, prix) VALUES ('$id_commande', '". $_SESSION['panier']['id_produit'][$i]."', '$taille[id_taille]', '$quantite', '$prix')");
+						
+						executeRequete("UPDATE taille_stock SET stock= stock-".$_SESSION['panier']['quantite'][$i]." WHERE id_taille_stock='$taille[id_taille_stock]' "); // On modifie le stock dans la BDD produit
 					}
 				}
 				 // Si tout est ok (commande validée, pas d'erreur)on vide le panier
-				$msg .= '<div class="msg_success">Merci pour vos achats !   Un e-mail de confirmation va vous être envoyé à l\'adresse suivante : <br /><strong>'. $_SESSION['utilisateur']['email'] .'</strong><br /> N° de suivi: '. $id_commande .'</div>';
+				$msg .= '<div class="msg_success">Merci pour vos achats !<br />Un e-mail de confirmation va vous être envoyé à l\'adresse suivante : <br /><strong>'. $_SESSION['utilisateur']['email'] .'</strong><br /> N° de suivi: '. $id_commande .'</div>';
 				
 				$mail_vendeur = 'vendeur_apero@yopmail.com';
 					
@@ -142,7 +146,7 @@ if(isset($_GET['id']))
 		{
 			$resultat = executeRequete("SELECT stock FROM taille_stock WHERE id_taille_stock = '$taille_stock'");
 			$stock_produit = $resultat -> fetch_assoc();
-			if($_SESSION['panier']['quantite'][$position_produit] <= $stock_produit['stock'])
+			if($_SESSION['panier']['quantite'][$position_produit] < $stock_produit['stock'])
 			{
 				$_SESSION['panier']['quantite'][$position_produit]++;  //on augmente la quantité	
 			}
@@ -268,7 +272,7 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 	// QUANTITE
 			echo '<td>'.$_SESSION['panier']['quantite'][$i];  
 			echo '<br />';
-			if($_SESSION['panier']['quantite'][$i] <= $produit['stock'])
+			if($_SESSION['panier']['quantite'][$i] < $produit['stock'])
 			{
 				echo '<a class="teal" href="?add=1&id='.$_SESSION['panier']['taille_stock'][$i].'" >+1</a>';
 			}
