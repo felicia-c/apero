@@ -4,7 +4,7 @@ $titre_page = "T-shirts Apéro";
 //APERO - Felicia Cuneo - 12/2015//
 $resultat_categorie = executeRequete("SELECT DISTINCT categorie FROM produit ORDER BY categorie");
 $resultat_couleur = executeRequete("SELECT DISTINCT couleur FROM produit ORDER BY couleur");
-$resultat_taille = executeRequete("SELECT DISTINCT taille FROM produit ORDER BY taille DESC");
+//$resultat_taille = executeRequete("SELECT DISTINCT id_taille FROM taille_stock INNER JOIN produit ON taille_stock.id_produit = produit.id_produit ORDER BY id_taille DESC");
 
 
 require_once("inc/header.inc.php");
@@ -51,7 +51,7 @@ echo '<form class="form" method="get" action="?action=tri">
 	
 
 	//PRIX
-	echo '<br />
+echo '<br />
 		<a class="btn" style="margin-bottom: 20px;" href="?action=order&tri=min" >- de 15€</a> |  
 		<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=mid">  de 15€ à 25€</a> |  
 		<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=max">  + de 25€</a><br />
@@ -67,44 +67,40 @@ echo $msg;
 
 if(isset($_GET['action']))
 { 
-	$req .= "SELECT * FROM produit WHERE stock > 0 ";
+	$req .= "SELECT * FROM produit WHERE";
 //AFFICHAGE CATEGORIE
 	if(isset($_GET['categorie']))
 	{
-		$req .= "AND categorie ='$_GET[categorie]' ";
+		$req .= " categorie ='$_GET[categorie]' ";
 	}
 // AFFICHAGE COULEUR
-	if(isset($_GET['couleur']))
-	{
-		$req .= "AND couleur = '$_GET[couleur]' ";
-	}
+//	if(isset($_GET['couleur']))
+//	{
+//		$req .= "AND couleur = '$_GET[couleur]' ";
+//	}
 	
-// AFFICHAGE TAILLE
-	if(isset($_GET['taille']))
-	{
-		$req .= "AND taille = '$_GET[taille]' ";
-	}	
+// TRI PRIX
 	if(isset($_GET['tri']))      
 	{
 		switch($_GET['tri'])
 		{
 			// AFFICHAGE PRIX MIN(ORDER)
 			case 'min':
-				$req .= "AND prix < 15 ";
+				$req .= " prix < 15 ";
 			break;
 
 			// AFFICHAGE PRIX MID(ORDER)
 			case 'mid':
 			
-				$req .= "AND (prix BETWEEN 15 AND 25) ";
+				$req .= " (prix BETWEEN 15 AND 25) ";
 				break;
 			// AFFICHAGE PRIX MAX(ORDER)
 			case 'max':
-				$req .= "AND prix > 25 ";
+				$req .= " prix > 25 ";
 			break;
 			
 			case 'tous':
-				$req .= "";
+				$req = "SELECT * FROM produit";
 			break;
 			
 			default: //PAR DEFAUT AFFICHAGE DE TOUS les Produits
@@ -122,19 +118,19 @@ if(isset($_GET['action']))
 }	
 else // PAR DEFAUT
 {
-	$req .= "SELECT * FROM produit WHERE stock > 0 ";
+	$req .= "SELECT * FROM produit ";
 	
 }	
 
 //AFFICHAGE
 
-echo '<div class="box _info">';		
-paginationRecherche(5, $req); // pagination /tri
+echo '<div class="box_info bg_color2">';		
+//paginationRecherche(5, $req); // pagination /tri
 afficheProduits($req); // affichage Produit
-affichagePaginationRecherche(5, $req); // pagination / tri 2
+//affichagePaginationRecherche(5, $req); // pagination / tri 2
 echo '</div>					
-</div>';
+</div>
+<br />
+<br />';
 
 require_once("inc/footer.inc.php");
-  
-  ?>
