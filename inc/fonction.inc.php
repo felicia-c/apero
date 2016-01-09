@@ -252,19 +252,19 @@ function affichagePaginationRecherche($items_par_page, $req) // arguments obliga
 		else   //liens page 1, 2, etc
 		{
 			echo '<a href="?';
-				if(isset($_GET['orderby']))
-				{
-					$orderby = $_GET['orderby'];
-					echo 'orderby='.$orderby;
-				}
-				elseif(isset($_GET['asc']))
-				{
-					echo '&asc=asc&';
-				}
-				elseif(isset($_GET['desc']))
-				{
-					echo '&desc=desc&';
-				}
+			if(isset($_GET['orderby']))
+			{
+				$orderby = $_GET['orderby'];
+				echo 'orderby='.$orderby;
+			}
+			elseif(isset($_GET['asc']))
+			{
+				echo '&asc=asc&';
+			}
+			elseif(isset($_GET['desc']))
+			{
+				echo '&desc=desc&';
+			}
 			echo '&page='.$i.'"> '.$i.' </a>';
 		}
 	}
@@ -755,7 +755,7 @@ function affichePromoBar($req)
 				<p class=" description_promo">'.$ma_promo['description'].'</p>
 				
 				<p class="dates">'.afficheDateFr($ma_promo['date_debut'], $ma_promo['date_fin'], ' au ').'</p>
-				<p>Cette promotion est valable si vous portez un t-shirt de la collection: <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie="'.$ma_promo['categorie_produit'].'>'.$ma_promo['categorie_produit'].'</a></p>
+				<p>Cette promotion est valable si vous portez un t-shirt de la collection: <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='.$ma_promo['categorie_produit'].'">'.$ma_promo['categorie_produit'].'</a></p>
 			</div>';
 	}
 }
@@ -791,13 +791,24 @@ function enteteTableau($resultat, $dont_show, $dont_link)
 
 						if($colonne->name == 'nom_gerant')
 						{
-							echo '<th class="text-center" colspan="2"><a href="?affichage=affichage&orderby='. $colonne->name ; 
+							echo '<th class="text-center" colspan="2"><a href="?orderby='. $colonne->name ; 
 						}
 						else
 						{
-							echo '<th  style="text-align: center;"><a href="?affichage=affichage&action=commandes&orderby='. $colonne->name ; 
+							echo '<th  style="text-align: center;"><a href="?orderby='. $colonne->name ; 
 						}
-						// infos $_GET
+						//infos $_GET
+
+						if(isset($_GET['affichage']))
+						{
+							echo '&affichage='.$_GET['affichage'];
+						} 
+						if(isset($_GET['action']))
+						{
+							echo '&action='.$_GET['action'];
+						}
+						
+
 						if(isset($_GET['id_promo_produit']))
 						{
 							echo '&id_promo_produit='.$_GET['id_promo_produit'];
@@ -882,6 +893,10 @@ function enteteTableau($resultat, $dont_show, $dont_link)
 				elseif($colonne->name == 'categorie_produit')
 				{
 					echo '>Cat.Produit</a></th>'; 
+				}
+				elseif($colonne->name == 'id_taille_produit')
+				{
+					echo '>Taille</a></th>';
 				}
 				else
 				{
