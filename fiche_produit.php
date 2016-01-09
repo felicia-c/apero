@@ -43,7 +43,7 @@ if(isset($_GET['id_produit']))
 				//{
 					if($ligne_taille_stock['stock'] > 0)
 					{
-						echo '<option value="'.$ligne_taille_stock['id_taille'].'">'.$taille['taille'].'</option>';
+						echo '<option value="'.$ligne_taille_stock['id_taille'].'">'.$taille['taille'].' | en stock: '.$ligne_taille_stock['stock'].' </option>';
 					}
 				//}
 			}
