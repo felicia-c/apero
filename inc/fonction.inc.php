@@ -118,8 +118,19 @@ function affichagePaginationGestion($items_par_page, $table, $lien) // arguments
 			}
 			else
 			{
-				echo '<a href="?affichage=affichage&';
+				echo '<a href="?';
+				if(isset($_GET['affichage']))
+				{
+					$affichage = $_GET['affichage'];
+					echo 'affichage='.$affichage.'&';
+				}
+				if(isset($_GET['action']))
+				{
+					$action = $_GET['action'];
+					echo 'action='.$action.'&';
+				}
 			}
+			
 			if(isset($_GET['id_produit']))
 			{
 				$id = $_GET['id_produit'];
@@ -169,7 +180,7 @@ function affichagePaginationGestion($items_par_page, $table, $lien) // arguments
 				echo 'desc=desc&';
 			}
 
-			echo 'page='.$i.'#details">'.$i.'</a>';
+			echo 'page='.$i.'#details"> '.$i.' </a>';
 		}
 	}
 	echo '</p>';
