@@ -180,7 +180,7 @@ if(isset($_GET['id']))
 
 
 // RETIRER UN ARTICLE
- if(isset($_GET['action']) && isset($_GET['id_produit']) && $_GET['action'] == 'retirer')
+ if(isset($_GET['action']) && isset($_GET['taille_stock']) && $_GET['action'] == 'retirer')
 {
 	retirerUnArticleDuPanier($_GET['taille_stock']);
 }
@@ -319,7 +319,7 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 			echo ' </td>';
 	//LIEN SUPPRIMER
 			$id_article = $_SESSION['panier']['taille_stock'][$i];
-			echo '<td><a class="btn_delete" href="?action=retirer&id_produit='. $id_article.'"  onClick="return(confirm(\'Voulez-vous vraiment retirer cet article de votre panier ? \'));" title="Supprimer" > X </a></td>';
+			echo '<td><a class="btn_delete" href="?action=retirer&taille_stock='. $id_article.'"  onClick="return(confirm(\'Voulez-vous vraiment retirer cet article de votre panier ? \'));" title="Supprimer" > X </a></td>';
 		
 			echo '</tr>';
 		}
