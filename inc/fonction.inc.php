@@ -721,7 +721,69 @@ function afficheBar($req)
 		$MapCoordsUrl = urlencode($cp.'+'.$ville_url.'+'.$adresse_url); //urlencode : encodage pour URL
 
 		echo '<div><iframe class="googleMaps" style="width: 100%;" max-width="1000" height="300" src="http://maps.google.fr/maps?q='.$MapCoordsUrl.'&amp;t=h&amp;output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" ></iframe></div>
-			</div>';
+			</div>
+
+			<div class="box_info">	
+				<h2> Votre avis sur le '. $mon_bar['nom_bar'].'</h2><br/>';
+
+		$resultat = executeRequete("SELECT membre.pseudo AS pseudo, avis.commentaire, avis.note, avis.date FROM avis, membre WHERE id_bar = '$mon_bar[id_bar]' AND avis.id_membre = membre.id_membre");
+		
+		while($avis = $resultat -> fetch_assoc())
+		{
+			$date = date_create_from_format('Y-m-d H:i:s', $avis['date']);
+	
+			echo '<h4 style="text-align: left;">L\'avis de '. ucfirst($avis['pseudo']) .' </strong> - Le '.date_format($date, 'd/m/Y H:i').'</h4>
+				
+			<p>'. ucfirst($avis['commentaire']).'</p><br/>
+										
+			<p><strong>Note : '.$avis['note'].' /10</strong></p>
+			<br /><hr /><br />';
+		}
+
+	//FORMULAIRE AVIS		
+			
+		if(!utilisateurEstConnecte() || utilisateurEstConnecteEtEstGerant()) //Si l'utilisateur n'est PAS connecté, il ne peut pas laisser d'avis
+		{
+			echo '<p>Connectez-vous pour évaluer ce bar <br />
+			
+				<a href="'.RACINE_SITE.'connexion.php" class="button produit">Se connecter</a><br />
+				<a href="'.RACINE_SITE.'inscription.php" class="button produit">Créer un compte</a><br /></p>';
+		}
+		else
+		{
+			$membre_actuel = $_SESSION['utilisateur'];
+			// on veriifie si le membre a deja posté un avis sur cette salle
+			$avis_membre = executeRequete("SELECT * FROM avis WHERE (id_membre = '$membre_actuel[id_membre]' AND id_bar = '$mon_bar[id_bar]') ");
+			$nb_avis = $avis_membre->num_rows;
+			if($nb_avis > 0)
+			{
+				echo '<p>Vous avez déjà évalué cette salle </p>';
+			}
+			else
+			{
+				echo '<form method="post" action="" class="form" style=" border: none;">
+			<input type="hidden" id="bar" name="bar" value="'.$mon_bar['id_bar'].'" />					
+			<label for="commentaire">Votre avis</label>
+			<textarea id="commentaire" name="commentaire" style="height: 100px; "></textarea>
+			
+			<label for="note">Note sur 10</label>
+			<select id="note" name="note">
+				<option value="">Noter ce bar</option>';
+				for($i = 10; $i >= 1; $i--)
+				{
+					echo '<option value="'.$i.'">'.$i.'</option>';
+				}
+				
+			echo '</select>
+			<br />
+			<br />
+			
+			<input type="submit" id="evaluer" name="evaluer" class="button" value="Donner mon avis" />
+			</form> ';	
+			
+			}
+		echo '</div>';
+		}
 	}
 }
 

@@ -35,7 +35,7 @@
                 <ul class="nav">
                   <li><a href="'.RACINE_SITE.'index.php">accueil</a></li>
                   <li><a href="'.RACINE_SITE.'boutique.php">t-shirts</a></li>
-                  <li><a href="'.RACINE_SITE.'bars_et_promos.php">bars & promos</a></li>
+                  <li><a href="'.RACINE_SITE.'bars_et_promos.php">bars</a></li>
                   <li><a href="'.RACINE_SITE.'panier.php">panier</a></li>';
 
        
@@ -60,7 +60,8 @@
                   <li><a href="'.RACINE_SITE.'admin/gestion_membre.php">gestion membres</a></li>
                   <li><a href="'.RACINE_SITE.'admin/gestion_bar.php">gestion bars</a></li>
                   <li><a href="'.RACINE_SITE.'admin/gestion_promo.php">gestion promos</a></li>
-                  <li><a href="'.RACINE_SITE.'admin/gestion_commandes.php">gestion commandes</a></li>';
+                  <li><a href="'.RACINE_SITE.'admin/gestion_commandes.php">gestion commandes</a></li>
+                  <li><a href="'.RACINE_SITE.'admin/gestion_avis.php">gestion avis</a></li>';
           }
  
         echo '</ul>
