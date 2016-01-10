@@ -682,10 +682,11 @@ function afficheProduits($req)
 	}
 }
 
+
+ //fiche bar
 function afficheBar($req)
 {
 	$resultat = executeRequete($req);
-
 	while($mon_bar = $resultat -> fetch_assoc())
 	{
 		echo '<div class="box_info bar text-center">
@@ -700,60 +701,56 @@ function afficheBar($req)
 				</div><br />';
 
 		// Google Maps récuperation des adresses : 
-			$ville = $mon_bar['ville'];
-			$adresse = $mon_bar['adresse'];
-			$cp = $mon_bar['cp'];
+		$ville = $mon_bar['ville'];
+		$adresse = $mon_bar['adresse'];
+		$cp = $mon_bar['cp'];
 
-			$ville_url = str_replace(' ', '+', $ville); // remplace espace par +
-			$adresse_url = str_replace(' ', '+', $adresse); // remplace espace par +
-			$MapCoordsUrl = urlencode($cp.'+'.$ville_url.'+'.$adresse_url); //urlencode : encodage pour URL
-	
+		$ville_url = str_replace(' ', '+', $ville); // remplace espace par +
+		$adresse_url = str_replace(' ', '+', $adresse); // remplace espace par +
+		$MapCoordsUrl = urlencode($cp.'+'.$ville_url.'+'.$adresse_url); //urlencode : encodage pour URL
+
 		echo '<div><iframe class="googleMaps" style="width: 100%;" max-width="1000" height="300" src="http://maps.google.fr/maps?q='.$MapCoordsUrl.'&amp;t=h&amp;output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" ></iframe></div>
 			</div>';
 	}
 }
 
-
+//vignette bar
 function afficheVignetteBar($req)
 {
-
 	$resultat = executeRequete($req);
-
 	while($mon_bar = $resultat -> fetch_assoc())
 	{
-		echo '
-			<div class="box_info vignette_bar text-center">
-				<a class="noborder_lien" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$mon_bar['id_bar'].'"><h2>'.$mon_bar['nom_bar'].'</h2>
-				<img class="img_vignette" src="'. $mon_bar['photo'].'" style="max-width: 100%;" /></a>
-					<div class="contact_bar">'. $mon_bar['cp'].' '.$mon_bar['ville'].'
-					<p>'.$mon_bar['description'].'</p>';
-		echo '</div>';
 		$req_promo= "SELECT COUNT(id_promo_bar) AS nb_promo, date_fin FROM promo_bar WHERE promo_bar.id_bar = '$mon_bar[id_bar]' AND date_fin > NOW()";
 		$promo = executeRequete($req_promo);
 		$promo = $promo -> fetch_assoc();
+		echo '<div class="box_info vignette_bar text-center">
+				<a class="noborder_lien" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$mon_bar['id_bar'].'"><h2>'.$mon_bar['nom_bar'].'</h2>';
 		if($promo['nb_promo'] > 0)
 		{
-			echo '<div class="tomato">Ce bar vous offre l\'apéro !</div><br />';
+			echo '<div class="tomato">Ce bar vous offre l\'apéro !</div>';
 		}
 		else{
 			echo '<br/>';
 		}
+		echo '<img class="img_vignette" src="'. $mon_bar['photo'].'" style="max-width: 100%;" /></a>
+		<div class="contact_bar">'. $mon_bar['cp'].' '.$mon_bar['ville'].'
+			<p>'.$mon_bar['description'].'</p>';
+		echo '</div>';
+		
+		
 			echo '</div>';
 	}
 }
 
-
+ // affichage promo
 function affichePromoBar($req)
 {
 	$resultat = executeRequete($req);
-
 	while($ma_promo = $resultat -> fetch_assoc())
 	{
 		echo '<br />
 			<div class="box_info bar text-center">
-
 				<p class=" description_promo">'.$ma_promo['description'].'</p>
-				
 				<p class="dates">'.afficheDateFr($ma_promo['date_debut'], $ma_promo['date_fin'], ' au ').'</p>
 				<p>Cette promotion est valable si vous portez un t-shirt de la collection: <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='.$ma_promo['categorie_produit'].'">'.$ma_promo['categorie_produit'].'</a></p>
 			</div>';
@@ -769,141 +766,149 @@ function enteteTableau($resultat, $dont_show, $dont_link)
 	for($i= 0; $i < $nbcol; $i++) 
 	{
 		$colonne= $resultat->fetch_field();
-			
-			if(($colonne->name != $dont_show) && ($colonne->name != 'prenom_gerant' && $colonne->name != 'mdp'))
+		
+		if(($colonne->name != $dont_show) && ($colonne->name != 'prenom_gerant' && $colonne->name != 'mdp'))
+		{
+			if($dont_link == null)
 			{
-				if($dont_link == null)
+				if($colonne->name == 'photo')
 				{
-					if($colonne->name == 'photo')
+					echo '<th class="text-center" width="100" '; 
+				}
+				elseif ($colonne->name == 'adresse')
+				{
+					echo '<th colspan ="2" ';
+				}
+				elseif($colonne->name == 'email')
+				{
+					echo '<th class="text-center" colspan="1" '; 
+				}
+			
+				else
+				{
+					if($colonne->name == 'nom_gerant')
 					{
-						echo '<th class="text-center" width="100" '; 
-					}
-					elseif ($colonne->name == 'adresse')
-					{
-						echo '<th colspan ="2" ';
-					}
-					elseif($colonne->name == 'email')
-					{
-						echo '<th class="text-center" colspan="1" '; 
+						echo '<th class="text-center" colspan="2"><a href="?orderby='. $colonne->name ; 
 					}
 					else
 					{
-
-						if($colonne->name == 'nom_gerant')
-						{
-							echo '<th class="text-center" colspan="2"><a href="?orderby='. $colonne->name ; 
-						}
-						else
-						{
-							echo '<th  style="text-align: center;"><a href="?orderby='. $colonne->name ; 
-						}
-						//infos $_GET
-
-						if(isset($_GET['affichage']))
-						{
-							echo '&affichage='.$_GET['affichage'];
-						} 
-						if(isset($_GET['action']))
-						{
-							echo '&action='.$_GET['action'];
-						}
-						
-
-						if(isset($_GET['id_promo_produit']))
-						{
-							echo '&id_promo_produit='.$_GET['id_promo_produit'];
-						}
-						if(isset($_GET['id_promo_bar']))
-						{
-							echo '&id_promo_bar='.$_GET['id_promo_bar'];
-						}
-						if(isset($_GET['id_membre']))
-						{
-							echo '&id_membre='.$_GET['id_membre'];
-						}
-						if(isset($_GET['id_bar']))
-						{
-							echo '&id_bar='.$_GET['id_bar'];
-						}
-						if(isset($_GET['id_produit']))
-						{
-							echo '&id_produit='.$_GET['id_produit'];
-						}
-						if(isset($_GET['id_commande']))
-						{
-							echo '&id_commande='.$_GET['id_commande'];
-						}
-						if(isset($_GET['id_detail_commande']))
-						{
-							echo '&id_details_commande='.$_GET['id_details_commande'];
-						}
-						if(isset($_GET['id_avis']))
-						{
-							echo '&id_avis='.$_GET['id_avis'];
-						}
-						
-						//Tri
-						if(isset($_GET['asc']))
-						{
-							echo '&desc=desc';
-						}
-						else
-						{
-							echo '&asc=asc';
-						}
-
-						//ancre
-						echo '#details"'; 
-						
-						//actif
-						if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
-						{
-							echo ' class="actif" ';
-						}
+						echo '<th  style="text-align: center;"><a href="?orderby='. $colonne->name ; 
 					}
-				}	
-				else
-				{
-					echo '<th class="text-center" ';//entetes sans liens
+					//infos $_GET
+
+					if(isset($_GET['affichage']))
+					{
+						echo '&affichage='.$_GET['affichage'];
+					} 
+					if(isset($_GET['action']))
+					{
+						echo '&action='.$_GET['action'];
+					}
+					
+
+					if(isset($_GET['id_promo_produit']))
+					{
+						echo '&id_promo_produit='.$_GET['id_promo_produit'];
+					}
+					if(isset($_GET['id_promo_bar']))
+					{
+						echo '&id_promo_bar='.$_GET['id_promo_bar'];
+					}
+					if(isset($_GET['id_membre']))
+					{
+						echo '&id_membre='.$_GET['id_membre'];
+					}
+					if(isset($_GET['id_bar']))
+					{
+						echo '&id_bar='.$_GET['id_bar'];
+					}
+					if(isset($_GET['id_produit']))
+					{
+						echo '&id_produit='.$_GET['id_produit'];
+					}
+					if(isset($_GET['id_commande']))
+					{
+						echo '&id_commande='.$_GET['id_commande'];
+					}
+					if(isset($_GET['id_detail_commande']))
+					{
+						echo '&id_details_commande='.$_GET['id_details_commande'];
+					}
+					if(isset($_GET['id_avis']))
+					{
+						echo '&id_avis='.$_GET['id_avis'];
+					}
+					
+					//Tri
+					if(isset($_GET['asc']))
+					{
+						echo '&desc=desc';
+					}
+					else
+					{
+						echo '&asc=asc';
+					}
+
+					//ancre
+					echo '#details"'; 
+					
+					//actif
+					if(isset($_GET['orderby']) && ($_GET['orderby'] == $colonne->name))
+					{
+						echo ' class="actif" ';
+					}
 				}
-				$name_bdd = $colonne->name;	
-				$entete = str_replace('_', ' ', $name_bdd); 
-				
-				//affichage
-				if($colonne->name == 'id_promo_produit')
-				{
-					echo '>Promo</a></th>'; 
-				}
-				elseif($colonne->name == 'prenom')
-				{
-					echo '> Prénom </a></th>';
-				}
-				elseif($colonne->name == 'nom_gerant')
-				{
-					echo '>Gérant</a></th>'; 
-				}
-				elseif($colonne->name == 'date_debut')
-				{
-					echo '>Début</a></th>'; 
-				}
-				elseif($colonne->name == 'date_fin')
-				{
-					echo '>Fin</a></th>'; 
-				}
-				elseif($colonne->name == 'categorie_produit')
-				{
-					echo '>Cat.Produit</a></th>'; 
-				}
-				elseif($colonne->name == 'id_taille_produit')
-				{
-					echo '>Taille</a></th>';
-				}
-				else
-				{
-					echo '> '.ucfirst($entete).' </a></th>';		
-				}
-			}	
-		}		
+			}
+			else
+			{
+				if($colonne->name == 'nom_gerant')
+					{
+						echo '<th class="text-center" colspan="2" '; 
+					}
+					else
+					{
+						echo '<th class="text-center" ';//entetes sans liens
+					}
+
+			}
+			$name_bdd = $colonne->name;	
+			$entete = str_replace('_', ' ', $name_bdd); 
+			
+			//affichage
+			if($colonne->name == 'id_promo_produit')
+			{
+				echo '>Promo</a></th>'; 
+			}
+			elseif($colonne->name == 'prenom')
+			{
+				echo '> Prénom </a></th>';
+			}
+			elseif($colonne->name == 'nom_gerant')
+			{
+				echo '>Gérant</a></th>'; 
+			}
+			elseif($colonne->name == 'date_debut')
+			{
+				echo '>Début</a></th>'; 
+			}
+			elseif($colonne->name == 'date_fin')
+			{
+				echo '>Fin</a></th>'; 
+			}
+			elseif($colonne->name == 'categorie_produit')
+			{
+				echo '>Cat.Produit</a></th>'; 
+			}
+			elseif($colonne->name == 'id_taille_produit')
+			{
+				echo '>Taille</a></th>';
+			}
+			else
+			{
+				echo '> '.ucfirst($entete).' </a></th>';		
+			}
+		}	
+	}		
 	echo '<th></th>
 		</tr>';
 }

@@ -236,13 +236,14 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 
 	if($nb_bars < 1)
 	{
-		echo '
+		echo '<tr>
 				<td colspan="6">Vous n\'avez actuellement aucun compte Bar activé</td>	
 			</tr>';
 	}
 	else
 	{
-		$dont_link = ''; // entete du tablau sans order by
+		//paginationRecherche(5, $req);
+		$dont_link = 'nono' ; // entete du tablau sans order by
 		$dont_show = 'prenom_gerant'; // colonne non affichée
 		enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
 	
@@ -260,13 +261,9 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 				//{
 			//		echo '<td colspan="3">' . substr($valeur, 0, 70) . '...</td>'; //Pour couper la description (affiche une description de 70 caracteres maximum)
 			//	}
-				elseif($indice == 'email')
+				elseif($indice == 'id_bar')
 				{
-					echo '<td colspan="3">' . ucfirst($valeur).'</td>';	
-				}
-				elseif($indice == 'cp')
-				{
-					echo '<td>'. ucfirst($valeur) .'</td>';
+					echo '<td><a href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$ligne['id_bar'].'" title="détails">'.$ligne['id_bar'].'</a></td>';
 				}
 				elseif($indice == 'nom_gerant')
 				{
@@ -282,7 +279,7 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 				}
 				elseif(($indice != 'description') && ($indice != 'siret' && $indice != 'ville') && $indice != 'adresse')
 				{
-					echo '<td >'.$valeur.'</td>';
+					echo '<td >'.ucfirst($valeur).'</td>';
 				}	
 			}
 			echo '<td><a href="?action=suppression&id_bar='.$ligne['id_bar'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
@@ -291,12 +288,15 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 		}						
 			
 	}
-	echo '</table><br />
-	<a href="'.RACINE_SITE.'profil.php?action=ajouter" class="button" >Ajouter un bar</a>';	
+	echo '</table><br />';
+	//affichagePaginationRecherche(5, $req);
+	echo '<a href="'.RACINE_SITE.'profil.php?action=ajouter" class="button" >Ajouter un bar</a> | 
+		<a href="'.RACINE_SITE.'mes_promos.php" class="button" >Mes promos</a><br /><br />';	
 	
-	if($_GET)
+
+	if(isset($_GET['action']))
 	{
-		if(isset($_GET['action']) &&  (($_GET['action']=='modification') || ($_GET['action']) == 'ajouter'))
+		if(($_GET['action']=='modification') || ($_GET['action'] == 'ajouter'))
 		{
 			if(isset($_GET['id_bar']))
 			{

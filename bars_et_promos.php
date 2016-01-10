@@ -10,22 +10,19 @@ if(isset($_GET['action']) && $_GET['action'] == 'promos')
 	echo '<h2>les apéros</h2>';
 	$req_promo= "SELECT * FROM promo_bar WHERE id_bar='$id_bar' AND date_fin > NOW() ORDER BY date_debut";
 	affichePromoBar($req_promo);
-
 	echo '</div>';
 }
 else
 {	
-		$table='bar';	
-		$req="SELECT * FROM $table";
-		$req = paginationGestion(4, $table, $req);
-		$lien = "";
+	$table='bar';	
+	$req="SELECT * FROM $table";
+	$req = paginationGestion(6, $table, $req);
+	$lien = "";
 	echo '<div class="block_inline box_info">
 			<h2>les bars</h2>';
-
-		afficheVignetteBar($req);
-
+	afficheVignetteBar($req);
 	echo '</div>';
-	affichagePaginationGestion(4, $table, $lien);
+	affichagePaginationGestion(6, $table, $lien);
 }
 echo '<br /><br />';
 
