@@ -683,11 +683,17 @@ function afficheProduits($req)
 		echo '<div class="prix_produit"><p>'. round($prix, 2).' €</p></div>
 				
 			</div>';
-		$req_promo= "SELECT promo_bar.id_bar, promo_bar.description AS description_promo, bar.nom_bar FROM promo_bar INNER JOIN bar ON promo_bar.id_bar = bar.id_bar WHERE promo_bar.categorie_produit = '$mon_produit[categorie]'";
+		$req_promo= "SELECT promo_bar.id_bar, promo_bar.description AS nb_promo, bar.nom_bar FROM promo_bar INNER JOIN bar ON promo_bar.id_bar = bar.id_bar WHERE promo_bar.categorie_produit = '$mon_produit[categorie]'";
 		$promo = executeRequete($req_promo);
-		while($promo_bar = $promo -> fetch_assoc())
+		$promo = $promo -> fetch_assoc();
+		if(count($promo['id_bar'])> 0)
 		{
-			echo '<div class="promo_afficheproduit"><h4 class="orange">Apéro offert au <a class="orange" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$promo_bar['id_bar'].'">'. $promo_bar['nom_bar'].'</a>!</h4></div>';
+			echo '<div class="promo_afficheproduit"><h4 class="tomato">Ce T-shirt vous paye l\'apéro !</h4></div>';
+			//echo '<div class="promo_afficheproduit"><h4 >Apéro offert au <a class="orange" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$promo_bar['id_bar'].'">'. $promo_bar['nom_bar'].'</a>!</h4></div>';
+		}
+		else
+		{
+			echo '<br /><br />';
 		}
 		echo '</div>';
 	}
@@ -757,7 +763,7 @@ function afficheBar($req)
 			$nb_avis = $avis_membre->num_rows;
 			if($nb_avis > 0)
 			{
-				echo '<p>Vous avez déjà évalué cette salle </p>';
+				echo '<p>Vous avez déjà évalué ce bar </p>';
 			}
 			else
 			{
