@@ -190,7 +190,7 @@ echo '<div="box_info">';
 //STATS
 $resultat = executeRequete("SELECT SUM(montant) AS total,
 								COUNT(id_commande) AS nbre_commandes,
-								ROUND(AVG(montant),0) AS panier_moyen,
+								ROUND(AVG(montant),2) AS panier_moyen,
 								MAX(date) AS der_commande 
 							FROM commande");
 $commandes = $resultat -> fetch_assoc();
@@ -270,7 +270,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			}
 			elseif($indice == 'email')
 			{
-				echo '<td colspan="3">' . ucfirst($valeur).'</td>';	
+				echo '<td colspan="1">' . ucfirst($valeur).'</td>';	
 			}
 			elseif($indice == 'description')
 			{

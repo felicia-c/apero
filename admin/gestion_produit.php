@@ -143,18 +143,18 @@ require_once("../inc/header.inc.php");
 // debug($_FILES);
 //debug($_SERVER);
 
-echo '<div class="box_info" >';
+//echo '<div class="box_info" >';
 
 // STATS	
 $resultat_stock = executeRequete("SELECT SUM(stock) AS stock_total FROM taille_stock");
 $donnees_stock = $resultat_stock -> fetch_assoc();
 $stock= $donnees_stock['stock_total'];
-$resultat = executeRequete("SELECT SUM(montant) AS total, COUNT(id_commande) AS nbre_commandes, ROUND(AVG(montant),0) AS panier_moyen, MAX(date) AS der_commande FROM commande");
+$resultat = executeRequete("SELECT SUM(montant) AS total, COUNT(id_commande) AS nbre_commandes, ROUND(AVG(montant),2) AS panier_moyen, MAX(date) AS der_commande FROM commande");
 $commandes = $resultat -> fetch_assoc();
 echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $commandes['nbre_commandes'].' | Commande moyenne : '.$commandes['panier_moyen'].'€</h3>';
 $resultat= executeRequete("SELECT COUNT(id_produit) AS nbre_produits,
 									SUM(prix * $stock) AS valeur_stock,
-									ROUND(AVG(prix),0) AS prix_moyen,
+									ROUND(AVG(prix),2) AS prix_moyen,
 									MAX(prix) AS prix_max	
 								FROM produit");
 
@@ -259,7 +259,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	}
 						
 	echo '</table><br />';
-	echo '</div>';
+	//echo '</div>';
 
 	affichagePaginationGestion(5, 'produit', '');
 }
@@ -299,21 +299,23 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 	}
 		?>
 			</legend>
-			 <input type="hidden" name="id_produit" id="id_produit" value="<?php if(isset($produit_actuel['id_produit'])){ echo $produit_actuel['id_produit']; }?>" /><!-- On met un input caché pour pouvoir identifier l'article lors de la modification (REPLACE se base sur l'id uniquement(PRIMARY KEY)) /!\SECURITE : On est ici dans un back-office, on peut donc se permettre une certaine confiance en l'utilisateur, mais les champs cachés ne sont pas sécurisés pour l'acces public il faut faire des controles securités sur les url -->
-			 <label for="reference">Réference </label>
-			 <input required type="text" id="reference" name="reference" value="<?php if(isset($_POST['reference'])) {echo $_POST['reference'];} if(isset($produit_actuel['reference'])){ echo $produit_actuel['reference']; }?>" />
+			<input type="hidden" name="id_produit" id="id_produit" value="<?php if(isset($produit_actuel['id_produit'])){ echo $produit_actuel['id_produit']; }?>" /><!-- On met un input caché pour pouvoir identifier l'article lors de la modification (REPLACE se base sur l'id uniquement(PRIMARY KEY)) /!\SECURITE : On est ici dans un back-office, on peut donc se permettre une certaine confiance en l'utilisateur, mais les champs cachés ne sont pas sécurisés pour l'acces public il faut faire des controles securités sur les url -->
+			<label for="reference">Réference </label>
+			<input required type="text" id="reference" name="reference" value="<?php if(isset($_POST['reference'])) {echo $_POST['reference'];} if(isset($produit_actuel['reference'])){ echo $produit_actuel['reference']; }?>" />
 			
 			<label for="categorie">Catégorie </label>
-			 <input required type="text" id="categorie" name="categorie"  value="<?php if(isset($_POST['categorie'])) {echo $_POST['categorie'];} if(isset($produit_actuel['categorie'])){ echo $produit_actuel['categorie']; }?>"/>
+			<input required type="text" id="categorie" name="categorie"  value="<?php if(isset($_POST['categorie'])) {echo $_POST['categorie'];} if(isset($produit_actuel['categorie'])){ echo $produit_actuel['categorie']; }?>"/>
 			
 			<label for="titre">Titre </label>
-			 <input required class="form-control" type="text" id="titre" name="titre" value="<?php if(isset($_POST['titre'])) {echo $_POST['titre'];} if(isset($produit_actuel['titre'])){ echo $produit_actuel['titre']; }?>"/>
+			<input required class="form-control" type="text" id="titre" name="titre" value="<?php if(isset($_POST['titre'])) {echo $_POST['titre'];} if(isset($produit_actuel['titre'])){ echo $produit_actuel['titre']; }?>"/>
 			
 			<label for="description">Description </label><br />
-			 <textarea required id="description" name="description" class="description_form" ><?php if(isset($_POST['description'])) {echo $_POST['description'];} if(isset($produit_actuel['description'])){ echo $produit_actuel['description']; }?></textarea>
-			
+			<textarea required id="description" name="description" class="description_form" ><?php if(isset($_POST['description'])) {echo $_POST['description'];} if(isset($produit_actuel['description'])){ echo $produit_actuel['description']; }?></textarea>
+		
+		</fieldset>
+		<fieldset>
 			<label for="couleur">Couleur </label>
-			 <input required type="text" id="couleur" name="couleur"  value="<?php if(isset($_POST['couleur'])) {echo $_POST['couleur'];} if(isset($produit_actuel['couleur'])){ echo $produit_actuel['couleur']; }?>" />
+			<input required type="text" id="couleur" name="couleur"  value="<?php if(isset($_POST['couleur'])) {echo $_POST['couleur'];} if(isset($produit_actuel['couleur'])){ echo $produit_actuel['couleur']; }?>" />
 		
 		<!--	<label for="taille">Taille </label>
 			 <select required id="taille" name="taille" >
@@ -368,7 +370,7 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 		
 		</fieldset>
 	</form> 
-</div>
+
  <?php
  	
 }

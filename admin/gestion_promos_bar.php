@@ -58,9 +58,9 @@ if(isset($_POST['ajouter']) && $_POST['ajouter'] == 'Enregistrer')
 	{
 		$msg .='<div class="msg_erreur">La date de début doit précéder la date de fin !</div>';
 	}
-	if($date1_bdd < $today)
+	if($date1_bdd <= $today)
 	{
-		$msg .='<div class="msg_erreur">L\'offre ne peut commencer qu\'à partir de maintenant, pas avant !</div>';
+		$msg .='<div class="msg_erreur">L\'offre ne peut commencer qu\'à partir de demain, pas avant !</div>';
 	}	
 	if(empty($msg))
 	{
@@ -80,7 +80,7 @@ if(isset($_POST['ajouter']) && $_POST['ajouter'] == 'Enregistrer')
 		else
 		{
 			executeRequete("INSERT INTO promo_bar (id_bar, categorie_produit, date_debut, date_fin, description) VALUES ( '$id_bar', '$categorie', '$date1_bdd', '$date2_bdd', '$description')"); 
-			header('location:gestion_promos_bar.php?add=ok&affichage=affichage'.$mysqli->insert_id.''.$page.''.$orderby.''.$asc_desc.'');
+			header('location:gestion_promos_bar.php?add=ok&affichage=affichage&id_promo_bar='.$mysqli->insert_id.''.$page.''.$orderby.''.$asc_desc.'');
 		}
 	}
 }	
@@ -92,7 +92,7 @@ if(isset($_POST['ajouter']) && $_POST['ajouter'] == 'Enregistrer')
 //MESSAGE DE VALIDATION 
 if(isset($_GET['add']) && $_GET['add'] == 'ok')
 {
-	$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Nouvel apéro enregistré avec succès!</div>';
+	$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Nouvel apéro enregistré!</div>';
 }
 if(isset($_GET['mod']) && $_GET['mod'] == 'ok')
 {
@@ -117,7 +117,7 @@ echo '<div="box_info">';
 //STATS
 $resultat = executeRequete("SELECT SUM(montant) AS total,
 								COUNT(id_commande) AS nbre_commandes,
-								ROUND(AVG(montant),0) AS panier_moyen,
+								ROUND(AVG(montant),2) AS panier_moyen,
 								MAX(date) AS der_commande 
 							FROM commande");
 $commandes = $resultat -> fetch_assoc();
@@ -168,7 +168,7 @@ if(isset($_GET['affichage']) &&  $_GET['affichage']=='affichage')
 	while ($ligne = $resultat->fetch_assoc())
 	{
 		echo '<tr '; 
-		if(isset($_GET['id_bar']) && ($_GET['id_bar'] == $ligne['id_bar']))
+		if((isset($_GET['id_promo_bar']) && ($_GET['id_promo_bar'] == $ligne['id_promo_bar'])) || (isset($_GET['id_bar']) && ($_GET['id_bar'] == $ligne['id_bar'])))
 		{
 			echo ' class="tr_active" ';
 		}
@@ -237,19 +237,23 @@ if(isset($_GET['id_bar']))
 			{
 				if($indice == 'photo')
 				{
-					echo '<td ><img src="'.$valeur.'" alt="'.$ligne['nom_bar'].'" title="'.$ligne['nom_bar'].'" class="thumbnail_tableau" width="80px" /></td>';
+					echo '<td ><img src="'.$valeur.'" alt="'.$ligne['nom_bar'].'" title="'.$ligne['nom_bar'].'" class="thumbnail_tableau" width="100px" /></td>';
 				}
 				//elseif($indice == 'description')
 				//{
 			//		echo '<td colspan="3">' . substr($valeur, 0, 70) . '...</td>'; //Pour couper la description (affiche une description de 70 caracteres maximum)
 			//	}
-				elseif($indice == 'nom_gerant' || $indice == 'adresse')
+				elseif($indice == 'nom_gerant') 
 				{
-					echo '<td colspan="">' . ucfirst($valeur).' ';	
+					echo '<td colspan="2">' . ucfirst($valeur).' ';	
 				}
 				elseif($indice == 'prenom_gerant')
 				{
 					echo ucfirst($valeur) .'</td>';
+				}
+				elseif($indice == 'adresse')
+				{
+					echo '<td colspan="">' . ucfirst($valeur).'</td>';	
 				}
 				elseif($indice != 'description')
 				{
@@ -282,22 +286,17 @@ if(isset($_GET['id_bar']))
 	{
 		echo '<tr>';
 			foreach($ligne AS $indice => $valeur) 
-			{
-				if($indice == 'id_bar')
-				{
-					echo '<td>'.$valeur.'</td>'; //Lien au niveau de l'id pour afficher les details de la commande
-				}
-				
+			{	
 				//elseif($indice == 'categorie_produit')
 				//{
 				//	echo '<td><a href="?affichage=affichage&action=detail&id_bar='.$ligne['id_bar'].'&id_promo_bar='.$ligne['id_promo_bar'].'&categorie='.$ligne['categorie_produit'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details du membre
 				//}	
-				elseif (($indice == 'date_debut') || ($indice == 'date_fin'))
+				if (($indice == 'date_debut') || ($indice == 'date_fin'))
 				{
 					echo '<td>';
 						$date = date_create_from_format('Y-m-d', $valeur);
 					echo date_format($date, 'd/m/Y') . '</td>';
-				}					
+				}				
 				else
 				{
 					echo '<td >'.$valeur.'</td>';

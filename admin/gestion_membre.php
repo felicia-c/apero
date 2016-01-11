@@ -13,8 +13,6 @@ foreach($_GET AS $indice => $valeur )
 {
 	$_GET[$indice] = htmlentities($valeur, ENT_QUOTES); 
 }
-
-
 //pagination liens
 $page='';
 $orderby=''; 
@@ -188,7 +186,7 @@ echo '<div="box_info">';
 //STATS
 $resultat = executeRequete("SELECT SUM(montant) AS total,
 								COUNT(id_commande) AS nbre_commandes,
-								ROUND(AVG(montant),0) AS panier_moyen,
+								ROUND(AVG(montant),2) AS panier_moyen,
 								MAX(date) AS der_commande 
 							FROM commande");
 $commandes = $resultat -> fetch_assoc();
@@ -446,7 +444,7 @@ if(isset($_GET['action']) && $_GET['action']=='ajout')
 		
 	<form class="form" method="post" action="" enctype="multipart/form-data"> <!--enctype pour ajout eventuel d'un champs photo -->
 		<fieldset>
-			<legend>Nouveau membre / administrateur</legend>
+			<legend><h3>Nouveau membre / administrateur</h3></legend>
 		 
 			<input type="hidden" name="id_membre" id="id_membre" value="<?php if(isset($membre_actuel['id_membre'])){ echo $membre_actuel['id_membre']; }?>" /><!-- On met un input caché pour pouvoir identifier le membre lors de la modification (REPLACE se base sur l'id uniquement(PRIMARY KEY)) /!\SECURITE : On est ici dans un back-office, on peut donc se permettre une certaine confiance en l'utilisateur, mais les champs cachés ne sont pas sécurisés pour l'acces public il faut faire des controles securités sur les url -->
 			<label for="pseudo">Pseudo</label>
@@ -458,7 +456,8 @@ if(isset($_GET['action']) && $_GET['action']=='ajout')
 				
 			<label for="mdp2">Confirmer le mot de passe</label>
 			<input required type="password" id="mdp2" name="mdp2"  maxlength="14" /><br /> 
-				
+		</fieldset>
+		<fieldset>
 			<label for="statut">Statut </label>
 			<select required id="statut" name="statut">
 				<option value="0"<?php if(isset($_POST['statut']) && $_POST['statut'] == "0"){ echo 'selected';} ?> >Membre</option>
@@ -480,9 +479,11 @@ if(isset($_GET['action']) && $_GET['action']=='ajout')
 			<select required  id="sexe" name="sexe" required >
 				<option value="m" <?php if(isset($_POST['sexe']) && $_POST['sexe'] == "m") { echo 'selected';} ?>> Homme</option>
 				<option value="f" <?php if(isset($_POST['sexe']) && $_POST['sexe'] == "f") { echo 'selected';} ?> >Femme</option></select><br /><br />
-			</select><br />
-			
-			<h3>Adresse de Livraison</h3>
+			</select>
+		</fieldset>
+
+		<fieldset>
+			<legend><h3>Adresse de Livraison</h3></legend>
 			
 			<label for="ville">Ville</label>
 			<input required  type="text" id="ville" name="ville" value="<?php if(isset($_POST['ville'])) {echo $_POST['ville'];}?>" placeholder="Maville" required /><br />

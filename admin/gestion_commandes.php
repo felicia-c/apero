@@ -55,8 +55,7 @@ $req ="";
 //AFFICHAGE
 require_once("../inc/header.inc.php");
 
-echo '<div class="box_info">
-	<p><a href="" onClick="(window.history.back())" title="retour"> < Retour</a></p>';
+
 $resultat = executeRequete("SELECT SUM(montant) AS total,
 										COUNT(id_commande) AS nbre_commandes,
 										ROUND(AVG(montant),2) AS panier_moyen,
@@ -69,16 +68,17 @@ $donnees =$resultat -> fetch_assoc();
 
 if((isset($_GET['affichage']) && $_GET['affichage'] == 'affichage') && (isset($_GET['action']) && $_GET['action'] == 'commandes'))
 {	
-	
 	echo '<h2><a href="?affichage=affichage&action=commandes" class="button active" >Toutes les commandes ('. $donnees['nbre_commandes'].')</a></h2>
-	<a href="?affichage=all_details&action=detail" class="button">Détails des commandes</a><br />';
+	<a href="?affichage=all_details&action=detail" class="button">Détails des commandes</a><br />
+	<p><a href="" onClick="(window.history.back())" title="retour"> < Retour</a></p>';
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'detail')
 {
 	$resultat_details = executeRequete("SELECT COUNT(id_details_commande) AS nbre_details FROM  details_commande");
 	$details =$resultat_details -> fetch_assoc();	
 	echo '<h2><a href="?affichage=all_details&action=detail" class="button active">Détails des commandes ('. $details['nbre_details'].')</a></h2>
-	<a href="?affichage=affichage&action=commandes" class="button" >Toutes les commandes</a>';
+	<a href="?affichage=affichage&action=commandes" class="button" >Toutes les commandes</a>
+	<p><a href="" onClick="(window.history.back())" title="retour"> < Retour</a></p>';
 }
 else
 {
@@ -283,7 +283,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 		$lien = '<a href="?affichage=affichage&action=detail&';
 		affichagePaginationGestion(5, 'details_commande', $lien);
 	}
-	echo '</div>';		
+	//echo '</div>';		
 	
 
 	// DETAILs DES PRODUITS
@@ -413,7 +413,6 @@ if((isset($_GET['affichage']) && $_GET['affichage'] == 'affichage') && (isset($_
 	 
 	 <br />
 	 <br />
-		</div>
 <?php
 	
 require_once("../inc/footer.inc.php");	

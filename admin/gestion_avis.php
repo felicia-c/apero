@@ -30,10 +30,11 @@ require_once("../inc/header.inc.php");
 <?php 
 $resultat = executeRequete("SELECT SUM(montant) AS total,
 										COUNT(id_commande) AS nbre_commandes,
-										ROUND(AVG(montant),0) AS panier_moyen,
+										ROUND(AVG(montant),2) AS panier_moyen,
 										MAX(date) AS der_commande 
 									FROM commande");
 $commandes = $resultat -> fetch_assoc();
+//<div class="box_info">
 echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $commandes['nbre_commandes'].' | Commande moyenne : '.$commandes['panier_moyen'].'€</h3><br />';
 echo $msg;
 
@@ -71,7 +72,7 @@ while ($ligne = $resultat->fetch_assoc())
 		}
 	
 
-	echo '<td><a href="?affichage=affichage&action=suppression&id_avis='.$ligne['id_avis'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
+	echo '<td><a href="?affichage=affichage&action=suppression&id_avis='.$ligne['id_avis'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
 		</td>
 	</tr>';	
 	
@@ -80,7 +81,7 @@ echo '</table>
 	<br />';
 	affichagePaginationGestion(10, 'avis', '');
 	
-echo '</div><br /><br />';
+echo '<br /><br />';
 
 require_once("../inc/footer.inc.php");	
 ?>					

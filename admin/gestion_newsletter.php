@@ -20,7 +20,7 @@ if(!empty($_POST))
 	{
 	    $liste .= $abonne['email'];
 	    $liste .= ','; //On sépare les adresses par une virgule.
-		//echo '<pre>'; var_dump($donnees['email']); echo '</pre>';
+
 	}
 
 	$destinataire = $liste; // mail des membres inscrits a la Newsletter.

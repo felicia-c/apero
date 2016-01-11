@@ -117,15 +117,15 @@ $req = "";
 
 require_once("../inc/header.inc.php");
 
-echo '<div class="box_info">';
+//echo '<div class="box_info">';
 
 $resultat = executeRequete("SELECT SUM(montant) AS total,
 									COUNT(id_commande) AS nbre_commandes,
-									ROUND(AVG(montant),0) AS panier_moyen,
+									ROUND(AVG(montant),2) AS panier_moyen,
 									MAX(date) AS der_commande 
 							FROM commande");
 $commandes = $resultat -> fetch_assoc();
-echo '<p>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $commandes['nbre_commandes'].' | Commande moyenne : '.$commandes['panier_moyen'].'€</p><br />';
+echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $commandes['nbre_commandes'].' | Commande moyenne : '.$commandes['panier_moyen'].'€</h3><br />';
 
 $resultat = executeRequete("SELECT COUNT(id_promo_produit) AS nbre_promos FROM promo_produit");
 $donnees =$resultat -> fetch_assoc();	
@@ -276,8 +276,7 @@ if((isset($_GET['detail']) && $_GET['detail'] == 'produit') && isset($_GET['id_p
 		}						
 		echo '</table>
 		<br />
-		<br />
-		</div>';
+		<br />';
 	}	
 }
 // FORM AJOUT / MODIF
@@ -307,7 +306,6 @@ if((isset($_GET['detail']) && $_GET['detail'] == 'produit') && isset($_GET['id_p
 		</fieldset>	
 	</form>
 	<br />
-</div>
 <br />
 <br />';
 }
