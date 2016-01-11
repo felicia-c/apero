@@ -126,6 +126,7 @@ require_once("../inc/header.inc.php");
 				<p>Nombre d'abonnés à la Newsletter : <strong><?php  echo ''.$resultat->num_rows.''; ?></strong></p>
 			</div>
 		</div>
+		<br />
 		<div class="box_info">
 			<form class="form" method="post" action="<?php echo( $_SERVER['REQUEST_URI'] ); ?>"> 
 						

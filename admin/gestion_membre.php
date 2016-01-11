@@ -181,7 +181,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'suppression')
 $req = "";
 require_once("../inc/header.inc.php");
 
-echo '<div="box_info">';
+//echo '<div="box_info">';
 
 //STATS
 $resultat = executeRequete("SELECT SUM(montant) AS total,

@@ -10,7 +10,7 @@ $resultat_couleur = executeRequete("SELECT DISTINCT couleur FROM produit ORDER B
 require_once("inc/header.inc.php");
 
   
-echo '<div class="box_info col1">';
+echo '<div class="box_info col1 ">';
 // debug($_GET);
 $req = "";
 
@@ -55,11 +55,7 @@ echo '<br />
 		<a class="btn" style="margin-bottom: 20px;" href="?action=order&tri=min" >- de 15€</a> |  
 		<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=mid">  de 15€ à 25€</a> |  
 		<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=max">  + de 25€</a><br />
-		<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=tous">Tous les articles</a> 
-</div>	
-
-
-<div class="col2">';
+		<a class="btn " style="margin-bottom: 20px;" href="?action=order&tri=tous">Tous les articles</a> ';
 
 echo $msg;
 

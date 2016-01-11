@@ -1,6 +1,6 @@
 <?php
 require_once("../inc/init.inc.php");
-
+$titre_page = "Gestion des produits";
 //APERO - Felicia Cuneo 12/2015
 
  if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAdmin())

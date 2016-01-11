@@ -1,6 +1,6 @@
 <?php
 require_once('inc/init.inc.php');
-
+$titre_page = "Bars";
 require_once('inc/header.inc.php');
 $id_bar = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING ); 
 

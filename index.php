@@ -1,10 +1,12 @@
 <?php 
 require_once("inc/init.inc.php");
-
+//APERO  - Felicia Cuneo - 01/2016
+$titre_page = "Accueil";
 ?>
 
   <body>
-  <?php require_once("inc/header.inc.php"); 
+  <?php 
+  require_once("inc/header.inc.php"); 
 
 
     
@@ -14,9 +16,7 @@ require_once("inc/init.inc.php");
               <h3 class="text-center">en cours de préparation...</h3>';
             
 
-?>
+echo '<br /><br />';
 
 
-
-  </body>
-</html>
+require_once("inc/footer.inc.php");
