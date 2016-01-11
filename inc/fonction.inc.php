@@ -670,25 +670,22 @@ function afficheProduits($req)
 	
 	while($mon_produit = $resultat -> fetch_assoc())
 	{
-		echo '<div class ="produit  bg_color1">
-		<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="noborder_lien"><h2>'. $mon_produit['titre'] .'</h2></a>
+		echo '<div class ="produit vignette_produit">
+			<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="noborder_lien"><h2>'. $mon_produit['titre'] .'</h2></a>
 			<div class="img_produit">
 				<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="noborder_lien"><img class="make-it-slow make-it-fast box" src="'. $mon_produit['photo'].'" style=" width: 200px; max-width: 100%;" /></a>
 			</div>
 			<div class="infos_produit">
-				
-				<div class="collection_produit"><p>Collection: '.$mon_produit['categorie'].'<br />
+				<!-- <div class="collection_produit"><p>Collection:<br /> '.$mon_produit['categorie'].'<br /> -->
 				<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="btn ">Voir la fiche</a></p></div>';
 		$prix= $mon_produit['prix'] * 1.2;
-		echo '<div class="prix_produit"><p>'. round($prix, 2).' €</p></div>
-				
-			</div>';
+		echo '<div class="prix_produit"><p>'. round($prix, 2).' €</p></div>';
 		$req_promo= "SELECT promo_bar.id_bar, promo_bar.description AS nb_promo, bar.nom_bar FROM promo_bar INNER JOIN bar ON promo_bar.id_bar = bar.id_bar WHERE promo_bar.categorie_produit = '$mon_produit[categorie]'";
 		$promo = executeRequete($req_promo);
 		$promo = $promo -> fetch_assoc();
 		if(count($promo['id_bar'])> 0)
 		{
-			echo '<div class="promo_afficheproduit"><h4 class="tomato">Ce T-shirt vous paye l\'apéro !</h4></div>';
+			echo '<div class="promo_afficheproduit"><p class="tomato small">Ce T-shirt vous offre l\'apéro</p></div>';
 			//echo '<div class="promo_afficheproduit"><h4 >Apéro offert au <a class="orange" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$promo_bar['id_bar'].'">'. $promo_bar['nom_bar'].'</a>!</h4></div>';
 		}
 		else
