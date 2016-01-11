@@ -44,7 +44,7 @@ if(isset($_POST['evaluer']))
 	}
 }
 require_once('inc/header.inc.php');
-
+echo '<div class="box_info">';
 if(isset($_GET['id_bar']))
 {
 	$id_bar = filter_input( INPUT_GET, 'id_bar', FILTER_SANITIZE_NUMBER_INT ); 
@@ -58,5 +58,5 @@ if(isset($_GET['id_bar']))
 }
 
 echo '<br /><br />';
-
+echo '</div>';
 require_once('inc/footer.inc.php');

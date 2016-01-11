@@ -706,7 +706,7 @@ function afficheBar($req)
 	$resultat = executeRequete($req);
 	while($mon_bar = $resultat -> fetch_assoc())
 	{
-		echo '<div class="box_info bar text-center">
+		echo '<div class="bar text-center">
 			<h1>'.$mon_bar['nom_bar'].'</h1>
 				<img src="'. $mon_bar['photo'].'" style="max-width: 100%;" />
 				
@@ -729,7 +729,7 @@ function afficheBar($req)
 		echo '<div><iframe class="googleMaps" style="width: 100%;" max-width="1000" height="300" src="http://maps.google.fr/maps?q='.$MapCoordsUrl.'&amp;t=h&amp;output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" ></iframe></div>
 			</div>
 
-			<div class="box_info">	
+			<div class="">	
 				<h2> Votre avis sur le '. $mon_bar['nom_bar'].'</h2><br/>';
 
 		$resultat = executeRequete("SELECT membre.pseudo AS pseudo, avis.commentaire, avis.note, avis.date FROM avis, membre WHERE id_bar = '$mon_bar[id_bar]' AND avis.id_membre = membre.id_membre");
@@ -828,11 +828,12 @@ function affichePromoBar($req)
 	while($ma_promo = $resultat -> fetch_assoc())
 	{
 		echo '<br />
-			<div class="box_info bar text-center">
+			<div class=" bar text-center">
+
 				<p class=" description_promo">'.$ma_promo['description'].'</p>
 				<p class="dates">'.afficheDateFr($ma_promo['date_debut'], $ma_promo['date_fin'], ' au ').'</p>
 				<p>Cette promotion est valable si vous portez un t-shirt de la collection: <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='.$ma_promo['categorie_produit'].'">'.$ma_promo['categorie_produit'].'</a></p>
-			</div>';
+			</div><br /><hr />';
 	}
 }
 

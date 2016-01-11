@@ -4,7 +4,7 @@ $titre_page = 'Mes promos';
 
 //APERO - Felicia Cuneo - 01/2015
 
-//Redirection si l'utilisateur n'est pas admin
+//Redirection si l'utilisateur n'est pas admin et/ou gerant
 if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAdmin()){
 	header("location:connexion.php");
 }
@@ -94,7 +94,7 @@ require_once("inc/header.inc.php");
 
 echo '<div="box_info">';
 		
-//STATS
+//STATS  A MODIFIER ///////
 $resultat = executeRequete("SELECT SUM(montant) AS total,
 								COUNT(commande.id_commande) AS nbre_commandes,
 								ROUND(AVG(montant),0) AS panier_moyen,
@@ -196,8 +196,8 @@ if(isset($_GET['id_bar']))
 {
 	if((isset($_GET['action']) && $_GET['action'] == 'detail'))
 	{
-		echo '<div class="box_info">
-			<table class="large_table">';
+		//<div class="box_info">
+		echo '<table class="large_table">';
 		//On affiche les infos du bar associé a l'apero:
 		$resultat = executeRequete("SELECT * FROM bar WHERE id_bar = '$_GET[id_bar]'");
 		$nbcol = $resultat->field_count;
@@ -298,17 +298,17 @@ if(isset($_GET['id_bar']))
 if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 'modifier')))
 {
 ?>		
-	<div class="box_info">
+	
 		<form class="form" method="post" action="" enctype="multipart/form-data"> <!--enctype pour ajout eventuel d'un champs photo -->
 			<fieldset>
 	<?php
-	
+		echo '<legend><h3>';
 		if(isset($_GET['id_promo_bar']) && (isset($_GET['action']) && ($_GET['action']=='modifier')))
 		{
 			$resultat = executeREquete("SELECT * FROM promo_bar WHERE id_promo_bar ='$_GET[id_promo_bar]'") ; // on recupere les infos de l'article à partir de l'id_article récupéré dans l'URL pour les afficher ds le formulaire
 			$promo_actuelle = $resultat ->fetch_assoc();
 
-			echo '<legend>Modifier l\' apéro n°';				
+			echo 'Modifier l\' apéro n°';				
 			if(isset($promo_actuelle['id_promo_bar'])) // n° de la promo ds le titre
 			{ 
 				echo $promo_actuelle['id_promo_bar'];
@@ -317,12 +317,13 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 			{ 
 				echo $_POST['id_promo_bar'];
 			}
-			echo '</legend>';
+			
 		}
 		else
 		{
-			echo '<legend>Ajouter un apéro</legend>';	
+			echo 'Ajouter un apéro';	
 		}
+		echo '</h3></legend>';
 		?> 
 		<input type="hidden" name="id_promo_bar" id="id_promo_bar" value="<?php if(isset($promo_actuelle['id_promo_bar'])){ echo $promo_actuelle['id_promo_bar']; }?>" />
 			<label for="id_bar">Nom de l'établissement</label>

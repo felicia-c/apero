@@ -219,7 +219,7 @@ echo '</div>
 <p><strong>'. ucfirst($membre_actuel['prenom']) .' '. ucfirst($membre_actuel['nom']) .'</strong><br />'.$membre_actuel['adresse'] .'<br />'.$membre_actuel['cp'] .' '. ucfirst($membre_actuel['ville']) .'</p>';
 
 echo '</div>
-	</div>';
+	</div><br />';
 
 if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdmin())
 {
@@ -249,7 +249,12 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 	
 		while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
 		{
-			echo '<tr>';
+			echo '<tr '; 
+			if(isset($_GET['id_bar']) && ($_GET['id_bar'] == $ligne['id_bar']))
+			{
+				echo ' class="tr_active" ';
+			}
+			echo '>';
 			foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
 			{
 
@@ -361,7 +366,7 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 			<br />
 			<input type="submit" id="enregistrer" name="enregistrer" value="Enregistrer" class="button" /><br />
 			<br />
-			<a class="button " href="<?php echo RACINE_SITE; ?>profil.php?affichage=affichage">Retour au profil</a><br />
+			<a class="button " href="<?php echo RACINE_SITE; ?>profil.php?affichage=affichage">Annuler</a><br />
 			<br />
 		</fieldset>
 	</form>			
@@ -372,7 +377,7 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 	}
 }	
 echo '<!-- DERNIERES COMMANDES -->
-			 <div class="box_info">
+			
 				<h4 class=orange>Vos dernières commandes</h4>';
 
 			
@@ -408,7 +413,7 @@ echo '<!-- DERNIERES COMMANDES -->
 		<br />
 		<br />
 
-	 </div>';
+		</div>';
 
 	require_once("inc/footer.inc.php");
  

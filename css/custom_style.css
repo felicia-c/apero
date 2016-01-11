@@ -76,6 +76,8 @@ body{
     color: black;
     max-width: 1000px;
     margin: 0 auto;
+    padding-left: 2%;
+    padding-right: 2%;
 }
 h1, h2, h3, h4{
     font-family: 'blockberegular', helvetica;
@@ -136,14 +138,14 @@ header nav li a{
 }
 
 .box_info{
-    border-top: 2px solid #b4b8bb;
+    border: 1px solid #b4b8bb;
     padding: 4% 5%;
     width: 90%;
     vertical-align: top;
-   
-
 }
-
+.no_border{
+   border: none;
+}
 fieldset{
     width: 40%;
     margin: 5% 25%;
@@ -339,8 +341,12 @@ div.bar{
     margin: auto;
 }
 div.vignette_bar{
-    width: 35%;
-    display: inline-block;
+   width: 35%;
+   display: inline-block;
+   border: none;
+   box-shadow: 0px 0px 9px -1px;
+   height: 400px;
+   margin: 2%;
 }
 .img_vignette{
     height: 150px;
