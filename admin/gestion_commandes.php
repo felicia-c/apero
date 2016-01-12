@@ -33,22 +33,41 @@ elseif(isset($_GET['desc']))
 {
 	$asc_desc.='&desc='.$_GET['desc'];
 }
- // SUPPRESSION DES COMMANDES
- 
- if((isset($_GET['action']) && $_GET['action'] == 'suppression') && (isset($_GET['id_commande'])))
+
+//
+if(isset($_GET['id_commande']))
 {
-	$resultat = executeRequete("SELECT * FROM commande WHERE id_commande = '$_GET[id_commande]'"); //on recupere les infos dans la table commande
-	//executeRequete("UPDATE produit SET etat='0' WHERE id_produit IN(SELECT id_produit FROM details_commande WHERE id_commande='$_GET[id_commande]' )");
-	executeRequete("DELETE FROM details_commande WHERE id_commande='$_GET[id_commande]'");
-	executeRequete("DELETE FROM commande WHERE id_commande='$_GET[id_commande]'");
-	   //suppression de la commande dans la table + affichage d'un msg de confirmation
-	header('location:gestion_commandes.php?id='.$_GET['id_commande'].'&rem=ok&affichage=affichage&action=commandes'.$page.$orderby.$asc_desc.'');
+	if(isset($_GET['modif']) && $_GET['modif'] == 'expedier')
+	{
+		executeRequete("UPDATE commande SET etat='expediee' WHERE id_commande='$_GET[id_commande]'");
+		$msg .='<div class="msg_success"><h4>Commande N°'. $_GET['id_commande'] .' exédiée!</h4></div>';
+	}
+
+	//VALIDER UNE COMMANDE ( = PAYEE, prête à envoyer)
+	 if(isset($_GET['modif']) && $_GET['modif'] == 'valider')
+	{
+		executeRequete("UPDATE commande SET etat='validee' WHERE id_commande='$_GET[id_commande]'");
+		$msg .='<div class="msg_success"><h4>Commande N°'. $_GET['id_commande'] .' validée!</h4></div>';
+	}
+	// SUPPRESSION DES COMMANDES
+	 
+	 if(isset($_GET['modif']) && $_GET['modif'] == 'suppression')
+	{
+		$resultat = executeRequete("SELECT * FROM commande WHERE id_commande = '$_GET[id_commande]'"); //on recupere les infos dans la table commande
+		//executeRequete("UPDATE produit SET etat='0' WHERE id_produit IN(SELECT id_produit FROM details_commande WHERE id_commande='$_GET[id_commande]' )");
+		executeRequete("DELETE FROM details_commande WHERE id_commande='$_GET[id_commande]'");
+		executeRequete("DELETE FROM commande WHERE id_commande='$_GET[id_commande]'");
+		   //suppression de la commande dans la table + affichage d'un msg de confirmation
+		header('location:gestion_commandes.php?id='.$_GET['id_commande'].'&rem=ok&affichage=affichage&action=commandes'.$page.$orderby.$asc_desc.'');
+	}
 }
+
 
 if((isset($_GET['rem']) && $_GET['rem'] == 'ok') && (isset($_GET['id'])))
 {
 	$msg .='<div class="msg_success"><p>Commande N°'. $_GET['id'] .' supprimée avec succès!</p></div>';
 }
+ 
 
 $req ="";
 
@@ -389,9 +408,17 @@ if((isset($_GET['affichage']) && $_GET['affichage'] == 'affichage') && (isset($_
 				echo '<td >'.$valeur.'</td>';
 			}
 		}
+		
+			
 		echo '<td>
-		<a class="btn_delete" href="?affichage=affichage&action=commandes&action=suppression&id_commande='.$ligne['id_commande'] .$page.''.$orderby.''.$asc_desc.'" onClick="return(confirm(\'Voulez-vous vraiment supprimer la commande n° '.$ligne['id_commande'] .' ?\'));"> X </a>
-			</td>
+			<a href="?affichage=affichage&action=commandes&modif=valider&id_commande='.$ligne['id_commande'] . $page.''.$orderby.''.$asc_desc.'" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">valider</a>
+		</td>';
+		echo '<td>
+			<a href="?affichage=affichage&action=commandes&modif=expedier&id_commande='.$ligne['id_commande'] .$page.''.$orderby.''.$asc_desc.'" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">expédier</a>
+		</td>';
+		echo '<td>
+			<a class="btn_delete" href="?affichage=affichage&action=commandes&modif=suppression&id_commande='.$ligne['id_commande'] .$page.''.$orderby.''.$asc_desc.'" onClick="return(confirm(\'Voulez-vous vraiment supprimer la commande n° '.$ligne['id_commande'] .' ?\'));"> X </a>
+		</td>
 		</tr>';
 	}						
 	echo '</table>

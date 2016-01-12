@@ -399,6 +399,7 @@ echo '<!-- DERNIERES COMMANDES -->
 					<th>Numero de Suivi</th>
 					<th>Date de Commande</th>
 					<th>Montant TTC</th>
+					<th>Etat de la commande</th>
 				</tr>';
 		$nb_commandes = $resultat -> num_rows;
 		if($nb_commandes < 1)
@@ -415,13 +416,27 @@ echo '<!-- DERNIERES COMMANDES -->
 					$date_avis = date_create_from_format('Y-m-d H:i:s', $ma_commande['date']);
 			echo '<td>'. date_format($date_avis, 'd/m/Y H:i').' </td>
 					<td> '.$ma_commande['montant']. ' €</td>
+					<td> '; 
+					if($ma_commande['etat'] == 'validee')
+					{
+						echo 'Validée';
+					} 
+					elseif($ma_commande['etat'] == 'expediee')
+					{
+						echo 'Expédiée';
+					}
+					else
+					{
+						echo ucfirst($ma_commande['etat']);
+					}
+					echo '</td>
 				</tr>';
 		}
 		echo '</table>
 		<br />
 		<!-- DERNIERES AVIS -->		 
-		 <div class="box_info noborder">
-			<h4>Vos derniers avis</h4>';
+		
+			<h4 class=orange>Vos derniers avis</h4>';
 			
 			
 			// $resultat = executeRequete('SELECT * FROM salle WHERE id_salle IN (SELECT id_salle FROM produit WHERE etat != 1  AND date_arrivee > NOW())');
@@ -460,12 +475,12 @@ echo '<!-- DERNIERES COMMANDES -->
 				</tr>';
 		}
 		echo '</table>
-
-		 </div>
 		<br />
 		<br />
 
-		</div>';
+		</div>
+		<br />
+		<br />';
 
 	require_once("inc/footer.inc.php");
  
