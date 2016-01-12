@@ -1,13 +1,12 @@
 <?php
 require_once("inc/init.inc.php");
+$titre_page = "T-shirts Apéro";
 
 require_once("inc/header.inc.php");
 
 echo $msg;
 
-echo '<div class="box_info">
-	<h1>Fiche Article</h1>';
-
+echo '<div class="box_info">';
 if(isset($_GET['id_produit']))
 {
 	$resultat = executeRequete("SELECT * FROM produit INNER JOIN taille_stock ON produit.id_produit = taille_stock.id_produit WHERE produit.id_produit = '$_GET[id_produit]'");
@@ -16,15 +15,16 @@ if(isset($_GET['id_produit']))
 		header("location:boutique.php");
 		exit;
 	}
+	
 	$mon_produit = $resultat->fetch_assoc();
+	echo '<h1><a href="'.RACINE_SITE.'boutique.php">T-shirts</a> / <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='. $mon_produit['categorie'] .'">'.$mon_produit['categorie'].'</a> / '.$mon_produit['titre'].'</h1><br /><br />';
 	
-	echo '<div style="text-align: center;">';
-	
+	echo '<div style="text-align: center;">';	
 	echo '<div><img  src="images/apero_logo.png" width="300"></div>';
 	
 	echo '<img class="make-it-slow make-it-fast box" src="'. $mon_produit['photo'].'" style=" width: 300px; max-width: 100%;" />';
 	echo '<h3>'. $mon_produit['titre'] .'</h3>';
-	echo '<p>'. $mon_produit['prix']*1.2 .' €</p>';
+	echo '<p>'. round($mon_produit['prix']*1.2, 2) .' €</p>';
 	echo '<hr />';
 
 	//AJOUTER AU PANIER	

@@ -6,20 +6,23 @@ $id_bar = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
 
 if(isset($_GET['action']) && $_GET['action'] == 'promos')
 {
+	echo '<h1><a href="'.RACINE_SITE.'bars_et_promos.php">Bars</a> / Promos</h1>';
 	echo '<div class="block_inline">';
 	echo '<h2>les apéros</h2>';
-	$req_promo= "SELECT * FROM promo_bar WHERE id_bar='$id_bar' AND date_fin > NOW() ORDER BY date_debut";
+	$req_promo= "SELECT * FROM promo_bar INNER JOIN bar ON promo_bar.id_bar=bar.id_bar WHERE promo_bar.date_fin > NOW() GROUP BY promo_bar.id_bar ORDER BY promo_bar.date_debut ";
 	affichePromoBar($req_promo);
 	echo '</div>';
 }
 else
 {	
+
 	$table='bar';	
 	$req="SELECT * FROM $table";
 	$req = paginationGestion(6, $table, $req);
 	$lien = "";
 	echo '<div class="block_inline box_info">
-			<h2>les bars</h2>';
+			<h1>les bars </h1>';
+	//echo  '<h3> > <a href="'.RACINE_SITE.'bars_et_promos.php?action=promos">Voir les apéros</a></h3>';
 	afficheVignetteBar($req);
 	echo '</div>';
 	affichagePaginationGestion(6, $table, $lien);

@@ -207,16 +207,15 @@ if(isset($_GET['action']) && $_GET['action'] == 'supprimer_promo')
 require_once("inc/header.inc.php");	
 
 //debug($_SESSION);
-debug($_POST);
+//debug($_POST);
 
 echo '<div class="box_info">
 		<h1>Panier</h1>';
 echo $msg;
-echo debug($_SESSION['panier']);
-//echo debug($_SESSION['panier']['promo']);
+//echo debug($_SESSION['panier']);
+//debug($_SESSION['panier']['promo']);
 				//echo debug($_SESSION);
 echo '<!-- TITRES TABLEAU PANIER  -->
-	<div class="box_info">
 		<div id="tableau_panier style="width: 100%;"">
 			<table>
 				<tr>
@@ -446,6 +445,7 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 			<br />
 			<br />';
 		}
+echo '</div>';		
 require_once("inc/footer.inc.php");	
 	
 ?>

@@ -1,6 +1,7 @@
 <?php
 require_once('inc/init.inc.php');
-
+$titre_page = "Bars";
+//APERO - Felicia Cuneo - 12/2015
 if(isset($_POST['evaluer']))
 {
 	if(isset($_GET['id_bar']))
@@ -23,7 +24,7 @@ if(isset($_POST['evaluer']))
 		if(empty($msg))
 		{
 			$membre_actuel = $_SESSION['utilisateur'];
-			$avis_membre = executeRequete("SELECT COUNT(*) as total FROM avis WHERE id_membre = '$membre_actuel[id_membre]' && id_bar= '$_POST[id_bar]' ");
+			$avis_membre = executeRequete("SELECT COUNT(*) as total FROM avis WHERE id_membre = '$membre_actuel[id_membre]' && id_bar= '$_GET[id_bar]' ");
 			$avis_membre = $avis_membre -> fetch_assoc();
 			if($avis_membre['total'] > 0)
 			{
@@ -38,17 +39,22 @@ if(isset($_POST['evaluer']))
 			}
 		}
 	}
-	else
+	elseif(!$_GET['id_bar'])
 	{
 		$msg .= '<div class="msg_erreur" ><h4>Une erreur est survenue, veuillez réessayer</h4></div>';  
 	}
 }
 require_once('inc/header.inc.php');
+
 echo '<div class="box_info">';
+
+echo $msg;
 if(isset($_GET['id_bar']))
 {
+
 	$id_bar = filter_input( INPUT_GET, 'id_bar', FILTER_SANITIZE_NUMBER_INT ); 
 	$req="SELECT * FROM bar WHERE id_bar = '$id_bar'";
+
 	afficheBar($req);
 	
 	echo '<h2 class="tomato">Apéros proposés par ce bar</h2>';
