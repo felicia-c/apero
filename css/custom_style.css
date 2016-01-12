@@ -25,6 +25,31 @@
 
 }*/
 
+@font-face {
+    font-family: 'lubalgraphxl';
+    src: url('../fonts/lubgr/lubgrxl-webfont.eot');
+    src: url('../fonts/lubgr/lubgrxl-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/lubgr/lubgrxl-webfont.woff2') format('woff2'),
+         url('../fonts/lubgr/lubgrxl-webfont.woff') format('woff'),
+         url('../fonts/lubgr/lubgrxl-webfont.ttf') format('truetype'),
+         url('../fonts/lubgr/lubgrxl-webfont.svg#lubalgraph_xlt_btextra_light') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'lubalgraphmd';
+    src: url('../fonts/lubgr/lubgrhn-webfont.eot');
+    src: url('../fonts/lubgr/lubgrhn-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/lubgr/lubgrhn-webfont.woff2') format('woff2'),
+         url('../fonts/lubgr/lubgrhn-webfont.woff') format('woff'),
+         url('../fonts/lubgr/lubgrhn-webfont.ttf') format('truetype'),
+         url('../fonts/lubgr/lubgrhn-webfont.svg#lubalgraph_bk_btbook') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
 
 @font-face {
     font-family: 'blockberegular';
@@ -72,7 +97,7 @@ body{
     font-size: 18px;
 }
 .container{
-    font-family: 'nunitobold', verdana;
+    font-family: 'lubalgraphxl', helvetica;
     color: black;
     max-width: 1000px;
     margin: 0 auto;
@@ -80,7 +105,7 @@ body{
     padding-right: 2%;
 }
 h1, h2, h3, h4{
-    font-family: 'blockberegular', helvetica;
+    font-family: 'lubalgraphxl', helvetica;
 }
 h2{
     font-size: 1.2em;
@@ -95,9 +120,9 @@ ul, li{
 }
 
 a,th{
-    color: black;
-    text-decoration: none;
-	font-family: 'blockberegular';
+   color: black;
+   text-decoration: none;
+	font-family: 'lubalgraphmd';
 }
 a:hover,
 .active,
@@ -105,24 +130,34 @@ a:hover,
     border-bottom: orange solid 2px;
     color: #b4b8bb;
 }
+a.btn_delete,a.btn_edit{
+   font-weight: bold;
+   padding: 12px;
+   /*font-size: 1.3em;*/
+}
 a.btn_delete:hover{
-    color: tomato;
-    border: none;
+   color: tomato;
+   border: none;
 }
 a.btn_edit:hover{
-    color: teal;
+   color: teal;
+   border: none;
 }
 a.noborder_lien:hover{
     border-bottom: none;
+    border: none;
+}
+h1 a:hover{
+   border: none;
 }
 header nav li{
     display: inline-block;
-    margin: 1%;
+    padding: 1%;
     font-size: 1em;
 }
 header nav li a{
     padding-bottom: 2px;
-    font-family: 'blockberegular';
+    font-family: 'lubalgraphmd', helvetica;
 }
 #logo_header{
    float: left;
@@ -131,10 +166,12 @@ header nav li a{
 .msg_success{
    color: teal;
    text-align: center;
+   font-family: 'lubalgraphmd';
 }
 .msg_erreur{
    color: tomato;
    text-align: center;
+   font-family: 'lubalgraphmd';
 }
 
 .box_info{
@@ -151,7 +188,7 @@ fieldset{
     margin: 5% 25%;
     margin-bottom: 1%;
     padding: 1% 5%;
-    font-family: 'nunitobold';
+    font-family: 'lubalgraphmd';
     border: 2px solid  #b4b8bb;
        -moz-border-radius-topleft: 3px;
     -moz-border-radius-topright:3px;
@@ -172,7 +209,7 @@ input, select, textarea{
     margin: 5%;
     margin-top: 1%;
     display: block;
-    font-family: 'nunitobold';
+    font-family: 'lubalgraphmd';
     border: 1px solid  #b4b8bb;
        -moz-border-radius-topleft: 3px;
     -moz-border-radius-topright:3px;
@@ -196,7 +233,7 @@ input[type=checkbox], input[type=radio]{
 }
 input[type=submit]{
    font-size: 1em;
-   font-family: 'blockberegular';
+   font-family: 'lubalgraphmd';
 }
 label{
     width: 50%;
@@ -418,7 +455,9 @@ input{
     padding: 1%;
 }
 
-
+div.tri a:hover{
+   border: none;
+}
 /*    ANIM PHOTOS   */ 
 
 /* The slow way */
