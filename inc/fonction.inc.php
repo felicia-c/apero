@@ -703,6 +703,7 @@ function afficheBar($req)
 	$resultat = executeRequete($req);
 	while($mon_bar = $resultat -> fetch_assoc())
 	{
+		echo '<h1><a href="'.RACINE_SITE.'bars_et_promos.php">Bars</a> / '.$mon_bar['nom_bar'].'</h1>';
 		echo '<div class="bar text-center">
 			<h1>'.$mon_bar['nom_bar'].'</h1>
 				<img src="'. $mon_bar['photo'].'" style="max-width: 100%;" />
@@ -760,7 +761,7 @@ function afficheBar($req)
 			$nb_avis = $avis_membre->num_rows;
 			if($nb_avis > 0)
 			{
-				echo '<p>Vous avez déjà évalué ce bar </p>';
+				echo '<p>Vous avez déjà évalué ce bar </p><br /><br /><br />';
 			}
 			else
 			{
@@ -788,6 +789,26 @@ function afficheBar($req)
 		echo '</div>';
 		}
 	}
+}
+ // affichage promo
+function affichePromoBar($req)
+{
+	$resultat = executeRequete($req);
+	if($resultat -> num_rows < 1)
+	{
+		echo 'aucun apéro proposé actuellement';
+	}
+	while($ma_promo = $resultat -> fetch_assoc())
+	{
+		echo '<br />
+		<div class=" bar text-center">
+			<p class=" description_promo">'.$ma_promo['description'].'</p>
+			<p class="dates">'.afficheDateFr($ma_promo['date_debut'], $ma_promo['date_fin'], ' au ').'</p>
+			<p>Cette promotion est valable si vous portez un t-shirt de la collection: <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='.str_replace('#', '',$ma_promo['categorie_produit']).'">'.$ma_promo['categorie_produit'].'</a></p>
+		</div><br /><hr />';
+
+	}
+	
 }
 
 //vignette bar
@@ -818,21 +839,6 @@ function afficheVignetteBar($req)
 	}
 }
 
- // affichage promo
-function affichePromoBar($req)
-{
-	$resultat = executeRequete($req);
-	while($ma_promo = $resultat -> fetch_assoc())
-	{
-		echo '<br />
-			<div class=" bar text-center">
-
-				<p class=" description_promo">'.$ma_promo['description'].'</p>
-				<p class="dates">'.afficheDateFr($ma_promo['date_debut'], $ma_promo['date_fin'], ' au ').'</p>
-				<p>Cette promotion est valable si vous portez un t-shirt de la collection: <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='.$ma_promo['categorie_produit'].'">'.$ma_promo['categorie_produit'].'</a></p>
-			</div><br /><hr />';
-	}
-}
 
 // TABLEAU
 
