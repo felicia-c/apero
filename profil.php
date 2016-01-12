@@ -137,7 +137,7 @@ if($_GET)
 	}
 
 	// SUPPRESSION
-	 
+	//BAR
 	 if(isset($_GET['action']) && $_GET['action'] == 'suppression')
 	{
 		$resultat = executeRequete("SELECT * FROM bar WHERE id_bar= '$_GET[id_bar]'"); //on recupere les infos afin de connaitre son image  pour pouvoir la supprimer
@@ -152,8 +152,17 @@ if($_GET)
 		executeRequete("DELETE FROM bar WHERE id_bar='$_GET[id_bar]'");
 		$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Bar N°'. $_GET['id_bar'] .' supprimé avec succès!</div>';
 		$_GET['affichage'] = 'affichage'; 	
+	}
+	//AVIS
 
-	}	
+	// suppression d'un avis
+	 if(isset($_GET['action']) && $_GET['action'] == 'suppression_avis')
+	{
+		$resultat = executeRequete("SELECT * FROM avis WHERE id_avis = '$_GET[id_avis]'"); //on recupere les infos dans la table avis
+
+		executeRequete("DELETE FROM avis WHERE id_avis='$_GET[id_avis]'");
+		$msg .='<div class="msg_success"><h4>Avis N°'. $_GET['id_avis'] .' supprimé!</h4></div>';   //suppression de l'avis dans la table + affichage d'un msg de confirmation
+	}
 }
 //FIN SUPPRESSION
 require_once("inc/header.inc.php");
@@ -410,6 +419,49 @@ echo '<!-- DERNIERES COMMANDES -->
 		}
 		echo '</table>
 		<br />
+		<!-- DERNIERES AVIS -->		 
+		 <div class="box_info noborder">
+			<h4>Vos derniers avis</h4>';
+			
+			
+			// $resultat = executeRequete('SELECT * FROM salle WHERE id_salle IN (SELECT id_salle FROM produit WHERE etat != 1  AND date_arrivee > NOW())');
+
+//selection des avis de l'utilisateur
+		$id_utilisateur = $_SESSION['utilisateur']['id_membre'];
+		$resultat = executeRequete("SELECT * FROM avis WHERE id_membre = '$id_utilisateur' ORDER BY date DESC LIMIT 0,5");
+		
+		echo '<table class="tableau_panier">
+				<tr>
+					<th>Bar</th>
+					<th>Date</th>
+					<th>Note</th>
+					<th>Commentaire</th>
+				</tr>';
+		$nb_avis = $resultat -> num_rows;
+		if($nb_avis < 1)
+		{
+			echo '<tr>
+					<td colspan="4">Vous n\'avez pas encore donné votre avis sur une salle</td>	
+				</tr>';
+		}
+		while($mon_avis = $resultat -> fetch_assoc() )
+		{
+			$resultat_titre = executerequete("SELECT nom_bar FROM bar WHERE id_bar = '$mon_avis[id_bar]'");
+			$titre = $resultat_titre -> fetch_assoc();
+			echo '<tr>
+					<td> '.ucfirst($titre['nom_bar']). ' </td>
+					<td>';
+					$date = date_create_from_format('Y-m-d H:i:s', $mon_avis['date']);
+					echo date_format($date, 'd/m/Y H:i') .' </td>
+					<td>'. $mon_avis['note'] .' </td>
+					<td> '.ucfirst($mon_avis['commentaire']). '</td>	
+					<td><a href="?action=suppression_avis&id_avis='.$mon_avis['id_avis'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
+					</td>
+				</tr>';
+		}
+		echo '</table>
+
+		 </div>
 		<br />
 		<br />
 
