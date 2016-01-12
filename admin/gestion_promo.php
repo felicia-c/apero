@@ -2,7 +2,7 @@
 
 require_once("../inc/init.inc.php");
 ////////APERO - Felicia Cuneo - 11/2015
-$titre_page = "Gestion des promo";
+$titre_page = "Gestion des promos";
 
 
 //Redirection si l'utilisateur n'est pas admin
