@@ -104,6 +104,22 @@ body{
     padding-left: 2%;
     padding-right: 2%;
 }
+
+.col1{
+    border: none;
+    width: 100%;
+    margin-right: 0;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+}
+.col2{
+    margin: 0;
+    width: 100%;
+    display: inline-block;
+    border-left: 2px solid  #b4b8bb;
+}
+/* titres et liens */
 h1, h2, h3, h4{
     font-family: 'lubalgraphxl', helvetica;
 }
@@ -127,7 +143,7 @@ a,th{
 a:hover,
 .active,
 .actif{
-    border-bottom: orange solid 2px;
+    border-bottom: orange solid 1px;
     color: #b4b8bb;
 }
 a.btn_delete,a.btn_edit{
@@ -147,9 +163,14 @@ a.noborder_lien:hover{
     border-bottom: none;
     border: none;
 }
-h1 a:hover{
-   border: none;
+h1 a:hover,
+h2 a:hover,
+h3 a:hover{
+   border-bottom: none;
 }
+
+
+/* MENU */
 header nav li{
     display: inline-block;
     padding: 1%;
@@ -159,30 +180,18 @@ header nav li a{
     padding-bottom: 2px;
     font-family: 'lubalgraphmd', helvetica;
 }
+header nav li a:hover{
+   border-color: #335163;
+}
+header nav li a.active{
+   border-color: #335163;
+}
 #logo_header{
    float: left;
    margin: 1%;
 }
-.msg_success{
-   color: teal;
-   text-align: center;
-   font-family: 'lubalgraphmd';
-}
-.msg_erreur{
-   color: tomato;
-   text-align: center;
-   font-family: 'lubalgraphmd';
-}
 
-.box_info{
-    border: 1px solid #b4b8bb;
-    padding: 4% 5%;
-    width: 90%;
-    vertical-align: top;
-}
-.no_border{
-   border: none;
-}
+/* FORM */
 fieldset{
     width: 40%;
     margin: 5% 25%;
@@ -227,6 +236,15 @@ input, select, textarea{
 textarea{
     height: 100px;
 }
+input{
+    padding: 1%;
+}
+input:hover,
+select:hover,
+textarea:hover{
+   border-color: rgb(51, 81, 99);
+}
+
 input[type=checkbox], input[type=radio]{
     width: 4%;
     display: inline-block;
@@ -234,6 +252,16 @@ input[type=checkbox], input[type=radio]{
 input[type=submit]{
    font-size: 1em;
    font-family: 'lubalgraphmd';
+   font-weight: bold;
+   font-size: 1.2em;
+   border: none;
+   background-color: rgb(51, 81, 99);
+   color: white;
+   /*background-color: #b4b8bb;*/
+}
+input[type=submit]:hover{
+    background-color: rgba(51, 81, 99, 0.5);
+
 }
 label{
     width: 50%;
@@ -249,6 +277,9 @@ label{
     width: 30%;
     display: inline-block;
 }
+/* fin FORM */
+
+
 
  /* div.backstretch{
   -webkit-filter: blur(5px);
@@ -259,38 +290,27 @@ label{
 
   margin: -10px; /* Added to get rid of white blur borders */
 /*} */ 
+
+
 img.thumbnail{
     width: 200px;
 }
 
-.col1
-{
-    border: none;
-    width: 100%;
-    margin-right: 0;
-    padding: 0;
-    margin: 0;
-    display: inline-block;
-}
-.col2
-{
-    margin: 0;
-    width: 100%;
-    display: inline-block;
-    border-left: 2px solid  #b4b8bb;
-}
+
+/* TABLEAUX */
+
 table{
     margin: 0;
     width: 100%;
     border-collapse: collapse;
 }
-   
 th{
     padding: 1%;
 
     color: #b4b8bb;
     font-size: 0.8em; 
 }
+
 th a:hover,
 th a.active,
 th a.actif{
@@ -306,10 +326,46 @@ td{
     font-family: verdana;
     text-align: center;
 }
+td a{
+   font-family: 'lubalgraphmd';
+   font-size: 1.3em;
+   font-weight: bold;
+   padding: 15px;
+}
+td a:hover{
+   border-bottom: none;
+}
 tr{
     border-bottom: 1px solid #b4b8bb;
-   
 } 
+tr:hover{
+    border-bottom: 1px solid rgb(51, 81, 99);
+}
+table tbody tr:nth-child(odd) {
+    background-color: rgba(192, 192, 192, 0.25); 
+}
+table tbody tr:first-child{
+    background-color: white; 
+    /*border-color: white;*/
+    border: 1px solid #b4b8bb;
+}
+
+.tr_active{
+    background-color: rgba(92, 154, 132, 0.25) !important;
+}
+.large_table th{
+    
+    padding: 0.3%;
+    font-size: 0.6em;
+}
+
+.large_table td{
+
+    padding: 0.2%;
+    font-size: 0.5em;
+}
+/* PRODUITS */
+
 div.produit{
     width: 45%;
    
@@ -374,6 +430,9 @@ div.produit{
 .img_produit{
      margin-top: 5%;
 }
+
+/* BARS */
+
 div.bar{
     width: 80%;
     margin: auto;
@@ -404,6 +463,8 @@ div.bar .contact_bar{
     display: inline-block;
     margin: 4%;
 }
+/* fin BARS */
+
 .block_inline{
     display: inline-block;
 }
@@ -411,33 +472,32 @@ div.bar .contact_bar{
     display: inline-block;
     width: 70%; 
 }
-
-.large_table th{
-    
-    padding: 0.3%;
-    font-size: 0.6em;
+.msg_success{
+   color: teal;
+   text-align: center;
+   font-family: 'lubalgraphmd';
+}
+.msg_erreur{
+   color: tomato;
+   text-align: center;
+   font-family: 'lubalgraphmd';
 }
 
-.large_table td{
-
-    padding: 0.2%;
-    font-size: 0.5em;
+.box_info{
+    border: 1px solid #b4b8bb;
+    padding: 4% 5%;
+    width: 90%;
+    vertical-align: top;
 }
+.no_border{
+   border: none;
+}
+
+
 .text-center{
     text-align: center;
 }
-table tbody tr:nth-child(odd) {
-    background-color: rgba(192, 192, 192, 0.25); 
-}
-table tbody tr:first-child{
-    background-color: white; 
-    /*border-color: white;*/
-    border: 1px solid #b4b8bb;
-}
 
-.tr_active{
-    background-color: rgba(92, 154, 132, 0.25) !important;
-}
 .teal{
     color: teal;
 }
@@ -447,13 +507,7 @@ table tbody tr:first-child{
 .tomato{
     color: tomato;
 }
-.bg_color1{
-    background-color: #62BCCD;
-    border: none;
-}
-input{
-    padding: 1%;
-}
+
 
 div.tri a:hover{
    border: none;
