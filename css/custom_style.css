@@ -103,8 +103,14 @@ body{
     margin: 0 auto;
     padding-left: 2%;
     padding-right: 2%;
+    z-index: 3;
+   /* background-color: white; */
 }
-
+.bg{
+   width: 100%;
+   background: white url(../images/background.png) left top repeat-x;
+   z-index: 0;
+}
 .col1{
     border: none;
     width: 100%;
@@ -119,6 +125,27 @@ body{
     display: inline-block;
     border-left: 2px solid  #b4b8bb;
 }
+
+.box_info{
+    border: 1px solid #b4b8bb;
+    padding: 4% 5%;
+    width: 90%;
+    vertical-align: top;
+    background-color: white;
+}
+
+.msg_success{
+   color: teal;
+   text-align: center;
+   font-family: 'lubalgraphmd';
+}
+.msg_erreur{
+   color: tomato;
+   text-align: center;
+   font-family: 'lubalgraphmd';
+}
+
+
 /* titres et liens */
 h1, h2, h3, h4{
     font-family: 'lubalgraphxl', helvetica;
@@ -140,6 +167,10 @@ a,th{
    text-decoration: none;
 	font-family: 'lubalgraphmd';
 }
+a,tr,input[type=submit], input, textarea, select{
+    transition: all 0.3s ease-in-out;
+}
+
 a:hover,
 .active,
 .actif{
@@ -170,7 +201,13 @@ h3 a:hover{
 }
 
 
-/* MENU */
+/* MENU / HEADER */
+header{
+box-shadow: 0px 0px 9px -1px;
+height: 10%;
+margin-bottom: 2%;
+background-color: white;
+}
 header nav li{
     display: inline-block;
     padding: 1%;
@@ -181,7 +218,8 @@ header nav li a{
     font-family: 'lubalgraphmd', helvetica;
 }
 header nav li a:hover{
-   border-color: #335163;
+   /*border-color: #335163; */
+   border-bottom: none;
 }
 header nav li a.active{
    border-color: #335163;
@@ -189,9 +227,16 @@ header nav li a.active{
 #logo_header{
    float: left;
    margin: 1%;
+  
 }
 
-/* FORM */
+/* FOOTER */
+
+footer a:hover{
+   border-bottom: none;
+}
+
+/* FORMS */
 fieldset{
     width: 40%;
     margin: 5% 25%;
@@ -472,24 +517,9 @@ div.bar .contact_bar{
     display: inline-block;
     width: 70%; 
 }
-.msg_success{
-   color: teal;
-   text-align: center;
-   font-family: 'lubalgraphmd';
-}
-.msg_erreur{
-   color: tomato;
-   text-align: center;
-   font-family: 'lubalgraphmd';
-}
 
-.box_info{
-    border: 1px solid #b4b8bb;
-    padding: 4% 5%;
-    width: 90%;
-    vertical-align: top;
-}
-.no_border{
+.no_border,
+.no_border:hover{
    border: none;
 }
 

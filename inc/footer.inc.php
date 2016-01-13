@@ -5,7 +5,7 @@
 			<a href="'.RACINE_SITE.'inscription_newsletter.php">newsletter</a>
 			<br /><br /><br />
 		</footer>';
-echo '</div>
-
+	echo '</div>
+		</div>
 	</body>
 </html>';

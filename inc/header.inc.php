@@ -23,7 +23,7 @@
 
   </head>
 
-  <body >
+  <body class="bg">
 
     <div class="container">
       <div class="header">
