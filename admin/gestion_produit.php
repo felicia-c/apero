@@ -302,7 +302,17 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 			<input type="hidden" name="id_produit" id="id_produit" value="<?php if(isset($produit_actuel['id_produit'])){ echo $produit_actuel['id_produit']; }?>" /><!-- On met un input caché pour pouvoir identifier l'article lors de la modification (REPLACE se base sur l'id uniquement(PRIMARY KEY)) /!\SECURITE : On est ici dans un back-office, on peut donc se permettre une certaine confiance en l'utilisateur, mais les champs cachés ne sont pas sécurisés pour l'acces public il faut faire des controles securités sur les url -->
 			<label for="reference">Réference </label>
 			<input required type="text" id="reference" name="reference" value="<?php if(isset($_POST['reference'])) {echo $_POST['reference'];} if(isset($produit_actuel['reference'])){ echo $produit_actuel['reference']; }?>" />
+			<label for="photo">Photo </label>
+			<input type="file" name="photo" id="photo"><br />
+			<?php 
+			if(isset($produit_actuel)) // on affiche la photo actuelle par defaut
+			{
+					echo '<label>Photo actuelle</label><br />';
+					echo '<img src="'.$produit_actuel['photo'].'" width="140"/><br />';
+					echo '<input type="hidden" name="photo_actuelle" value="'.$produit_actuel['photo'].'" /><br />';
+			}
 			
+			?>
 			<label for="categorie">Catégorie </label>
 			<input required type="text" id="categorie" name="categorie"  value="<?php if(isset($_POST['categorie'])) {echo $_POST['categorie'];} if(isset($produit_actuel['categorie'])){ echo $produit_actuel['categorie']; }?>"/>
 			
@@ -316,31 +326,12 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 		<fieldset>
 			<label for="couleur">Couleur </label>
 			<input required type="text" id="couleur" name="couleur"  value="<?php if(isset($_POST['couleur'])) {echo $_POST['couleur'];} if(isset($produit_actuel['couleur'])){ echo $produit_actuel['couleur']; }?>" />
-		
-		<!--	<label for="taille">Taille </label>
-			 <select required id="taille" name="taille" >
-				<option >S</option>
-				<option <?php if((isset($_POST['taille']) && $_POST['taille'] == "M") ||(isset($produit_actuel['taille'])&& $produit_actuel['taille'] == "M")) { echo 'selected';} ?> >M</option>
-				<option <?php if((isset($_POST['taille']) && $_POST['taille'] == "L") ||(isset($produit_actuel['taille'])&& $produit_actuel['taille'] == "L")) { echo 'selected';} ?> >L</option>
-				<option <?php if((isset($_POST['taille']) && $_POST['taille'] == "XL") ||(isset($produit_actuel['taille'])&& $produit_actuel['taille'] == "XL")) { echo 'selected';} ?> >XL</option>
-			</select>
-			<br /> -->
 			
 			<label for="sexe">Sexe </label><br /> <!--cas par défaut + une valeur checkée si le formulaire a dejà été rempli-->
 				<input type="radio" name="sexe" value="m"  class="inline" <?php if((isset($_POST['sexe']) && $_POST['sexe'] == "m") ||(isset($produit_actuel['sexe'])&& $produit_actuel['sexe'] == "m")) { echo 'checked';} elseif(!isset($_POST['sexe']) && !isset($produit_actuel['sexe'])){echo 'checked';} ?> /> Homme &nbsp;
 				<input  <?php if((isset($_POST['sexe']) && $_POST['sexe'] == "f") ||(isset($produit_actuel['sexe'])&& $produit_actuel['sexe'] == "f")) { echo 'checked';} ?> type="radio" name="sexe" value="f"  class="inline" /> Femme<br /><br />
 			
-			<label for="photo">Photo </label>
-			<input type="file" name="photo" id="photo"><br />
-			<?php 
-			if(isset($produit_actuel)) // on affiche la photo actuelle par defaut
-			{
-					echo '<label>Photo actuelle</label><br />';
-					echo '<img src="'.$produit_actuel['photo'].'" width="140"/><br />';
-					echo '<input type="hidden" name="photo_actuelle" value="'.$produit_actuel['photo'].'" /><br />';
-			}
 			
-			?>
 			<label for="id_promo_produit">Code promo</label><br />
 				<select id="id_promo_produit" name="id_promo_produit"  >
 					<option value="" >Pas de code promo</option>
