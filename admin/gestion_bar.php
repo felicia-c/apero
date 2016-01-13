@@ -39,10 +39,10 @@ if(!empty($_POST))
 {
  // SECURITE 
 	
-	$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9._ -]+$#', $_POST['nom']); 
+	$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9.\'_ -]+$#', $_POST['nom']); 
 	if(!$verif_caractere && !empty($_POST['nom']))
 	{
-		$msg .= '<div class="msg_erreur" >Nom - Caractères acceptés: _ - àâäçéèêëï A à Z et 0 à 9</div>';  
+		$msg .= '<div class="msg_erreur" >Nom - Caractères acceptés: _ -\' àâäçéèêëï A à Z et 0 à 9</div>';  
 	}
 	
 	$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9._ -]+$#', $_POST['prenom']); 
@@ -62,10 +62,10 @@ if(!empty($_POST))
 		$msg .= '<div class="msg_erreur" >Ville - Caractères acceptés: _ - àâäçéèêëïa A à Z, 0 à 9 -_</div>';  
 	}
 	
-	$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9._ -]+$#', $_POST['adresse']); 
+	$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9._ ,\'-]+$#', $_POST['adresse']); 
 	if(!$verif_caractere && !empty($_POST['adresse']))
 	{
-		$msg .= '<div class="msg_erreur">Adresse - Caractères acceptés: _ - àâäçéèêëïa A à Z et 0 à 9</div>';  
+		$msg .= '<div class="msg_erreur">Adresse - Caractères acceptés: , \' _ - àâäçéèêëïa A à Z et 0 à 9</div>';  
 	}
 	
 	$verif_caractere = preg_match('#^[0-9]+$#', $_POST['cp']); 
@@ -80,7 +80,7 @@ if(!empty($_POST))
 		$siret= executeRequete("SELECT siret FROM bar WHERE siret='$_POST[siret]'");
 		if($siret -> num_rows > 0 && isset($_GET['action']) && $_GET['action'] == 'ajout') //si le siret est deja enregistré
 		{
-			$msg .='<div class="msg_erreur" style="margin-top: 20px; padding: 10px; text-align: center">Ce numéro de SIRET est déjà utilisé !</div>';
+			$msg .='<div class="msg_erreur">Ce numéro de SIRET est déjà utilisé !</div>';
 		}
 	 
 		$photo_bdd ="";
@@ -104,7 +104,7 @@ if(!empty($_POST))
 			}
 			else
 			{
-				$msg .= '<div class="msg_erreur" style="padding: 10px; text-align: center">L\' extension de la photo n\'est pas valide(jpg, jpeg, png, gif)</div>';
+				$msg .= '<div class="msg_erreur">L\' extension de la photo n\'est pas valide(jpg, jpeg, png, gif)</div>';
 			}
 		}
 
