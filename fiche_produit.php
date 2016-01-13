@@ -81,7 +81,8 @@ else
 }
 ?>
 	</div>
-	  
+	<br />
+	<br />
 	  
   <?php
 	require_once("inc/footer.inc.php");

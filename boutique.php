@@ -72,7 +72,7 @@ require_once("inc/header.inc.php");
 // debug($_GET);
 
 
-echo '<hr /><div class="tri"><p>';
+echo '<br /><div class="tri"><p>';
 while ($ligne = $resultat_categorie->fetch_assoc()) 
 {
 	echo ' <a class="button" style="margin-bottom: 20px;" href="?action=tri_categorie&categorie='. $ligne['categorie'] .'" > '. $ligne['categorie'] .' </a> | ';

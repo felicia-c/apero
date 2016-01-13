@@ -438,9 +438,6 @@ echo '<!-- DERNIERES COMMANDES -->
 		
 			<h4 class=orange>Vos derniers avis</h4>';
 			
-			
-			// $resultat = executeRequete('SELECT * FROM salle WHERE id_salle IN (SELECT id_salle FROM produit WHERE etat != 1  AND date_arrivee > NOW())');
-
 //selection des avis de l'utilisateur
 		$id_utilisateur = $_SESSION['utilisateur']['id_membre'];
 		$resultat = executeRequete("SELECT * FROM avis WHERE id_membre = '$id_utilisateur' ORDER BY date DESC LIMIT 0,5");

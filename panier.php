@@ -419,33 +419,34 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 
 	echo '<hr /> <p>Tous nos prix sont calculés à partir d\'un taux de TVA à 20%</p>
 		<p class="">Vos achats seront expédiés dès réception de votre règlement par chèque (à l\'ordre de Tous Supports) à l\'adresse suivante :</p>
-		<p class="">Tous Supports- 3, rue des Montiboeufs 75020 PARIS, France.</p> 
-	';		
+		<p class="">Tous Supports- 3, rue des Montiboeufs 75020 PARIS, France.</p>';		
 //}	
-	if(utilisateurEstConnecte())  // par securité
-		{
-		// INFOS UTILISATEUR
-			$membre_actuel = $_SESSION['utilisateur'];
+if(utilisateurEstConnecte())  // par securité
+{
+// INFOS UTILISATEUR
+	$membre_actuel = $_SESSION['utilisateur'];
+	
+	echo '<div class="float">
+			<h4>Vos informations</h4>
+			<p><strong>'. ucfirst($membre_actuel['pseudo']) .'</strong></p>
+			<p><strong>'. ucfirst($membre_actuel['email']) .'</strong></p>
+		</div>
+	
+		<div class="float">
+			<h4>Votre adresse de facturation</h4>
 			
-			echo '<div class="float">
-					<h4>Vos informations</h4>
-					<p><strong>'. ucfirst($membre_actuel['pseudo']) .'</strong></p>
-					<p><strong>'. ucfirst($membre_actuel['email']) .'</strong></p>
-				</div>
-			
-				<div class="float">
-					<h4>Votre adresse de facturation</h4>
-					
-					<article>
-						<adress><strong>'. ucfirst($membre_actuel['prenom']) .' '. ucfirst($membre_actuel['nom']) .'<br />'.$membre_actuel['adresse'] .'<br />'.$membre_actuel['cp'] .' '. ucfirst($membre_actuel['ville']) .'</strong>
-						</adress>
-					</article>
-				</div>
-			<br />
-			<br />
-			<br />';
-		}
-echo '</div>';		
+			<article>
+				<adress><strong>'. ucfirst($membre_actuel['prenom']) .' '. ucfirst($membre_actuel['nom']) .'<br />'.$membre_actuel['adresse'] .'<br />'.$membre_actuel['cp'] .' '. ucfirst($membre_actuel['ville']) .'</strong>
+				</adress>
+			</article>
+		</div>
+	<br />
+	<br />
+	<br />';
+}
+echo '</div>
+<br />
+<br />';		
 require_once("inc/footer.inc.php");	
 	
 ?>
