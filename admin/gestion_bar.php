@@ -127,8 +127,6 @@ if(!empty($_POST))
 				{
 					executeRequete("UPDATE membre SET statut = 3 WHERE id_membre='$_POST[id_membre]'");
 				}
-
-				
 			}
 			if($_GET['action'] == 'modification')
 			{
@@ -140,23 +138,23 @@ if(!empty($_POST))
 				executeRequete("INSERT INTO bar (id_membre, siret, nom_bar, photo, description, nom_gerant, prenom_gerant, ville, cp, adresse, telephone, email) VALUES ( '$id_membre', '$siret', '$nom_bar', '$photo_bdd', '$description', '$nom', '$prenom', '$ville', '$cp', '$adresse', '$telephone', '$email')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
 				header('location:gestion_bar.php?add=ok&affichage=affichage&id_bar='.$mysqli->insert_id.''.$page.''.$orderby.''.$asc_desc.'');
 			}
-			
 		}	
 	}
 }
 // FIN ENREGISTREMENT
 
-//MESSAGE DE VALIDATION AJOUT
-if(isset($_GET['add']) && $_GET['add'] == 'ok')
-{
-	$msg .='<div class="msg_success">Bar enregistré !</div>';
-}
-//MESSAGE DE VALIDATION MODIF
-if(isset($_GET['mod']) && $_GET['mod'] == 'ok')
-{
-	$msg .='<div class="msg_success">Bar modifié !</div>';
-}
+if(isset($_GET['modif']) && $_GET['modif'] == 'desactiver')
+	{
+		executeRequete("UPDATE bar SET statut='0' WHERE id_bar='$_GET[id_bar]'");
+		$msg .='<div class="msg_success"><h4>Compte bar N°'. $_GET['id_bar'] .' désactivé!</h4></div>';
+	}
 
+	//VALIDER UNE COMMANDE ( = PAYEE, prête à envoyer)
+	 if(isset($_GET['modif']) && $_GET['modif'] == 'activer')
+	{
+		executeRequete("UPDATE bar SET statut='1' WHERE id_bar='$_GET[id_bar]'");
+		$msg .='<div class="msg_success"><h4>Compte bar N°'. $_GET['id_bar'] .' activé!</h4></div>';
+	}
 
 // SUPPRESSION
  
@@ -177,9 +175,19 @@ if(isset($_GET['mod']) && $_GET['mod'] == 'ok')
 	$page;
 	$orderby;
 	$asc_desc; 	
-
 }
 //FIN SUPPRESSION
+
+//MESSAGE DE VALIDATION AJOUT
+if(isset($_GET['add']) && $_GET['add'] == 'ok')
+{
+	$msg .='<div class="msg_success">Bar enregistré ! Il sera validé après vérification</div>';
+}
+//MESSAGE DE VALIDATION MODIF
+if(isset($_GET['mod']) && $_GET['mod'] == 'ok')
+{
+	$msg .='<div class="msg_success">Bar modifié !</div>';
+}
 
 
 $req = "";
@@ -276,14 +284,34 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			{
 				echo '<td>'.substr($valeur, 0, 40).'...</td>';
 			}
+			elseif($indice == 'statut')
+				{
+					if($valeur === '1')
+					{
+						echo '<td>actif</td>';
+						echo '<td>
+							<a href="?affichage=affichage&&modif=desactiver&id_bar='.$ligne['id_bar'] .$page.''.$orderby.''.$asc_desc.'#details" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">désactiver</a>
+						</td>';
+					}
+					else
+					{
+						echo '<td>en attente de validation</td>';
+						echo '<td>
+							<a href="?affichage=affichage&modif=activer&id_bar='.$ligne['id_bar'] . $page.''.$orderby.''.$asc_desc.'#details" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">activer</a>
+						</td>';
+					}
+					
+				}
 			else
 			{
 				echo '<td >'.ucfirst($valeur).'</td>';
 			}
 		}
-		echo '<td><a href="?action=suppression&id_bar='.$ligne['id_bar'].''.$page.''.$orderby.''.$asc_desc.'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
+
 		
-		echo '<td><a href="?action=modification&id_bar='.$ligne['id_bar'].''.$page.''.$orderby.''.$asc_desc.'" class="btn_edit">éditer</a></td>';
+		echo '<td><a href="?affichage=affichageaction=suppression&id_bar='.$ligne['id_bar'].''.$page.''.$orderby.''.$asc_desc.'#details" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
+		
+		echo '<td><a href="?affichage=affichageaction=modification&id_bar='.$ligne['id_bar'].''.$page.''.$orderby.''.$asc_desc.'#details" class="btn_edit">éditer</a></td>';
 		echo '</tr>';
 	}						
 	echo '</table><br />';

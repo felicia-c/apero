@@ -255,6 +255,17 @@ if(isset($_GET['id_bar']))
 				{
 					echo '<td colspan="">' . ucfirst($valeur).'</td>';	
 				}
+				elseif($indice == 'statut')
+				{
+					if($valeur === '1')
+					{
+						echo '<td >actif</td>';
+					}
+					else
+					{
+						echo '<td >en attente de validation</td>';
+					}
+				}
 				elseif($indice != 'description')
 				{
 					echo '<td >'.$valeur.'</td>';

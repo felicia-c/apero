@@ -235,7 +235,7 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 	echo '<div class="box_info" id="details">
 			<h4 class=orange>Vos bars</h4>';
 	$id_utilisateur = $_SESSION['utilisateur']['id_membre'];
-	$req = "SELECT id_bar, id_membre, nom_bar, photo, nom_gerant, prenom_gerant, cp, telephone, email FROM bar WHERE id_membre = '$id_utilisateur' ORDER BY id_membre DESC";
+	$req = "SELECT id_bar, id_membre, nom_bar, photo, nom_gerant, prenom_gerant, cp, telephone, email, statut FROM bar WHERE id_membre = '$id_utilisateur' ORDER BY id_membre DESC";
 
 	$resultat = executeRequete($req);
 	//$nbcol = $resultat->field_count; 
@@ -287,9 +287,16 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 				{
 					echo ucfirst($valeur) .'</td>';
 				}
-				elseif($indice == 'prenom_gerant')
+				elseif($indice == 'statut')
 				{
-					echo ucfirst($valeur) .'</td>';
+					if($valeur === '1')
+					{
+						echo '<td >actif</td>';
+					}
+					else
+					{
+						echo '<td >en attente de validation</td>';
+					}
 				}
 				elseif(($indice != 'description') && ($indice != 'siret' && $indice != 'ville') && $indice != 'adresse')
 				{

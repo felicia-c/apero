@@ -5,73 +5,137 @@ $titre_page = 'Mes promos';
 //APERO - Felicia Cuneo - 01/2015
 
 //Redirection si l'utilisateur n'est pas admin et/ou gerant
-if(!utilisateurEstConnecteEtEstAdmin() && !utilisateurEstConnecteEtEstGerantEtAdmin()){
+if(!utilisateurEstConnecteEtEstGerant() && !utilisateurEstConnecteEtEstGerantEtAdmin()){
 	header("location:connexion.php");
+	exit;
 }
-
-
-if(isset($_POST['ajouter']) && $_POST['ajouter'] == 'Enregistrer')
+if(!empty($_POST))
 {
-// FORMAT DATES pour entrée en BDD :
-
-	$date1 = $_POST['date_debut'];
-	$date2 = $_POST['date_fin'];
-	$format_fr = 'd/m/Y';
-	$format_bdd = 'Y-m-d';
-
-	$date1Obj = date_create_from_format($format_fr, $date1);
-	$date1_bdd = date_format($date1Obj, $format_bdd);
-
-	$date2Obj = date_create_from_format($format_fr, $date2);
-	$date2_bdd = date_format($date2Obj, $format_bdd);
-	$today = date("Y-m-d H:i:s");  
-	if((!$date1_bdd) || (!$date2_bdd))
+	
+//SECURITE -- VERIFICATION DES CARACTERES 	
+	if(!isset($_POST['id_bar']))
 	{
-		$msg .= '<div class="msg_erreur" >Il y a un soucis sur le format des dates <br />Format accepté : JJ/MM/AAAA(ex: 09/01/2015)</div>';
+		$msg .= '<div class="msg_erreur" ><h4>Bar invalide<br />Rendez-vous sur votre profil pour ajouter un bar</h4></div>'; 
 	}
-	if($date1_bdd >= $date2_bdd) // si la date d'arrivée est apres la date de depart, ou si elles sont egales
+	else
 	{
-		$msg .='<div class="msg_erreur">La date de début doit précéder la date de fin !</div>';
-	}
-	if($date1_bdd < $today)
-	{
-		$msg .='<div class="msg_erreur">L\'offre ne peut commencer qu\'à partir de maintenant, pas avant !</div>';
-	}	
-	if(empty($msg))
-	{
-		foreach($_POST AS $indice => $valeur )
+		$verif_caractere = preg_match('#^[0-9]+$#', $_POST['id_bar']); //retourne FALSE si mauvais caracteres dans $_POST['pseudo'], sinon TRUE
+		if(!$verif_caractere && !empty($_POST['id_bar']))
 		{
-			$_POST[$indice] = htmlentities($valeur, ENT_QUOTES); 
+		$msg .= '<div class="msg_erreur" ><h4>Bar invalide<br />Rendez-vous sur votre profil pour ajouter un bar</h4></div>';  
 		}
-			extract($_POST);
-	// MODIF DU PRODUIT EN BDD
-		if(isset($_GET['action']) && $_GET['action'] == 'modifier') 
+	}
+	
+	if(!isset($_POST['categorie']))
+	{
+		$msg .= '<div class="msg_erreur" ><h4>Categorie invalide</h4></div>'; 
+	}
+
+	$verif_caractere = preg_match('#^[a-zA-Z0-9._-]+$#', $_POST['categorie']);
+	if(!$verif_caractere && !empty($_POST['categorie']))
+	{
+		$msg .= '<div class="msg_erreur" ><h4>Catégorie invalide.<br /> Caractères acceptés: _- A-Z et 0-9</h4></div>';  
+	}
+
+	if($_POST['date_debut'] === FALSE)
+	{
+		$msg .= '<div class="msg_erreur" ><h4>Date de début invalide</h4></div>'; 
+	}
+
+	$verif_caractere = preg_match('#^[0-9\/]+$#', $_POST['date_debut']);
+	if(!$verif_caractere && !empty($_POST['date_debut']))
+	{
+		$msg .= '<div class="msg_erreur" ><h4>Erreur sur les dates.<br />Format accepté: JJ/MM/AAAA</h4></div>';  
+	}
+	if($_POST['date_fin'] === FALSE)
+	{
+		$msg .= '<div class="msg_erreur" ><h4>Date de début invalide</h4></div>'; 
+	}
+	$verif_caractere = preg_match('#^[0-9\/]+$#', $_POST['date_fin']);
+	if(!$verif_caractere && !empty($_POST['date_fin']))
+	{
+		$msg .= '<div class="msg_erreur" ><h4>Erreur sur les dates.<br />Format accepté: JJ/MM/AAAA</h4></div>';  
+	}
+
+	
+	$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9.,\% _ \'-]+$#', $_POST['description']); 
+	if(!$verif_caractere && !empty($_POST['description']))
+	{
+		$msg .= '<div class="msg_erreur"><h4>Description invalide.<br /> Caractères acceptés: .,_ \'- àâäçéèêëï a-z A-Z et 0-9</h4></div>';  
+	}
+	
+	//ENREGISTREMENT 
+	if(isset($_POST['ajouter']) && $_POST['ajouter'] == 'Enregistrer')
+	{
+		if(($_POST['date_debut']) && ($_POST['date_fin']))
+	// FORMAT DATES pour entrée en BDD :
 		{
-			executeRequete("UPDATE promo_bar SET id_bar='$id_bar', categorie_produit='$categorie', date_debut='$date1_bdd', date_fin='$date2_bdd', description='$description' WHERE id_promo_bar='$_GET[id_promo_bar]'");
-			$msg .='<div class="msg_success"><h4>Produit modifié !</h4></div>';
-			header('location:mes_promos.php?mod=ok&affichage=affichage');
-		} 
-	//AJOUT
+
+			$date1 = $_POST['date_debut'];
+			$date2 = $_POST['date_fin'];
+			$format_fr = 'd/m/Y';
+			$format_bdd = 'Y-m-d';
+
+			$date1Obj = date_create_from_format($format_fr, $date1);
+			$date1_bdd = date_format($date1Obj, $format_bdd);
+
+			$date2Obj = date_create_from_format($format_fr, $date2);
+			$date2_bdd = date_format($date2Obj, $format_bdd);
+			$today = date("Y-m-d H:i:s");  
+			if((!$date1_bdd) || (!$date2_bdd))
+			{
+				$msg .= '<div class="msg_erreur" >Il y a un soucis sur le format des dates <br />Format accepté : JJ/MM/AAAA(ex: 09/01/2015)</div>';
+			}
+			if($date1_bdd >= $date2_bdd) // si la date d'arrivée est apres la date de depart, ou si elles sont egales
+			{
+				$msg .='<div class="msg_erreur">La date de début doit précéder la date de fin !</div>';
+			}
+			if($date1_bdd < $today)
+			{
+				$msg .='<div class="msg_erreur">L\'offre ne peut commencer qu\'à partir de maintenant, pas avant !</div>';
+			}	
+		}
 		else
 		{
-			executeRequete("INSERT INTO promo_bar (id_bar, categorie_produit, date_debut, date_fin, description) VALUES ( '$id_bar', '$categorie', '$date1_bdd', '$date2_bdd', '$description')"); 
-			header('location:mes_promos.php?add=ok&affichage=affichage');
+			$msg .='<div class="msg_erreur">Veuillez vérifier les dates</div>';
 		}
-	}
-}	
+		if(empty($msg))
+		{
+			foreach($_POST AS $indice => $valeur )
+			{
+				$_POST[$indice] = htmlentities($valeur, ENT_QUOTES); 
+			}
+				extract($_POST);
 
-
+		// MODIF DE LA PROMO EN BDD
+			if(isset($_GET['action']) && $_GET['action'] == 'modifier') 
+			{
+				executeRequete("UPDATE promo_bar SET id_bar='$id_bar', categorie_produit='$categorie', date_debut='$date1_bdd', date_fin='$date2_bdd', description='$description' WHERE id_promo_bar='$_GET[id_promo_bar]'");
+				$msg .='<div class="msg_success"><h4>Apéro modifié !</h4></div>';
+				header('location:mes_promos.php?mod=ok&affichage=affichage');
+				exit;
+			} 
+		//AJOUT
+			else
+			{
+				executeRequete("INSERT INTO promo_bar (id_bar, categorie_produit, date_debut, date_fin, description) VALUES ( '$id_bar', '$categorie', '$date1_bdd', '$date2_bdd', '$description')"); 
+				header('location:mes_promos.php?add=ok&affichage=affichage');
+				exit;
+			}
+		}
+	}	
+}
 // FIN ENREGISTREMENT
 
 
 //MESSAGE DE VALIDATION 
 if(isset($_GET['add']) && $_GET['add'] == 'ok')
 {
-	$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Nouvel apéro enregistré avec succès!</div>';
+	$msg .='<div class="msg_success">Nouvel apéro enregistré avec succès!</div>';
 }
 if(isset($_GET['mod']) && $_GET['mod'] == 'ok')
 {
-	$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Apéro modifié</div>';
+	$msg .='<div class="msg_success">Apéro modifié</div>';
 }
 
 //SUPPRESSION
@@ -95,13 +159,14 @@ require_once("inc/header.inc.php");
 echo '<div="box_info">';
 		
 //STATS  A MODIFIER ///////
-$resultat = executeRequete("SELECT SUM(montant) AS total,
+/*$resultat = executeRequete("SELECT SUM(montant) AS total,
 								COUNT(commande.id_commande) AS nbre_commandes,
 								ROUND(AVG(montant),0) AS panier_moyen,
 								MAX(date) AS der_commande 
 							FROM commande INNER JOIN details_commande ON details_commande.id_commande=commande.id_commande WHERE details_commande.id_produit IN (SELECT id_produit FROM promo_bar WHERE id_bar IN (SELECT id_bar FROM bar WHERE id_membre='$id_membre_session')) ");
 $commandes = $resultat -> fetch_assoc();
 echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $commandes['nbre_commandes'].' | Commande moyenne : '.$commandes['panier_moyen'].'€</h3><br />';
+*/
 // FIN STATS
 
 
@@ -114,19 +179,19 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	
 	echo '<h2><a href="?affichage=affichage" class="button active" >Tous mes apéros ('. $donnees['nbre_promo'].')</a></h2>
 	<a href="?action=ajout" class="button"> > Ajouter un apéro</a><br />
-	<a href="'.RACINE_SITE.'profil.php"> >Gestion Bars</a><br />';
+	<a href="'.RACINE_SITE.'profil.php#details"> >Gestion Bars</a><br />';
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'ajout')
 {
 	echo '<h2><a href="?action=ajout" class="button active">Ajouter un apéro</a></h2>
 	<a href="?affichage=affichage" class="button" > > Tous les apéro</a><br />
-	<a href="'.RACINE_SITE.'profil.php"> >Gestion Bars</a><br />';
+	<a href="'.RACINE_SITE.'profil.php#details"> >Gestion Bars</a><br />';
 }
 else
 {
 	echo '<h2><a href="?affichage=affichage" class="button" >Tous les apéros</a></h2>
 		<h2><a href="?action=ajout" class="button">Ajouter un apéro</a></h2>
-		<h2><a href="'.RACINE_SITE.'profil.php"> >Gestion Bars</a></h2>';
+		<h2><a href="'.RACINE_SITE.'profil.php#details"> >Gestion Bars</a></h2>';
 }
 echo $msg;
 echo '<br />';
@@ -232,10 +297,22 @@ if(isset($_GET['id_bar']))
 				{
 					echo ucfirst($valeur) .'</td>';
 				}
+				elseif($indice == 'statut')
+				{
+					if($valeur === '1')
+					{
+						echo '<td >actif</td>';
+					}
+					else
+					{
+						echo '<td >en attente de validation</td>';
+					}
+				}
 				elseif($indice != 'description')
 				{
 					echo '<td >'.$valeur.'</td>';
 				}
+				
 			}
 			echo '<td><a href="?action=suppression&id_bar='.$ligne['id_bar'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
 			echo '</tr>';	
@@ -329,7 +406,7 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 			<label for="id_bar">Nom de l'établissement</label>
 			<select required id="id_bar" name="id_bar">
 			<?php
-				$req = "SELECT id_bar, nom_bar, cp FROM bar WHERE id_membre='$id_membre_session' ORDER BY nom_bar";
+				$req = "SELECT id_bar, nom_bar, cp FROM bar WHERE id_membre='$id_membre_session' AND statut='1' ORDER BY nom_bar";
 				$resultat = executeRequete($req);
 				//$nb_ligne = count($resultat)
 				while($ligne = $resultat -> fetch_assoc())

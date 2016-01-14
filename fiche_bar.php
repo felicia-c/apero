@@ -39,9 +39,9 @@ if(isset($_POST['evaluer']))
 			}
 		}
 	}
-	elseif(!$_GET['id_bar'])
+	elseif(!isset($_GET['id_bar']))
 	{
-		$msg .= '<div class="msg_erreur" ><h4>Une erreur est survenue, veuillez réessayer</h4></div>';  
+		$msg .= '<div class="msg_erreur" ><h4>Une erreur est survenue</h4></div>';  
 	}
 }
 require_once('inc/header.inc.php');
@@ -55,12 +55,16 @@ if(isset($_GET['id_bar']))
 	$id_bar = filter_input( INPUT_GET, 'id_bar', FILTER_SANITIZE_NUMBER_INT ); 
 	$req="SELECT * FROM bar WHERE id_bar = '$id_bar'";
 
-	afficheBar($req);
+	//afficheBar($req);
 	
-	echo '<h2 class="tomato">Apéros proposés par ce bar</h2>';
+	if(afficheBar($req))
+	{
+		echo '<h2 class="tomato">Apéros proposés par ce bar</h2>';
 	
-	$req_promo= "SELECT * FROM promo_bar WHERE id_bar='$id_bar' AND date_fin > NOW() ORDER BY date_debut";
-	affichePromoBar($req_promo);
+		$req_promo= "SELECT * FROM promo_bar WHERE id_bar='$id_bar' AND date_fin > NOW() ORDER BY date_debut";
+		affichePromoBar($req_promo);
+	}
+	
 }
 
 echo '<br /><br />';
