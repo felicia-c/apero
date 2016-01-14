@@ -705,7 +705,7 @@ function afficheBar($req)
 	{
 		if(($mon_bar['statut'] == '0') || (!$mon_bar['id_bar']))
 		{
-			echo '<div class="msg_erreur">Le bar que vous recherchez n\'est pas disponible actuellement<br />Les apéros (promotions) proposées par ce bar ont été suspendues</div>';
+			echo '<div class="msg_erreur">Le bar que vous recherchez n\'est pas disponible actuellement<br />Les apéros (promotions) proposés par ce bar ont été suspendues</div>';
 			return false;
 		}
 		else
@@ -987,6 +987,10 @@ function enteteTableau($resultat, $dont_show, $dont_link)
 			elseif($colonne->name == 'id_taille_produit')
 			{
 				echo '>Taille</a></th>';
+			}
+			elseif($colonne->name == 'telephone')
+			{
+				echo '>Téléphone</a></th>';
 			}
 			else
 			{
