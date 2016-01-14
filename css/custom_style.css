@@ -141,7 +141,7 @@ h3 a:hover{
 /* MENU / HEADER */
 header{
    box-shadow: 0px 0px 9px -1px;
-   height: 10%;
+   height: auto;
    min-height: 55px;
    margin-bottom: 2%;
    background-color: white;
