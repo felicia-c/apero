@@ -443,6 +443,35 @@ div.vignette_produit{
    height: 400px;
    margin: 2%;
 }
+@media(max-width: 820px) {
+  div.vignette_produit{  
+      width: 40%;
+   }
+   div.vignette_bar{
+       width: 70%;
+       margin-left:12%;
+   }
+}
+@media(max-width: 600px) {
+  div.vignette_produit {  
+      width: 60%;
+      margin-bottom:3%;
+      margin-left:20%;
+   }
+   div.vignette_bar{
+      width: 70%;
+      margin-left: 12%;
+   }
+}
+
+@media(max-width: 400px) {
+  div.vignette_produit, div.vignette_bar{ 
+      display: block;
+      width: 90%;
+      margin-left: 2%;
+   }
+}
+
 .img_vignette{
     height: 150px;
     width: 300px;
