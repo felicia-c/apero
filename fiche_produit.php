@@ -17,17 +17,20 @@ if(isset($_GET['id_produit']))
 	}
 	
 	$mon_produit = $resultat->fetch_assoc();
-	echo '<h1><a href="'.RACINE_SITE.'boutique.php">T-shirts</a> / <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='. $mon_produit['categorie'] .'">'.$mon_produit['categorie'].'</a> / '.$mon_produit['titre'].'</h1><br /><br />';
+	echo '<h1><a href="'.RACINE_SITE.'boutique.php">T-shirts</a> / <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='. $mon_produit['categorie'] .'">'.$mon_produit['categorie'].'</a> / '.$mon_produit['titre'].'</h1><br />';
 	
-	echo '<div style="text-align: center;">';	
-	echo '<div><img  src="images/apero_logo.png" width="300"></div>';
-	
+		
+	echo '<div class="text-center"><img src="images/apero_logo.png" width="300"></div>';
+	echo '<div class="bloc_fiche block_inline text-center">';
 	echo '<img class="make-it-slow make-it-fast box" src="'. $mon_produit['photo'].'" style=" width: 300px; max-width: 100%;" />';
-	echo '<h3>'. $mon_produit['titre'] .'</h3>';
+	echo '</div>';
+	echo '<div class="bloc_fiche block_inline text-center"">';	
+	echo '<h2>'. $mon_produit['titre'] .'</h2>';
 	echo '<p>'. round($mon_produit['prix']*1.2, 2) .' €</p>';
 	echo '<hr />';
 
 	//AJOUTER AU PANIER	
+	echo '<p><strong>Couleur:</strong> '. $mon_produit['couleur'].'</p><br />';
 	echo '<form method="post" action="'.RACINE_SITE.'panier.php" class="form-inline">';
 	
 	$res_taille_stock = executeRequete("SELECT id_taille_stock, id_produit AS produit, stock AS stock, id_taille FROM taille_stock  WHERE id_produit = '$mon_produit[id_produit]'");
@@ -62,18 +65,19 @@ if(isset($_GET['id_produit']))
 	
 	echo '<input type="submit" name="ajout_panier" value="Ajouter au panier" class="button"  >';
 	echo '</form><br />';
-	
-	echo '<p><br /><strong>Référence:</strong> '. $mon_produit['reference'].' - <strong>Catégorie:</strong> '. $mon_produit['categorie'].'</p>';		
+	echo '</div>';
+	echo '<p><br /><strong>Référence:</strong> '. $mon_produit['reference'].' - <strong>Collection:</strong> '. $mon_produit['categorie'].'</p>';		
 	echo '<p><strong>Couleur:</strong> '. $mon_produit['couleur'].'</p>';
 
 
-	echo '<p><strong>Description:</strong> '. $mon_produit['description'].'</p>';
-
+	echo '<p><strong>Description:</strong> '. $mon_produit['description'].'</p><br /><br /><hr />
+	<h3 class="orange">Apéros actuellement proposés sur cette collection:</h3>';
+	$req="SELECT bar.id_bar, bar.nom_bar, promo_bar.description, promo_bar.date_debut, promo_bar.date_fin, promo_bar.id_bar, promo_bar.categorie_produit FROM bar INNER JOIN promo_bar ON bar.id_bar=promo_bar.id_bar WHERE promo_bar.categorie_produit='$mon_produit[categorie]' AND promo_bar.date_fin > NOW() ORDER BY promo_bar.date_debut";
+	
+	affichePromoBar($req);
 	echo '<hr />';
 	//lien de retour vers la categorie du produit
 	echo '<br /><a href="boutique.php?action=tri_categorie&categorie='.str_replace('#', '',$mon_produit['categorie']).'" class="btn btn-warning">Retour à '.$mon_produit['categorie'] .'</a> ';
-
-	echo '</div>';
 }
 else
 {

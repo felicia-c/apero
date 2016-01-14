@@ -60,11 +60,10 @@ if(isset($_GET['id_bar']))
 	if(afficheBar($req))
 	{
 		echo '<h2 class="tomato">Apéros proposés par ce bar</h2>';
-	
+
 		$req_promo= "SELECT * FROM promo_bar WHERE id_bar='$id_bar' AND date_fin > NOW() ORDER BY date_debut";
 		affichePromoBar($req_promo);
 	}
-	
 }
 
 echo '<br /><br />';

@@ -716,6 +716,7 @@ function afficheBar($req)
 				<img src="'. $mon_bar['photo'].'" style="max-width: 100%;" />
 				
 				<p class=" description_bar">'.$mon_bar['description'].'</p>
+				<hr />
 				<div class="adresse_bar">'.$mon_bar['adresse'].'<br /> '. $mon_bar['cp'].' '.$mon_bar['ville'].'</div>
 				<div class="contact_bar">
 					<p>'.$mon_bar['telephone'].'</p>
@@ -806,9 +807,17 @@ function affichePromoBar($req)
 		echo '<br />
 		<div class=" bar text-center">
 			<p class=" description_promo">'.$ma_promo['description'].'</p>
-			<p class="dates">'.afficheDateFr($ma_promo['date_debut'], $ma_promo['date_fin'], ' au ').'</p>
-			<p>Cette promotion est valable si vous portez un t-shirt de la collection: <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='.str_replace('#', '',$ma_promo['categorie_produit']).'">'.$ma_promo['categorie_produit'].'</a></p>
-		</div><br /><hr />';
+			<p class="dates">'.afficheDateFr($ma_promo['date_debut'], $ma_promo['date_fin'], ' au ').'</p>';
+
+		if(isset($ma_promo['nom_bar']))
+		{
+			echo '<p>Proposé par le <a class="noborder_lien" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$ma_promo['id_bar'].'">'.$ma_promo['nom_bar'].'</a></p>';
+		}
+		else
+		{
+			echo '<p>Cette promotion est valable si vous portez un t-shirt de la collection: <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='.str_replace('#', '',$ma_promo['categorie_produit']).'">'.$ma_promo['categorie_produit'].'</a></p>';
+		}
+		echo '</div><br /><hr />';
 	}	
 	echo '</div>';
 }
@@ -826,7 +835,7 @@ function afficheVignetteBar($req)
 				<a class="noborder_lien" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$mon_bar['id_bar'].'"><h2>'.$mon_bar['nom_bar'].'</h2>';
 		if($promo['nb_promo'] > 0)
 		{
-			echo '<div class="tomato">Ce bar vous offre l\'apéro !</div>';
+			echo '<div class="tomato">On vous offre un apéro ?</div>';
 		}
 		else{
 			echo '<br/>';

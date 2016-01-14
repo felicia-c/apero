@@ -491,7 +491,16 @@ div.bar .contact_bar{
     display: inline-block;
     width: 70%; 
 }
-
+.bloc_fiche{
+   width: 50%;
+   vertical-align: middle;
+}
+.bloc_fiche label{
+   font-weight: bold;
+}
+.bloc_fiche h2{
+   font-size: 1.5em;
+}
 .no_border,
 .no_border:hover{
    border: none;
