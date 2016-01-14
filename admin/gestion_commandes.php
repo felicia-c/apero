@@ -138,9 +138,13 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 					}
 						elseif ($indice == 'statut')
 					{
-						if($valeur == '1')
+						if(($valeur == '1') || $valeur == '2')
 						{
 							echo '<td>Admin</td>';
+						}
+						elseif($valeur == '3')
+						{
+							echo '<td>Barman</td>';
 						}
 						else
 						{
