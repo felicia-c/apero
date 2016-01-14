@@ -107,13 +107,17 @@ if($_POST){
 		}
 		else
 		{
+
 			extract($_POST); // EXTRACT marche sur un tableau array (si indices non-numerique)
 			executeRequete("INSERT INTO membre (pseudo, mdp, nom, prenom, email, sexe, ville, cp, adresse) VALUES ('$pseudo', '$mdp', '$nom', '$prenom', '$email', '$sexe', '$ville', '$cp', '$adresse')"); //requete d'inscription 
 			$msg .='<div class="msg_success"><h4>Inscription réussie !</h4></div>';
-		
+			$id_membre = $mysqli-> insert_id; 
+			if($_POST['bar'])
+			{
+				executeRequete("UPDATE membre SET statut=3 WHERE id_membre='$id_membre'");
+			}
 			if(isset($_POST['newsletter']) && ($_POST['newsletter']=='ok'))
 			{
-				$id_membre = $mysqli-> insert_id; 
 				executeRequete("INSERT INTO newsletter VALUES ('', '$id_membre')");
 			}			
 			
@@ -139,47 +143,57 @@ require_once("inc/header.inc.php");
 	
 	<form method="post" action="" id="form_inscription" class="form" enctype="multipart/form-data">
 	<fieldset>
-		<label for="pseudo">Pseudo</label><br />
-		<input type="text" id="pseudo" name="pseudo"  maxlength="14" value="<?php if(isset($_POST['pseudo'])) {echo $_POST['pseudo'];}?>" placeholder="JohnDoe"  required /><br />
+		<label for="pseudo">Pseudo *</label><br />
+		<input type="text" id="pseudo" name="pseudo" minlength="4" maxlength="14" value="<?php if(isset($_POST['pseudo'])) {echo $_POST['pseudo'];}?>" placeholder="JohnDoe"  required /><br />
 		
-		<label for="mdp">Mot de passe</label><br />
-		<input type="password" id="mdp" name="mdp"  maxlength="14" value="<?php if(isset($_POST['mdp'])) {echo $_POST['mdp'];}?>"  placeholder="Password"  required /><br /><br />	<!------- Modifier Type = password ------>				
+		<label for="mdp">Mot de passe *</label><br />
+		<input type="password" id="mdp" name="mdp" minlength="4" maxlength="14" value="<?php if(isset($_POST['mdp'])) {echo $_POST['mdp'];}?>"  placeholder="Password"  required /><br /><br />	<!------- Modifier Type = password ------>				
 		
-		<label for="mdp2">Confirmer le mot de passe</label><br />
+		<label for="mdp2">Confirmer le mot de passe *</label><br />
 		<input type="password" id="mdp2" name="mdp2" required /><br />	<br />	
-		
-		<label for="nom">Nom</label><br />
+	</fieldset>
+	<fieldset  class="block_inline" >	
+		<label for="nom">Nom *</label><br />
 		<input type="text" id="nom" name="nom" value="<?php if(isset($_POST['nom'])) {echo $_POST['nom'];}?>" placeholder="Durand"  required/><br /><br />
 		
-		<label for="prenom">Prénom</label><br />
+		<label for="prenom">Prénom *</label><br />
 		<input type="text" id="prenom" name="prenom" value="<?php if(isset($_POST['prenom'])) {echo $_POST['prenom'];}?>" placeholder="Jean"  required/><br /><br />
 		
-		<label for="email">E-mail</label><br />
+		<label for="email">E-mail *</label><br />
 		<input type="text" id="email" name="email" value="<?php if(isset($_POST['email'])) {echo $_POST['email'];}?>" placeholder="monmail@mail.com"  required /><br /><br /><br />
 	
-		<label for="sexe">Sexe</label><br />
+		<label for="sexe">Sexe *</label><br />
 		<select id="sexe" name="sexe" required >
 			<option value="m"<?php if(isset($_POST['sexe']) && $_POST['sexe'] == "m") { echo 'checked';} elseif(!isset($_POST['sexe'])){echo 'checked';} ?> >Homme</option>
 			<option value="f" <?php if(isset($_POST['sexe']) && $_POST['sexe'] == "f") { echo 'checked';} ?>>Femme</option>
 		</select><br /><br />
-		
-		<label for="ville">Ville</label><br />
+	</fieldset>
+	<fieldset  class="block_inline" >
+		<label for="ville">Ville *</label><br />
 		<input type="text" id="ville" name="ville" required value="<?php if(isset($_POST['ville'])) {echo $_POST['ville'];}?>" /><br /><br />
 		
-		<label for="cp">Code Postal</label><br />
+		<label for="cp">Code Postal *</label><br />
 		<input type="text" id="cp" name="cp" required value="<?php if(isset($_POST['cp'])) {echo $_POST['cp'];}?>" placeholder="99999"/><br /><br />
 		
-		<label for="adresse">Adresse</label><br />
+		<label for="adresse">Adresse *</label><br />
 		<textarea  id="adresse" rows="8" name="adresse" required><?php if(isset($_POST['adresse'])) {echo $_POST['adresse'];}?></textarea><br /><br />
-		
-		<label for="newsletter" >S'inscrire à notre newsletter</label><br />
+	</fieldset>	
+	<div class="box_info">
+		<label for="newsletter" ><strong>S'inscrire à notre newsletter</strong></label><br />
 		<input type="radio" value="ok" id="newsletter" class="float" name="newsletter" value="ok" <?php if(isset($_POST['newsletter']) && $_POST['newsletter'] == "ok") { echo 'checked';} elseif(!isset($_POST['newsletter'])){echo 'checked';} ?> required / >
-		<label class="label_nl"><strong>Oui</strong>, je souhaite être tenu au courant des offres d'Apéro, pour savoir où mon T-shirt m'offre l'apéro.</label></br>
+		<label class="label_nl"><strong>Oui</strong>, je souhaite être tenu au courant des offres d'Apéro</label><br />
 		<input type="radio" value="" id="newsletter" name="newsletter" class="float" />
 		<label class="label_nl"><strong>Non</strong>, je ne souhaite pas être informé(e)</label>
+	</div>
+	<br /><br />
+	<div class="box_info">
+		<p><strong>Vous avez un bar?</strong> Vous souhaitez le faire connaître et fidéliser votre clientèle ? <br />Inscrivez votre bar !<br /> <a href="<?php echo RACINE_SITE; ?>">En savoir plus</a></p><br/>
+		<input type="checkbox" name="bar" id="bar" class="float"/>
+		<label class="label_nl" for="bar">Je certifie que je suis gérant d'un bar<br />(nous procèderont aux vérifications nécessaires avant de valider l'inscription d'un bar)</label>
+	</div>
 		<br /><br />
-		
-		<p>Tous les champs sont obligatoires</p>
+
+		<p>* champs sont obligatoires</p>
 	
 		<input type="submit" id="inscription" class="button" name="inscription" value="inscription" />
 		</fieldset>						
