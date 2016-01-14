@@ -23,56 +23,74 @@
 
   </head>
 
-  <body class="bg">
+  <body>
 
     <div class="container">
+    <div class="bg">
       <div class="header">
         <header>
   <?php  
 
 
-          echo '<a href="'.RACINE_SITE.'index.php"><img src="'.RACINE_SITE.'images/apero_logo.png" id="logo_header" alt="apéro" width="150px"/></a>';
-
-         echo '<nav>
-                <ul class="nav">
+          echo '<nav>';echo '<a href="'.RACINE_SITE.'index.php"><img src="'.RACINE_SITE.'images/apero_logo.png" id="logo_header" alt="apéro" width="150px"/></a>';
+          
+         
+               echo' <ul class="nav">
                   <li><a '; if ($titre_page == 'Accueil') {echo 'class="active"';} echo' href="'.RACINE_SITE.'index.php">accueil</a></li>
                   <li><a '; if ($titre_page == 'T-shirts Apéro') {echo 'class="active"';} echo' href="'.RACINE_SITE.'boutique.php">t-shirts</a></li>
-                  <li><a '; if ($titre_page == 'Bars') {echo ' class="active"';} echo' href="'.RACINE_SITE.'bars_et_promos.php">bars</a></li>
+                  <li><a '; if ($titre_page == 'Bars Apéro') {echo ' class="active"';} echo' href="'.RACINE_SITE.'bars_et_promos.php">bars</a></li>
                   <li><a '; if ($titre_page == 'Panier') {echo 'class="active"';} echo' href="'.RACINE_SITE.'panier.php">panier</a></li>';
-
-       
           if(utilisateurEstConnecte())
           {
-            echo '<li><a '; if ($titre_page == 'Profil') {echo 'class="active"';} echo' href="'.RACINE_SITE.'profil.php">profil</a></li>
-                  <li><a href="'.RACINE_SITE.'connexion.php?action=deconnexion">déconnexion</a></li>';
+            echo '<li><a '; if ($titre_page == 'Profil') {echo 'class="active"';} echo' href="'.RACINE_SITE.'profil.php">profil</a></li>';
+          }
+          if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdmin())
+          {
+            echo '<li><a class="tomato"'; if ($titre_page == 'Mes promos') {echo ' class="active"';} echo' href="'.RACINE_SITE.'mes_promos.php">gérer mes promos</a></li>';
+          }
+
+          if(utilisateurEstConnecte())
+          {
+            echo '<li><a href="'.RACINE_SITE.'connexion.php?action=deconnexion">déconnexion</a></li>';
           } 
           else
           {
             echo '<li><a '; if ($titre_page == 'Inscription') {echo 'class="active"';} echo' href="'.RACINE_SITE.'inscription.php">inscription</a></li>
                   <li><a '; if ($titre_page == 'Connexion') {echo 'class="active"';} echo' href="'.RACINE_SITE.'connexion.php">connexion</a></li>';
           } 
-
-          if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdmin())
-          {
-            echo '<li><a '; if ($titre_page == 'Mes promos') {echo ' class="active"';} echo' href="'.RACINE_SITE.'mes_promos.php">gérer mes promos</a></li>';
-          }
-          if(utilisateurEstConnecteEtEstAdmin() || utilisateurEstConnecteEtEstGerantEtAdmin())
-          {
-            echo '<li><a '; if ($titre_page == 'Gestion des produits') {echo 'class="active"';} echo' href="'.RACINE_SITE.'admin/gestion_produit.php">gestion produits</a></li>
-                  <li><a '; if ($titre_page == 'Gestion des membres') {echo 'class="active"';} echo' href="'.RACINE_SITE.'admin/gestion_membre.php">gestion membres</a></li>
-                  <li><a '; if ($titre_page == 'Gestion des bars') {echo 'class="active"';} echo' href="'.RACINE_SITE.'admin/gestion_bar.php">gestion bars</a></li>
-                  <li><a '; if ($titre_page == 'Gestion des promos') {echo 'class="active"';} echo' href="'.RACINE_SITE.'admin/gestion_promo.php">gestion promos</a></li>
-                  <li><a '; if ($titre_page == 'Gestion des commandes') {echo 'class="active"';} echo' href="'.RACINE_SITE.'admin/gestion_commandes.php">gestion commandes</a></li>
-                  <li><a '; if ($titre_page == 'Envoi de Newsletter') {echo 'class="active"';} echo' href="'.RACINE_SITE.'admin/gestion_newsletter.php">envoi newsletter</a></li>
-                  <li><a '; if ($titre_page == 'Gestion des avis') {echo 'class="active"';} echo' href="'.RACINE_SITE.'admin/gestion_avis.php">gestion avis</a></li>';
-          }
  
-        echo '</ul>
-        </nav>
+   
+        
+  if(utilisateurEstConnecteEtEstAdmin() || utilisateurEstConnecteEtEstGerantEtAdmin())
+      {
+        /*echo '<ul id="menu-adm">
+          <li>';
+        if ($titre_page == 'Gestion des commandes') {echo 'Gestion des commandes';} 
+        elseif ($titre_page == 'Gestion des produits') {echo 'Gestion des produits';} 
+        elseif ($titre_page == 'Gestion des membres') {echo 'Gestion des membres';} 
+        elseif ($titre_page == 'Gestion des bars') {echo 'Gestion des bars';} 
+        elseif ($titre_page == 'Gestion des promos') {echo 'Gestion des promos';} 
+        elseif ($titre_page == 'Gestion des avis') {echo 'Gestion des avis';} 
+        elseif ($titre_page == 'Envoi de Newsletter') {echo 'Envoyer une Newsletter';} 
+        else { echo 'admin';}
+        echo '</li>';
+*/
 
-
-        </header>
+          echo'<br />
+              <li><a class="admin no_border '; if ($titre_page == 'Gestion des commandes') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_commandes.php">commandes</a></li>
+              <li><a class="admin no_border '; if ($titre_page == 'Gestion des produits') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_produit.php">produits</a></li>
+              <li><a class="admin no_border '; if ($titre_page == 'Gestion des membres') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_membre.php">membres</a></li>
+              <li><a class="admin no_border '; if ($titre_page == 'Gestion des bars') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_bar.php">bars</a></li>
+              <li><a class="admin no_border '; if ($titre_page == 'Gestion des promos') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_promo.php">codes promos</a></li>
+              <li><a class="admin no_border '; if ($titre_page == 'Gestion des avis') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_avis.php">avis</a></li>
+              <li><a class="admin no_border '; if ($titre_page == 'Envoi de Newsletter') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_newsletter.php">envoi newsletter</a></li>
+          </ul>';
+      }
+      echo '</nav>';
+      echo '</header>
       </div>
-      <br />';
-  ?>      
- 
+
+      <br />
+      <div class="section">
+      <h1>'.$titre_page.'</h1>';
+  ?>  

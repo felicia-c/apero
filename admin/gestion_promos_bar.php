@@ -207,7 +207,7 @@ if(isset($_GET['affichage']) &&  $_GET['affichage']=='affichage')
 		<br />';
 		
 	affichagePaginationGestion(10, $table, '');
-	echo '</div>';
+	echo '</div><br /><br />';
 }
 
 
@@ -216,7 +216,7 @@ if(isset($_GET['id_bar']))
 {
 	if((isset($_GET['action']) && $_GET['action'] == 'detail'))
 	{
-		echo '<div class="box_info"><table class="large_table">';
+		echo '<div class="box_info no_border"><table class="large_table">';
 		//On affiche les infos du bar associé a l'apero:
 		$resultat = executeRequete("SELECT * FROM bar WHERE id_bar = '$_GET[id_bar]'");
 		$nbcol = $resultat->field_count;
@@ -311,7 +311,7 @@ if(isset($_GET['id_bar']))
 		</tr>';
 	}						
 	echo '</table>
-		<br /></div>';
+		</div><br /><br />';
 }
 
 //FORM AJOUT / MODIF
@@ -444,6 +444,8 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 
 <?php 
 }
-echo '</div>';
+echo '</div>
+<br />
+<br /> ';
 require_once('../inc/footer.inc.php');
 

@@ -1,6 +1,6 @@
 <?php
 require_once('inc/init.inc.php');
-$titre_page = "Bars";
+$titre_page = "Bars Apéro";
 //APERO - Felicia Cuneo - 12/2015
 if(isset($_POST['evaluer']))
 {
@@ -10,7 +10,7 @@ if(isset($_POST['evaluer']))
 		{
 			$_POST[$indice] = htmlentities($valeur, ENT_QUOTES);
 		} // SECURITE
-	
+		
 		$verif_caractere = preg_match('#^[0-9]+$#', $_POST['note']); 
 		if(!$verif_caractere && !empty($_POST['note']))      
 		{

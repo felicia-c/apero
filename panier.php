@@ -209,8 +209,7 @@ require_once("inc/header.inc.php");
 //debug($_SESSION);
 //debug($_POST);
 
-echo '<div class="box_info">
-		<h1>Panier</h1>';
+echo '<div class="box_info">';
 echo $msg;
 //echo debug($_SESSION['panier']);
 //debug($_SESSION['panier']['promo']);

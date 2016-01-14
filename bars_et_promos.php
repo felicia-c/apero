@@ -1,6 +1,6 @@
 <?php
 require_once('inc/init.inc.php');
-$titre_page = "Bars";
+$titre_page = "Bars Apéro";
 require_once('inc/header.inc.php');
 $id_bar = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING ); 
 
@@ -20,8 +20,7 @@ else
 	$req="SELECT * FROM $table";
 	$req = paginationGestion(6, $table, $req);
 	$lien = "";
-	echo '<div class="block_inline box_info">
-			<h1>les bars </h1>';
+	echo '<div class="block_inline box_info no_border">';
 	//echo  '<h3> > <a href="'.RACINE_SITE.'bars_et_promos.php?action=promos">Voir les apéros</a></h3>';
 	afficheVignetteBar($req);
 	echo '</div>';

@@ -224,7 +224,7 @@ else
 echo $msg;
 
 echo '<br /><br />
-	<div id="box_info">';
+	<div id="box_info no_border">';
 	
 /////////AFFICHAGE DE TOUS LES MEMBRES///////////
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
@@ -314,7 +314,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 {
 	if(isset($_GET['id_membre']))
 	{
-		echo '<div class="box_info">
+		echo '<div class="box_info no_border">
 			<h3 id="details_membre">Commandes du membre n°'.$_GET['id_membre'].'</h3>
 			<table>';
 	
@@ -367,7 +367,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 //DETAILS COMMANDE
 	if(isset($_GET['id_commande']))
 	{
-		echo '<div class="box_info">
+		echo '<div class="box_info no_border">
 		<table>';
 		$resultat = executeRequete("SELECT * FROM details_commande WHERE id_commande = '".$_GET['id_commande']."'");
 		$dont_link = 'nono'; // entete du tablau sans order by
@@ -405,7 +405,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 // DETAILS PRODUITS	
 	if(isset($_GET['id_produit']))
 	{
-		echo '<div class="box_info">
+		echo '<div class="box_info no_border">
 		<table  class="large_table">';
 		$resultat = executeRequete("SELECT * FROM produit WHERE id_produit = '".$_GET['id_produit']."'");
 
