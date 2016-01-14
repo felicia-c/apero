@@ -276,6 +276,10 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 			{
 				echo '<td colspan="2">' . ucfirst($valeur).'</td>';	
 			}
+			elseif($indice == 'id_membre')
+			{
+				echo '<td><a href="?affichage=affichage&action=detail&info=membre&id_membre='.$ligne['id_membre'].'&id_bar='.$ligne['id_bar'].$page.$orderby.$asc_desc.'#details">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details de la commande
+			}
 			elseif($indice == 'email')
 			{
 				echo '<td colspan="1">' . ucfirst($valeur).'</td>';	
@@ -288,16 +292,16 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 				{
 					if($valeur === '1')
 					{
-						echo '<td>actif</td>';
+						echo '<td class="teal">actif</td>';
 						echo '<td>
-							<a href="?affichage=affichage&&modif=desactiver&id_bar='.$ligne['id_bar'] .$page.''.$orderby.''.$asc_desc.'#details" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">désactiver</a>
+							<a class="btn_delete" href="?affichage=affichage&&modif=desactiver&id_bar='.$ligne['id_bar'] .$page.''.$orderby.''.$asc_desc.'#details" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">désactiver</a>
 						</td>';
 					}
 					else
 					{
-						echo '<td>en attente de validation</td>';
+						echo '<td class="tomato">en attente de validation</td>';
 						echo '<td>
-							<a href="?affichage=affichage&modif=activer&id_bar='.$ligne['id_bar'] . $page.''.$orderby.''.$asc_desc.'#details" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">activer</a>
+							<a class="btn_edit" href="?affichage=affichage&modif=activer&id_bar='.$ligne['id_bar'] . $page.''.$orderby.''.$asc_desc.'#details" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">activer</a>
 						</td>';
 					}
 					
@@ -320,7 +324,57 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	echo '</div>';
 }
 
+//DETAILS MEMBRE
 
+if(isset($_GET['id_membre']))
+	{
+		if((isset($_GET['action']) && $_GET['action'] == 'detail') && (isset($_GET['info']) == 'membre'))
+		{
+			//On affiche les infos du membre associé au bar :
+			
+			echo '<h4 id="details">Membre N° '.$_GET['id_membre'].'</h4>';
+
+			$resultat = executeRequete("SELECT * FROM membre WHERE id_membre = '$_GET[id_membre]'");
+			echo'<table >';
+			
+			$dont_link = 'nono'; // entete du tablau sans order by
+			$dont_show = 'photo'; // colonne non affichée
+			enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
+			while ($ligne = $resultat->fetch_assoc())  
+			{
+				echo '<tr>';
+				foreach($ligne AS $indice => $valeur)
+				{
+					if ($indice == 'adresse')
+					{
+						echo '<td colspan ="">'. $valeur.'</td>';
+					}
+						elseif ($indice == 'statut')
+					{
+						if(($valeur == '1') || $valeur == '2')
+						{
+							echo '<td>Admin</td>';
+						}
+						elseif($valeur == '3')
+						{
+							echo '<td>Barman</td>';
+						}
+						else
+						{
+							echo '<td>Membre</td>';
+						}
+					}
+					elseif(($indice != 'mdp') && ($indice != 'photo'))
+					{
+						echo '<td >'.ucfirst($valeur).'</td>';	
+					}
+				}
+			}
+			echo '</tr>
+			</table>
+			<br />';	
+		}
+	}	
 
 //FORM AJOUT / MODIF
 	
