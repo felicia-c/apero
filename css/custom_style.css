@@ -42,11 +42,12 @@ body{
     z-index: 3;
    /* background-color: white; */
 }
-/*.bg{
+/* .bg{
    width: 100%;
    background: white url(../images/background.png) left top repeat-x;
    z-index: 0;
-}*/
+   opacity: 0.5;
+} */
 
 .col1{
     border: none;
@@ -428,12 +429,14 @@ div.bar{
     margin: auto;
 }
 div.vignette_bar{
-   width: 35%;
+   width: 29%;
    display: inline-block;
    border: none;
    box-shadow: 0px 0px 9px -1px;
-   height: 400px;
+   height: 320px;
    margin: 2%;
+   padding:0;
+   padding-bottom: 2%;
 }
 div.vignette_produit{
    width: 29%;
@@ -474,7 +477,7 @@ div.vignette_produit{
 
 .img_vignette{
     height: 150px;
-    width: 300px;
+    width: 100%;
     overflow: hidden;
 }
 div.bar .adresse_bar,
@@ -568,7 +571,7 @@ div.tri a:hover{
   opacity: 0;
 
 /*  box-shadow: 0 5px 15px rgba(0,0,0,0.3); */
-  transition: opacity 0.3s ease-in-out;
+ 
 }
  
 /* Scale up the box */
@@ -581,5 +584,33 @@ div.tri a:hover{
   opacity: 1;
 }
 
+.img_bar{
+   height: 150px;
+   overflow: hidden;
+   z-index: 10; 
+}
+.img_bar .switch_titre{
+    height: 35px;
+    line-height: 35px;
+    background: white;
+    z-index: 11;
+    color: black;
+    position: relative;
+    bottom: 75px;
+    font-size: 1.8em;
+    opacity: 0;
+}
+.img_bar .switch_titre p{
+   position: relative;
+   bottom: 75px;
+}
 
-
+.img_bar:hover .img_bar .switch_titre p{
+  z-index: 11;
+}
+.vignette_bar:hover .switch_titre{
+   
+      opacity: 0.9; 
+      transition: opacity 1s ease-in-out;
+   }
+}

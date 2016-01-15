@@ -832,7 +832,14 @@ function afficheVignetteBar($req)
 		$promo = executeRequete($req_promo);
 		$promo = $promo -> fetch_assoc();
 		echo '<div class="box_info vignette_bar text-center">
-				<a class="noborder_lien" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$mon_bar['id_bar'].'"><h2>'.$mon_bar['nom_bar'].'</h2>';
+			<a class="noborder_lien" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$mon_bar['id_bar'].'">';
+	//echo '<h2>'.$mon_bar['nom_bar'].'</h2>';
+		
+		echo '<div class="img_bar"><img class="img_vignette" src="'. $mon_bar['photo'].'" style="max-width: 100%;" /><div class="switch_titre">'.$mon_bar['nom_bar'].'</div></div>
+
+		<div class="contact_bar"><br /><strong>'. $mon_bar['cp'].' '.$mon_bar['ville'].'</strong>
+			<p>'.substr($mon_bar['description'], 0,60).'...</p></a><br />';
+		echo '</div>';
 		if($promo['nb_promo'] > 0)
 		{
 			echo '<div class="tomato">On vous offre un apéro ?</div>';
@@ -840,11 +847,6 @@ function afficheVignetteBar($req)
 		else{
 			echo '<br/>';
 		}
-		echo '<img class="img_vignette" src="'. $mon_bar['photo'].'" style="max-width: 100%;" /></a>
-		<div class="contact_bar">'. $mon_bar['cp'].' '.$mon_bar['ville'].'
-			<p>'.$mon_bar['description'].'</p>';
-		echo '</div>';
-		
 		
 			echo '</div>';
 	}
