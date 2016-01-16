@@ -176,7 +176,6 @@ if(isset($_GET['action']) && $_GET['action'] == 'suppression')
 	executeRequete("DELETE FROM newsletter WHERE id_membre = '$_GET[id_membre]'");
 	executeRequete("DELETE FROM membre WHERE id_membre='$_GET[id_membre]'");
 	$msg .='<div class="msg_success">Membre N°'. $_GET['id_membre'] .' supprimé avec succès!</div>';   //suppression de la commande dans la table + affichage d'un msg de confirmation
-
 }
 $req = "";
 require_once("../inc/header.inc.php");
@@ -309,11 +308,97 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	echo '<br />';
 }
 
-// COMMANDES MEMBRE
+
 if(isset($_GET['action']) && $_GET['action'] == 'detail') 
 {
+
 	if(isset($_GET['id_membre']))
 	{
+		
+		$statut_membre= executeRequete("SELECT statut FROM membre WHERE id_membre = '$_GET[id_membre]'");
+		$statut= $statut_membre-> fetch_assoc(); 
+		
+		//BAR /MEMBRE
+		if($statut['statut'] == '2' || $statut['statut'] == '3' )
+		{
+			echo '<div class="box_info no_border" id="details">
+					<h3>Bars</h3>';
+			$id_utilisateur = $_SESSION['utilisateur']['id_membre'];
+			$req = "SELECT bar.id_bar, bar.id_membre, bar.nom_bar, bar.photo, bar.nom_gerant, bar.prenom_gerant, bar.cp, bar.telephone, bar.email, bar.statut FROM bar  WHERE bar.id_membre = '$_GET[id_membre]' ORDER BY bar.statut DESC"; 
+			$resultat = executeRequete($req);
+			$nb_bars = $resultat -> num_rows;
+			echo '<table>';
+			if($nb_bars < 1)
+			{
+				echo '<tr>
+						<td colspan="6"><h4>Ce membre n\' a actuellement aucun compte Bar</h4></td>	
+					</tr>';
+			}
+			else
+			{
+				//paginationRecherche(5, $req);
+				$dont_link = 'nono' ; // entete du tablau sans order by
+				$dont_show = 'prenom_gerant'; // colonne non affichée
+				enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
+			
+				while ($ligne = $resultat->fetch_assoc()) // = tant qu'il y a une ligne de resultat, on en fait un tableau 
+				{
+					echo '<tr '; 
+					if(isset($_GET['id_bar']) && ($_GET['id_bar'] == $ligne['id_bar']))
+					{
+						echo ' class="tr_active" ';
+					}
+					echo '>';
+					foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
+					{
+
+						if($indice == 'photo')
+						{
+							echo '<td ><img src="'.$valeur.'" alt="'.$ligne['nom_bar'].'" title="'.$ligne['nom_bar'].'" class="thumbnail_tableau" width="80px" /></td>';
+						}
+						//elseif($indice == 'description')
+						//{
+					//		echo '<td colspan="3">' . substr($valeur, 0, 70) . '...</td>'; //Pour couper la description (affiche une description de 70 caracteres maximum)
+					//	}
+						elseif($indice == 'id_bar')
+						{
+							echo '<td><a href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$ligne['id_bar'].'" title="détails">'.$ligne['id_bar'].'</a></td>';
+						}
+						elseif($indice == 'nom_gerant')
+						{
+							echo '<td colspan="2">' . ucfirst($valeur).' ';	
+						}
+						elseif($indice == 'prenom_gerant')
+						{
+							echo ucfirst($valeur) .'</td>';
+						}
+						elseif($indice == 'statut')
+						{
+							if($valeur === '1')
+							{
+								echo '<td >actif</td>';
+							}
+							else
+							{
+								echo '<td >en attente de validation</td>';
+							}
+						}
+						elseif(($indice != 'description') && ($indice != 'siret' && $indice != 'ville') && $indice != 'adresse')
+						{
+							echo '<td >'.ucfirst($valeur).'</td>';
+						}	
+					}
+					echo '<td><a href="?action=suppression&id_bar='.$ligne['id_bar'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
+					echo '<td><a href="?action=modification&id_bar='.$ligne['id_bar'] .'" class="btn_edit">éditer</a></td>';
+					echo '</tr>';		
+				}						
+					
+			}
+			echo '</table></div><br />';
+		}
+
+
+		// COMMANDES MEMBRE
 		echo '<div class="box_info no_border">
 			<h3 id="details_membre">Commandes du membre n°'.$_GET['id_membre'].'</h3>
 			<table>';
@@ -322,49 +407,63 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 
 		$dont_link = 'nono'; // entete du tablau sans order by
 		$dont_show = ''; // colonne non affichée
-		enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
-
-		while ($ligne = $resultat->fetch_assoc()) 
+		
+		$nb_commandes = $resultat -> num_rows;
+	
+		if($nb_commandes < 1)
 		{
-			echo '<tr '; 
-			if(isset($_GET['id_commande']) &&  $_GET['id_commande'] == $ligne['id_commande'])
-			{
-				echo ' class="tr_active" ';
-			}
-			echo '>';
+			echo '<tr>
+					<td colspan="6"><h4>Ce membre n\' a passé aucune commande</h4></td>	
+				</tr>';
+		}
+		else
+		{
+			enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
 
-			foreach($ligne AS $indice => $valeur)
+			while ($ligne = $resultat->fetch_assoc()) 
 			{
-				
-				if($indice == 'id_commande')//Lien au niveau de l'id pour afficher les details de la commande
+				echo '<tr '; 
+				if(isset($_GET['id_commande']) &&  $_GET['id_commande'] == $ligne['id_commande'])
 				{
-					echo '<td><a href="?affichage=affichage&action=detail&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].''.$page.''.$orderby.''.$asc_desc.'#details_membre">'.$valeur.'</a></td>'; 
+					echo ' class="tr_active" ';
 				}
-				elseif($indice == 'date') // affichage du timestamp de la commande en format fr
+				echo '>';
+
+				foreach($ligne AS $indice => $valeur)
 				{
-					echo '<td>';
-						$date = date_create_from_format('Y-m-d H:i:s', $valeur);
-					echo date_format($date, 'd/m/Y H:i') . '</td>';
+					
+					if($indice == 'id_commande')//Lien au niveau de l'id pour afficher les details de la commande
+					{
+						echo '<td><a href="?affichage=affichage&action=detail&id_membre='.$ligne['id_membre'].'&id_commande='.$ligne['id_commande'].''.$page.''.$orderby.''.$asc_desc.'#details_membre">'.$valeur.'</a></td>'; 
+					}
+					elseif($indice == 'date') // affichage du timestamp de la commande en format fr
+					{
+						echo '<td>';
+							$date = date_create_from_format('Y-m-d H:i:s', $valeur);
+						echo date_format($date, 'd/m/Y H:i') . '</td>';
+					}
+					elseif($indice == 'montant')
+					{		
+						echo  '<td>'.$valeur. ' € </td>';
+					}
+					else
+					{
+						echo '<td >'.$valeur.'</td>';
+					}
 				}
-				elseif($indice == 'montant')
-				{		
-					echo  '<td>'.$valeur. ' € </td>';
-				}
-				else
-				{
-					echo '<td >'.$valeur.'</td>';
-				}
+				echo '<td>
+				<a class="btn_delete" href="?affichage=affichage&action=detail&action=suppression&id_membre='.$_GET['id_membre'].'&id_commande='.$ligne['id_commande'].''.$page.''.$orderby.''.$asc_desc.'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
+					</td>
+				</tr>';
 			}
-			echo '<td>
-			<a class="btn_delete" href="?affichage=affichage&action=detail&action=suppression&id_membre='.$_GET['id_membre'].'&id_commande='.$ligne['id_commande'].''.$page.''.$orderby.''.$asc_desc.'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
-				</td>
-			</tr>';
 		}						
 		echo '</table>
 		<br />
 		</div>';
 	}
-//DETAILS COMMANDE
+
+	
+	//DETAILS COMMANDE
 	if(isset($_GET['id_commande']))
 	{
 		echo '<div class="box_info no_border">
@@ -402,7 +501,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 		}					
 		echo '</table></div><br />';
 	}
-// DETAILS PRODUITS	
+	// DETAILS PRODUITS	
 	if(isset($_GET['id_produit']))
 	{
 		echo '<div class="box_info no_border">
