@@ -294,7 +294,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 					{
 						echo '<td class="teal">actif</td>';
 						echo '<td>
-							<a class="btn_delete" href="?affichage=affichage&&modif=desactiver&id_bar='.$ligne['id_bar'] .$page.''.$orderby.''.$asc_desc.'#details" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">désactiver</a>
+							<a class="btn_delete" href="?affichage=affichage&modif=desactiver&id_bar='.$ligne['id_bar'] .$page.''.$orderby.''.$asc_desc.'#details" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">désactiver</a>
 						</td>';
 					}
 					else
@@ -313,9 +313,9 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 		}
 
 		
-		echo '<td><a href="?affichage=affichageaction=suppression&id_bar='.$ligne['id_bar'].''.$page.''.$orderby.''.$asc_desc.'#details" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
+		echo '<td><a href="?affichage=affichage&action=suppression&id_bar='.$ligne['id_bar'].''.$page.''.$orderby.''.$asc_desc.'#details" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
 		
-		echo '<td><a href="?affichage=affichageaction=modification&id_bar='.$ligne['id_bar'].''.$page.''.$orderby.''.$asc_desc.'#details" class="btn_edit">éditer</a></td>';
+		echo '<td><a href="?affichage=affichage&action=modification&id_bar='.$ligne['id_bar'].''.$page.''.$orderby.''.$asc_desc.'#details" class="btn_edit">éditer</a></td>';
 		echo '</tr>';
 	}						
 	echo '</table><br />';
