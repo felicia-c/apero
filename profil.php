@@ -170,17 +170,20 @@ if($_GET)
 	//SUPPRESSION DU COMPTE MEMBRE
 	if((isset($_GET['action']) && $_GET['action'] == 'suppression_membre'))
 	{
-		$resultat = executeRequete("SELECT * FROM membre WHERE id_membre = '$id_utilisateur'"); //on recupere les infos dans la table membre (par securité, on recherche l'id du membre connecté plutot que le get)
+		$resultat = executeRequete("SELECT * FROM membre WHERE id_membre = '$id_membre_actuel'"); //on recupere les infos dans la table membre (par securité, on recherche l'id du membre connecté plutot que le get)
 		//executeRequete("DELETE FROM avis WHERE id_membre = '$_GET[id_membre]'"); // on supprime les avis du membre
-		executeRequete("UPDATE commande SET id_membre = NULL WHERE id_membre = '$id_utilisateur' ");
-		executeRequete("DELETE FROM newsletter WHERE id_membre = '$id_utilisateur'");
-		executeRequete("DELETE FROM membre WHERE id_membre='$id_utilisateur'");
-		unset($_SESSION['utilisateur']);
+		executeRequete("UPDATE commande SET id_membre = NULL WHERE id_membre = '$id_membre_actuel' ");
+		executeRequete("DELETE FROM newsletter WHERE id_membre = '$id_membre_actuel'");
+		executeRequete("DELETE FROM bar WHERE id_membre = '$id_membre_actuel'");
+		executeRequete("DELETE FROM membre WHERE id_membre='$id_membre_actuel'");
+		unset($_SESSION);
+		//header('location:index.php');
+		//exit;
 		//$msg .='<div class="msg_success">Membre N°'. $_GET['id_membre'] .' supprimé avec succès!</div>';   //suppression de la commande dans la table + affichage d'un msg de confirmation
 	}
-
 }
 //FIN SUPPRESSION
+
 require_once("inc/header.inc.php");
 //echo debug($_SESSION);
 $membre_actuel = $_SESSION['utilisateur'];
@@ -264,7 +267,7 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 	if($nb_bars < 1)
 	{
 		echo '<tr>
-				<td colspan="6">Vous n\'avez actuellement aucun compte Bar activé</td>	
+				<td colspan="6">Vous n\'avez actuellement aucun compte Bar</td>	
 			</tr>';
 	}
 	else
@@ -478,7 +481,7 @@ $nb_avis = $resultat -> num_rows;
 if($nb_avis < 1)
 {
 	echo '<tr>
-			<td colspan="4">Vous n\'avez pas encore donné votre avis sur une salle</td>	
+			<td colspan="4">Vous n\'avez pas encore donné votre avis sur un bar</td>	
 		</tr>';
 }
 while($mon_avis = $resultat -> fetch_assoc() )
