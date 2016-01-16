@@ -170,12 +170,17 @@ a.admin:hover{
 header nav li a.active{
    border-bottom: #335163; 
 }
-#logo_header{
-   float: left;
+.bloc_logo{
+    float: left;
    margin: 1%;
-  
 }
-
+#logo_header{
+  display: block;
+}
+.logo_admin{
+   display: block;
+   margin-top: 2%;
+}
 /* FOOTER */
 footer{
    padding-top: 10%;
@@ -303,6 +308,7 @@ label{
 /*} */ 
 
 
+
 img.thumbnail{
     width: 200px;
 }
@@ -360,7 +366,9 @@ table tbody tr:first-child{
     /*border-color: white;*/
     border: 1px solid #b4b8bb;
 }
-
+tr td a{
+   padding: 2%;
+}
 .tr_active{
     background-color: rgba(92, 154, 132, 0.25) !important;
 }
