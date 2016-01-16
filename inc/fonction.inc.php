@@ -805,7 +805,7 @@ function affichePromoBar($req)
 	while($ma_promo = $resultat -> fetch_assoc())
 	{
 		echo '<br />
-		<div class=" bar text-center">
+		<div class="aperos_index bar text-center ">
 			<p class=" description_promo">'.$ma_promo['description'].'</p>
 			<p class="dates">'.afficheDateFr($ma_promo['date_debut'], $ma_promo['date_fin'], ' au ').'</p>';
 

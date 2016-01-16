@@ -16,7 +16,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'promos')
 else
 {	
 
-	$table="bar WHERE statut='1' ";	
+	$table="bar WHERE statut='1' ORDER BY id_bar DESC  ";	
 	$req="SELECT * FROM $table";
 	$req = paginationGestion(6, $table, $req);
 	$lien = "";

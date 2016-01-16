@@ -110,8 +110,8 @@ if(!empty($_POST))
 			$statut = $resultat -> fetch_assoc();
 			if($_GET['action'] == 'modification')
 			{
-				executeRequete("UPDATE bar SET siret ='$siret', nom_bar = '$nom_bar', photo = '$photo_bdd', description= '$description', nom_gerant = '$nom', prenom_gerant = '$prenom', ville = '$ville', cp = '$cp', adresse = '$adresse', telephone= '$telephone', email = '$email' WHERE id_bar = '$_GET[id_bar]'");
-				header('location:profil.php?mod=ok&affichage=affichage');
+				executeRequete("UPDATE bar SET siret ='$siret', nom_bar = '$nom_bar', photo = '$photo_bdd', description= '$description', nom_gerant = '$nom', prenom_gerant = '$prenom', ville = '$ville', cp = '$cp', adresse = '$adresse', telephone= '$telephone', email = '$email', statut='0' WHERE id_bar = '$_GET[id_bar]'");
+				header('location:profil.php?mod=ok&affichage=affichage&id_bar='.$_GET['id_bar'].'');
 			}
 			else
 			{
@@ -119,7 +119,7 @@ if(!empty($_POST))
 			}
 			unset($_POST);
 			//executeRequete("INSERT INTO bar (id_membre, siret, nom_bar, photo, description, nom_gerant, prenom_gerant, ville, cp, adresse, telephone, email) VALUES ( '$id_membre', '$siret', '$nom_bar', '$photo_bdd', '$description', '$nom', '$prenom', '$ville', '$cp', '$adresse', '$telephone', '$email')"); 
-			header('location:profil.php?add=ok&affichage=affichage');
+			header('location:profil.php?add=ok&affichage=affichage&id_bar='.$_GET['id_bar'].'');
 			exit;
 		}	
 	}
@@ -153,7 +153,7 @@ if($_GET)
 		}
 		
 		executeRequete("DELETE FROM bar WHERE id_bar='$_GET[id_bar]'");
-		$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Bar N°'. $_GET['id_bar'] .' supprimé avec succès!</div>';
+		$msg .='<div class="msg_success"">Bar N°'. $_GET['id_bar'] .' supprimé avec succès!</div>';
 		$_GET['affichage'] = 'affichage'; 	
 	}
 	
@@ -401,7 +401,7 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 			<textarea required type="text" id="adresse" name="adresse" maxlength="100" placeholder="86 rue de la Ville" required><?php if(isset($_POST['adresse'])) {echo $_POST['adresse'];} elseif(isset($bar_actuel['adresse'])){ echo $bar_actuel['adresse']; }?></textarea><br />
 			
 			<br />
-			<input type="submit" id="enregistrer" name="enregistrer" value="Enregistrer" class="button" /><br />
+			<input onClick="return(confirm(\'Votre bar et les apéro seront inaccessibles jusqu'à validation par l'équipe apéro. <br /> Continuer ?\'));" type="submit" id="enregistrer" name="enregistrer" value="Enregistrer" class="button" /><br />
 			<br />
 			<a class="button " href="<?php echo RACINE_SITE; ?>profil.php?affichage=affichage">Annuler</a><br />
 			<br />

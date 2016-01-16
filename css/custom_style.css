@@ -528,7 +528,19 @@ div.bar .contact_bar{
     margin: 4%;
 }
 /* fin BARS */
-
+.aperos_index{
+   width: 100%;
+  
+} 
+/*.aperos_index div{
+   width: 40%;
+   display: inline-block;
+}
+.text_index{
+   display: inline-block;
+   width: 50%;
+}
+*/
 .block_inline{
     display: inline-block;
 }
