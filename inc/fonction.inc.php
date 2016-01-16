@@ -841,9 +841,9 @@ function afficheVignetteBar($req)
 		</div>
 
 		<div class="contact_bar">
-		<br />
-		<h3>'. $mon_bar['nom_bar'].'</h3><br />
-		<div class="adresse_bar">'.$mon_bar['adresse'].'<br /> '. $mon_bar['cp'].' '.$mon_bar['ville'].'</div>';
+			<br />
+			<h3>'. $mon_bar['nom_bar'].'</h3><br />
+			<div class="adresse_bar">'.$mon_bar['adresse'].'<br /> '. $mon_bar['cp'].' '.$mon_bar['ville'].'</div>';
 		//echo '<strong>'. $mon_bar['cp'].' '.$mon_bar['ville'].'</strong>';
 		//echo '<p>'.substr($mon_bar['description'], 0,60).'...</p></a><br />';
 		echo '</div>';
@@ -854,7 +854,7 @@ function afficheVignetteBar($req)
 		else{
 			echo '<br/>';
 		}
-		echo '</div>';
+		echo '</a></div>';
 	}
 }
 
