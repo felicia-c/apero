@@ -3,11 +3,13 @@ require_once("inc/init.inc.php");
 $titre_page = "Profil";
 //APERO - Felicia Cuneo - 12/2015//
 
+
 if(!utilisateurEstConnecte()) //Si l'utilisateur n'est PAS connecté (SECURITE)
 {
 	header("location:connexion.php");
 	exit();
 }
+$id_membre_actuel = $_SESSION['utilisateur']['id_membre'];
 if(isset($_GET['modif'])&& $_GET['modif'] == 'ok')
 {
 	$msg .= '<div class="msg_success"><p>Votre profil a été modifié</p></div>';
@@ -137,8 +139,9 @@ if($_GET)
 	}
 
 	// SUPPRESSION
+	
 	//BAR
-	 if(isset($_GET['action']) && $_GET['action'] == 'suppression')
+	 if((isset($_GET['action']) && $_GET['action'] == 'suppression') && isset($_GET['id_bar']))
 	{
 		$resultat = executeRequete("SELECT * FROM bar WHERE id_bar= '$_GET[id_bar]'"); //on recupere les infos afin de connaitre son image  pour pouvoir la supprimer
 		$produit_a_supprimer = $resultat->fetch_assoc();
@@ -153,16 +156,29 @@ if($_GET)
 		$msg .='<div class="msg_success" style="padding: 10px; text-align: center">Bar N°'. $_GET['id_bar'] .' supprimé avec succès!</div>';
 		$_GET['affichage'] = 'affichage'; 	
 	}
+	
 	//AVIS
-
 	// suppression d'un avis
-	 if(isset($_GET['action']) && $_GET['action'] == 'suppression_avis')
+	if((isset($_GET['action']) && $_GET['action'] == 'suppression_avis') && isset($_GET['id_avis']))
 	{
 		$resultat = executeRequete("SELECT * FROM avis WHERE id_avis = '$_GET[id_avis]'"); //on recupere les infos dans la table avis
 
 		executeRequete("DELETE FROM avis WHERE id_avis='$_GET[id_avis]'");
 		$msg .='<div class="msg_success"><h4>Avis N°'. $_GET['id_avis'] .' supprimé!</h4></div>';   //suppression de l'avis dans la table + affichage d'un msg de confirmation
 	}
+
+	//SUPPRESSION DU COMPTE MEMBRE
+	if((isset($_GET['action']) && $_GET['action'] == 'suppression_membre'))
+	{
+		$resultat = executeRequete("SELECT * FROM membre WHERE id_membre = '$id_utilisateur'"); //on recupere les infos dans la table membre (par securité, on recherche l'id du membre connecté plutot que le get)
+		//executeRequete("DELETE FROM avis WHERE id_membre = '$_GET[id_membre]'"); // on supprime les avis du membre
+		executeRequete("UPDATE commande SET id_membre = NULL WHERE id_membre = '$id_utilisateur' ");
+		executeRequete("DELETE FROM newsletter WHERE id_membre = '$id_utilisateur'");
+		executeRequete("DELETE FROM membre WHERE id_membre='$id_utilisateur'");
+		unset($_SESSION['utilisateur']);
+		//$msg .='<div class="msg_success">Membre N°'. $_GET['id_membre'] .' supprimé avec succès!</div>';   //suppression de la commande dans la table + affichage d'un msg de confirmation
+	}
+
 }
 //FIN SUPPRESSION
 require_once("inc/header.inc.php");
@@ -200,7 +216,8 @@ else
 echo '<div class="float photo_profil">
 		<img src="images/userpic_default.png" class="thumbnail float" alt="photo par défaut" >
 	</div>
-	<div class="infos_profil inline-block">';
+	<div class="infos_profil inline-block">
+	<h4 class="orange">Informations</h4>';
 if (isset($membre_actuel['sexe']) && $membre_actuel['sexe'] == 'f')
 {
 	echo '<p>Mme ';
@@ -211,22 +228,23 @@ else
 }
 echo ucfirst($membre_actuel['prenom']) .' '. ucfirst($membre_actuel['nom']) .'</p>';
 // adresse de livraison
-echo '<p><strong>'. ucfirst($membre_actuel['pseudo']) .'</strong></p>
+echo '<p>pseudo: <strong>'. ucfirst($membre_actuel['pseudo']) .'</strong></p>
 
-	<p><strong>'. $membre_actuel['email'] .	'</strong></p>';
+	<p><strong>'. $membre_actuel['email'] .'</strong></p>';
 
-//LIEN MODIFIER		
+//LIEN MODIFIER / Supprimer		
 if(isset($membre_actuel['id_membre']))
 {
-	$id_membre_actuel = $_SESSION['utilisateur']['id_membre'];
-	echo '<a class="teal" href="'.RACINE_SITE.'modif_profil.php?id_membre='.$id_membre_actuel.'&action=Modifier" class="button" >Modifier</a>';		
+	
+	
+	echo '<br /><br /><a class="tomato" href="?action=suppression_membre"  onClick="return(confirm(\'Votre compte apéro sera supprimé définitivement. Continuer ?\'));">Supprimer mon compte</a>';		
 }
 
 echo '</div>
 <div class="infos_profil inline-block">
 	<h4 class="orange">Votre adresse de livraison</h4>
 <p><strong>'. ucfirst($membre_actuel['prenom']) .' '. ucfirst($membre_actuel['nom']) .'</strong><br />'.$membre_actuel['adresse'] .'<br />'.$membre_actuel['cp'] .' '. ucfirst($membre_actuel['ville']) .'</p>';
-
+	echo '<br /><br /><a class="teal" href="'.RACINE_SITE.'modif_profil.php?id_membre='.$id_membre_actuel.'&action=Modifier" class="button" >Modifier mon compte</a>';	
 echo '</div>
 	</div><br />';
 
@@ -398,95 +416,95 @@ echo '<!-- DERNIERES COMMANDES -->
 
 			
 //selection des commandes de l'utilisateur
-		$id_utilisateur = $_SESSION['utilisateur']['id_membre'];
-		$req = "SELECT * FROM commande WHERE id_membre = '$id_utilisateur' ORDER BY date DESC LIMIT 5";
-		$resultat = executeRequete($req);
-		echo '<table class="tableau_panier">
-				<tr>
-					<th>Numero de Suivi</th>
-					<th>Date de Commande</th>
-					<th>Montant TTC</th>
-					<th>Etat de la commande</th>
-				</tr>';
-		$nb_commandes = $resultat -> num_rows;
-		if($nb_commandes < 1)
-		{
-			echo '<tr>
-					<td colspan="4">Vous n\'avez pas encore passé de commande</td>	
-				</tr>';
-		}
-		while($ma_commande = $resultat -> fetch_assoc() )
-		{
-			echo '<tr>
-				<td> '.$ma_commande['id_commande']. ' </td>';
-					
-					$date_avis = date_create_from_format('Y-m-d H:i:s', $ma_commande['date']);
-			echo '<td>'. date_format($date_avis, 'd/m/Y H:i').' </td>
-					<td> '.$ma_commande['montant']. ' €</td>
-					<td> '; 
-					if($ma_commande['etat'] == 'validee')
-					{
-						echo 'Validée';
-					} 
-					elseif($ma_commande['etat'] == 'expediee')
-					{
-						echo 'Expédiée';
-					}
-					else
-					{
-						echo ucfirst($ma_commande['etat']);
-					}
-					echo '</td>
-				</tr>';
-		}
-		echo '</table>
-		<br />
-		<!-- DERNIERES AVIS -->		 
-		
-			<h4 class=orange>Vos derniers avis</h4>';
+$id_utilisateur = $_SESSION['utilisateur']['id_membre'];
+$req = "SELECT * FROM commande WHERE id_membre = '$id_utilisateur' ORDER BY date DESC LIMIT 5";
+$resultat = executeRequete($req);
+echo '<table class="tableau_panier">
+		<tr>
+			<th>Numero de Suivi</th>
+			<th>Date de Commande</th>
+			<th>Montant TTC</th>
+			<th>Etat de la commande</th>
+		</tr>';
+$nb_commandes = $resultat -> num_rows;
+if($nb_commandes < 1)
+{
+	echo '<tr>
+			<td colspan="4">Vous n\'avez pas encore passé de commande</td>	
+		</tr>';
+}
+while($ma_commande = $resultat -> fetch_assoc() )
+{
+	echo '<tr>
+		<td> '.$ma_commande['id_commande']. ' </td>';
 			
+			$date_avis = date_create_from_format('Y-m-d H:i:s', $ma_commande['date']);
+	echo '<td>'. date_format($date_avis, 'd/m/Y H:i').' </td>
+			<td> '.$ma_commande['montant']. ' €</td>
+			<td> '; 
+			if($ma_commande['etat'] == 'validee')
+			{
+				echo 'Validée';
+			} 
+			elseif($ma_commande['etat'] == 'expediee')
+			{
+				echo 'Expédiée';
+			}
+			else
+			{
+				echo ucfirst($ma_commande['etat']);
+			}
+			echo '</td>
+		</tr>';
+}
+echo '</table>
+<br />
+<!-- DERNIERES AVIS -->		 
+
+	<h4 class=orange>Vos derniers avis</h4>';
+	
 //selection des avis de l'utilisateur
-		$id_utilisateur = $_SESSION['utilisateur']['id_membre'];
-		$resultat = executeRequete("SELECT * FROM avis WHERE id_membre = '$id_utilisateur' ORDER BY date DESC LIMIT 0,5");
-		
-		echo '<table class="tableau_panier">
-				<tr>
-					<th>Bar</th>
-					<th>Date</th>
-					<th>Note</th>
-					<th>Commentaire</th>
-				</tr>';
-		$nb_avis = $resultat -> num_rows;
-		if($nb_avis < 1)
-		{
-			echo '<tr>
-					<td colspan="4">Vous n\'avez pas encore donné votre avis sur une salle</td>	
-				</tr>';
-		}
-		while($mon_avis = $resultat -> fetch_assoc() )
-		{
-			$resultat_titre = executerequete("SELECT nom_bar FROM bar WHERE id_bar = '$mon_avis[id_bar]'");
-			$titre = $resultat_titre -> fetch_assoc();
-			echo '<tr>
-					<td> '.ucfirst($titre['nom_bar']). ' </td>
-					<td>';
-					$date = date_create_from_format('Y-m-d H:i:s', $mon_avis['date']);
-					echo date_format($date, 'd/m/Y H:i') .' </td>
-					<td>'. $mon_avis['note'] .' </td>
-					<td> '.ucfirst($mon_avis['commentaire']). '</td>	
-					<td><a href="?action=suppression_avis&id_avis='.$mon_avis['id_avis'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
-					</td>
-				</tr>';
-		}
-		echo '</table>
-		<br />
-		<br />
+$id_utilisateur = $_SESSION['utilisateur']['id_membre'];
+$resultat = executeRequete("SELECT * FROM avis WHERE id_membre = '$id_utilisateur' ORDER BY date DESC LIMIT 0,5");
 
-		</div>
-		<br />
-		<br />';
+echo '<table class="tableau_panier">
+		<tr>
+			<th>Bar</th>
+			<th>Date</th>
+			<th>Note</th>
+			<th>Commentaire</th>
+		</tr>';
+$nb_avis = $resultat -> num_rows;
+if($nb_avis < 1)
+{
+	echo '<tr>
+			<td colspan="4">Vous n\'avez pas encore donné votre avis sur une salle</td>	
+		</tr>';
+}
+while($mon_avis = $resultat -> fetch_assoc() )
+{
+	$resultat_titre = executerequete("SELECT nom_bar FROM bar WHERE id_bar = '$mon_avis[id_bar]'");
+	$titre = $resultat_titre -> fetch_assoc();
+	echo '<tr>
+			<td> '.ucfirst($titre['nom_bar']). ' </td>
+			<td>';
+			$date = date_create_from_format('Y-m-d H:i:s', $mon_avis['date']);
+			echo date_format($date, 'd/m/Y H:i') .' </td>
+			<td>'. $mon_avis['note'] .' </td>
+			<td> '.ucfirst($mon_avis['commentaire']). '</td>	
+			<td><a href="?action=suppression_avis&id_avis='.$mon_avis['id_avis'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
+			</td>
+		</tr>';
+}
+echo '</table>
+<br />
+<br />
 
-	require_once("inc/footer.inc.php");
- 
-  ?>
+</div>
+<br />
+<br />';
+
+require_once("inc/footer.inc.php");
+
+?>
  
