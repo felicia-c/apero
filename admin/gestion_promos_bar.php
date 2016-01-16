@@ -371,11 +371,11 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 					{
 						echo 'selected';
 					}
-					elseif(isset($_POST['id_bar']) && isset($_POST['id_bar']) == $ligne['id_bar'])
+					elseif(isset($_POST['id_bar']) && $_POST['id_bar'] == $ligne['id_bar'])
 					{
 						echo 'selected';
 					}
-					elseif(isset($promo_actuelle) && isset($promo_actuelle['id_bar']) == $ligne['id_bar'])
+					elseif(isset($promo_actuelle) && $promo_actuelle['id_bar'] == $ligne['id_bar'])
 					{
 						echo 'selected';
 					}
@@ -398,11 +398,11 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 						{
 							echo ' selected ';
 						}
-						elseif(isset($_POST['categorie']) && isset($_POST['categorie']) == $ligne['categorie'])
+						elseif(isset($_POST['categorie']) && $_POST['categorie'] == $ligne['categorie'])
 						{
 							echo ' selected ';
 						}
-						elseif(isset($promo_actuelle['categorie_produit']) && isset($promo_actuelle['categorie_produit']) == $ligne['categorie'])
+						elseif(isset($promo_actuelle['categorie_produit']) && $promo_actuelle['categorie_produit'] == $ligne['categorie'])
 						{
 							echo ' selected ';
 						}
