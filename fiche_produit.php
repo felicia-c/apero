@@ -6,7 +6,7 @@ require_once("inc/header.inc.php");
 
 echo $msg;
 
-echo '<div class="box_info">';
+echo '<div class="box_info fiche_produit">';
 if(isset($_GET['id_produit']))
 {
 	$resultat = executeRequete("SELECT * FROM produit INNER JOIN taille_stock ON produit.id_produit = taille_stock.id_produit WHERE produit.id_produit = '$_GET[id_produit]'");

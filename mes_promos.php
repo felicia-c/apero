@@ -500,6 +500,7 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 
 <?php 
 }
-echo '</div>';
+echo '</div>
+<br /><br />';
 require_once('inc/footer.inc.php');
 

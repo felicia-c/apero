@@ -112,7 +112,7 @@ a:hover,tr,input[type=submit], input, textarea, select{
 a:hover,
 .active,
 .actif{
-    border-bottom: orange solid 1px;
+    /*border-bottom: orange solid 1px;*/
     color: #b4b8bb;
 }
 a.btn_delete,a.btn_edit{
@@ -163,7 +163,7 @@ header a.admin{
 }
 header nav li a:hover,
 a.admin:hover{
-    color: #b4b8bb;
+   color: #b4b8bb;
    /*border-color: #335163; */
    border-bottom: none;
 }
@@ -177,9 +177,12 @@ header nav li a.active{
 }
 
 /* FOOTER */
-
+footer{
+   padding-top: 10%;
+}
 footer a:hover{
    border-bottom: none;
+   color: tomato;
 }
 
 /* FORMS */
@@ -231,7 +234,13 @@ textarea{
 input{
     padding: 1%;
 }
-
+.fiche_produit select,.fiche_produit option{
+   background: white;
+   color: rgb(51, 81, 99);
+   padding: 10% 0;
+   font-weight: bold;
+   font-size: 0.9em;
+}
 input:hover,
 select:hover,
 textarea:hover{
@@ -266,6 +275,8 @@ label{
 
 }
 
+
+/* PROFIL */
 .photo_profil{
     width: 30%;
     display: inline-block;
@@ -273,6 +284,9 @@ label{
 .infos_profil{
     width: 30%;
     display: inline-block;
+    height: 200px;
+    vertical-align: top;
+    padding: 2%;
 }
 /* fin FORM */
 
@@ -630,7 +644,7 @@ div.tri a:hover{
 }
 .vignette_bar:hover .switch_titre{
    
-      opacity: 0.9; 
-      transition: opacity 1s ease-in-out;
-   }
+   opacity: 0.9; 
+   transition: opacity 1s ease-in-out;
 }
+
