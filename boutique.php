@@ -78,7 +78,7 @@ while ($ligne = $resultat_categorie->fetch_assoc())
 	echo ' <a class="button" style="margin-bottom: 20px;" href="?action=tri_categorie&categorie='. $ligne['categorie'] .'" > '. $ligne['categorie'] .' </a> | ';
 }
 //echo '<a class="button" style="margin-bottom: 20px;" href="?action=order&tri=tous">Tous les articles</a>
-echo '</ul>';
+
 
 
 // COULEUR
@@ -121,7 +121,7 @@ echo $msg;
 
 //AFFICHAGE
 
-echo '<div class="box_info bg_color2">';	
+echo '<div class="box_info no_border">';	
 
 echo '<h1><a href="'.RACINE_SITE.'boutique.php" >T-shirts </a>/ ';
 if(isset($_GET['categorie']))

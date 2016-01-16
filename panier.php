@@ -66,7 +66,7 @@ if($_POST)
 			{
 				if(montantTotal() == 0)
 				{
-					header("location:panier.php");
+					header("location:panier.php?empty");
 					exit;
 				}
 
@@ -204,6 +204,13 @@ if(isset($_GET['action']) && $_GET['action'] == 'supprimer_promo')
 	echo '<meta http-equiv="refresh" content="2;URL=panier.php">';
 }	
 
+
+//messages
+if(isset($_GET['empty']))
+{
+	$msg .= '<div class="msg_erreur">Votre panier est vide !</div>';
+}
+
 require_once("inc/header.inc.php");	
 
 //debug($_SESSION);
@@ -245,11 +252,19 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 		echo '<tr>
 			<td colspan="11" ><h2>Votre panier est vide !</h2> </td>
 		</tr>
-		<tr>
-
-			<td colspan="3"><a class=" produit button" href="boutique.php" >Poursuivre mes achats</a></td>
-			<td colspan="6"><a class="noborder" href="profil.php"> >Voir mon profil</a></td>
-		</tr>';
+		<tr>';
+			echo '<td colspan="3"><a class=" produit button" href="boutique.php" >Poursuivre mes achats</a></td>';
+			if(utilisateurEstConnecte())
+			{
+				echo '<td colspan="6"><a class="noborder" href="profil.php"> >Voir mon profil</a></td>';
+			}
+			else
+			{
+				echo '<td colspan="1">Vous avez déjà un compte?<br/><a href="'.RACINE_SITE.'connexion.php">Connectez-vous</a><br /></td><td colspan="2">Pas encore de compte?<br /> <a href="'.RACINE_SITE.'inscription.php">inscrivez-vous</a></td>';
+			}
+			
+			
+		echo '</tr>';
 	}
 	else
 	{
@@ -365,7 +380,7 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 				echo $_POST['code_promo']; 
 			} 
 			echo '"/>
-					<input type="submit" class="button" id="recalculer" value="Recalculer le total" />
+					<input type="submit" class="button btn_promo" id="recalculer" value="Activer la promo" />
 				</form>';
 		}
 	//MONTANT TOTAL
@@ -375,7 +390,7 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 
 		<tr>
 			<th colspan="6">Montant total avec promo</th>
-			<td colspan="2"><strong>' . montantTotal() .' € </strong></td>
+			<td colspan="2" class="total_panier"><strong>' . montantTotal() .' € </strong></td>
 			<td></td>
 		</tr>';
 		
@@ -406,7 +421,7 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 		{
 			echo '<tr>
 				<td colspan="1"><a href="'.RACINE_SITE.'boutique.php" class="button btn_resa">Poursuivre mes achats</a></td>
-				<td colspan="1">Pour valider vos achats veuillez vous <a href="'.RACINE_SITE.'connexion.php">Connecter</a> Pas encore de compte ? <a href="'.RACINE_SITE.'inscription.php">inscrivez-vous</a></td>
+				<td colspan="1">Pour valider vos achats veuillez vous <a href="'.RACINE_SITE.'connexion.php">Connecter</a><br /></td><td colspan="2">Pas encore de compte?<br /> <a href="'.RACINE_SITE.'inscription.php">inscrivez-vous</a></td>
 			</tr>';
 		}	
 	}	
@@ -425,14 +440,14 @@ if(utilisateurEstConnecte())  // par securité
 // INFOS UTILISATEUR
 	$membre_actuel = $_SESSION['utilisateur'];
 	
-	echo '<div class="float">
-			<h4>Vos informations</h4>
+	echo '<div class="block_inline infos_panier">
+			<h4 class="orange">Vos informations</h4>
 			<p><strong>'. ucfirst($membre_actuel['pseudo']) .'</strong></p>
 			<p><strong>'. ucfirst($membre_actuel['email']) .'</strong></p>
 		</div>
 	
-		<div class="float">
-			<h4>Votre adresse de facturation</h4>
+		<div class="block_inline infos_panier">
+			<h4 class="orange">Votre adresse de facturation</h4>
 			
 			<article>
 				<adress><strong>'. ucfirst($membre_actuel['prenom']) .' '. ucfirst($membre_actuel['nom']) .'<br />'.$membre_actuel['adresse'] .'<br />'.$membre_actuel['cp'] .' '. ucfirst($membre_actuel['ville']) .'</strong>

@@ -177,19 +177,19 @@ require_once("inc/header.inc.php");
 		
 		<label for="adresse">Adresse *</label><br />
 		<textarea  id="adresse" rows="8" name="adresse" required><?php if(isset($_POST['adresse'])) {echo $_POST['adresse'];}?></textarea><br /><br />
-	</fieldset>	
+	</fieldset>	<br /><br />		
 	<div class="box_info">
 		<label for="newsletter" ><strong>S'inscrire à notre newsletter</strong></label><br />
 		<input type="radio" value="ok" id="newsletter" class="float" name="newsletter" value="ok" <?php if(isset($_POST['newsletter']) && $_POST['newsletter'] == "ok") { echo 'checked';} elseif(!isset($_POST['newsletter'])){echo 'checked';} ?> required / >
-		<label class="label_nl"><strong>Oui</strong>, je souhaite être tenu au courant des offres d'Apéro</label><br />
+		<label class="label_nl"><strong>OUI</strong>, je souhaite être tenu au courant des offres d'Apéro</label><br />
 		<input type="radio" value="" id="newsletter" name="newsletter" class="float" />
-		<label class="label_nl"><strong>Non</strong>, je ne souhaite pas être informé(e)</label>
+		<label class="label_nl"><strong>NON</strong>, je ne souhaite pas être informé(e)</label>
 	</div>
 	<br /><br />
 	<div class="box_info">
 		<p><strong>Vous avez un bar?</strong> Vous souhaitez le faire connaître et fidéliser votre clientèle ? <br />Inscrivez votre bar !<br /> <a href="<?php echo RACINE_SITE; ?>">En savoir plus</a></p><br/>
 		<input type="checkbox" name="bar" id="bar" class="float"/>
-		<label class="label_nl" for="bar">Je certifie que je suis gérant d'un bar<br />(nous procèderont aux vérifications nécessaires avant de valider l'inscription d'un bar)</label>
+		<label class="label_nl" for="bar">Je certifie que je suis gérant d'un bar<br />(nous procèderons aux vérifications nécessaires avant de valider l'inscription d'un bar)</label>
 	</div>
 		<br /><br />
 

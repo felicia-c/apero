@@ -822,7 +822,7 @@ function affichePromoBar($req)
 	echo '</div>';
 }
 
-//vignette bar
+//vignette bar (page bars)
 function afficheVignetteBar($req)
 {
 	$resultat = executeRequete($req);
@@ -835,10 +835,17 @@ function afficheVignetteBar($req)
 			<a class="noborder_lien" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$mon_bar['id_bar'].'">';
 	//echo '<h2>'.$mon_bar['nom_bar'].'</h2>';
 		
-		echo '<div class="img_bar"><img class="img_vignette" src="'. $mon_bar['photo'].'" style="max-width: 100%;" /><div class="switch_titre">'.$mon_bar['nom_bar'].'</div></div>
+		echo '<div class="img_bar">
+			<img class="img_vignette" src="'. $mon_bar['photo'].'" style="max-width: 100%;" />
+			<div class="switch_titre">'.$mon_bar['nom_bar'].'</div>
+		</div>
 
-		<div class="contact_bar"><br /><strong>'. $mon_bar['cp'].' '.$mon_bar['ville'].'</strong>
-			<p>'.substr($mon_bar['description'], 0,60).'...</p></a><br />';
+		<div class="contact_bar">
+		<br />
+		<h3>'. $mon_bar['nom_bar'].'</h3><br />
+		<div class="adresse_bar">'.$mon_bar['adresse'].'<br /> '. $mon_bar['cp'].' '.$mon_bar['ville'].'</div>';
+		//echo '<strong>'. $mon_bar['cp'].' '.$mon_bar['ville'].'</strong>';
+		//echo '<p>'.substr($mon_bar['description'], 0,60).'...</p></a><br />';
 		echo '</div>';
 		if($promo['nb_promo'] > 0)
 		{
@@ -847,8 +854,7 @@ function afficheVignetteBar($req)
 		else{
 			echo '<br/>';
 		}
-		
-			echo '</div>';
+		echo '</div>';
 	}
 }
 
