@@ -247,18 +247,19 @@ input, select, textarea{
     border-bottom-right-radius:3px;
 }
 textarea{
-    height: 100px;
+    height: 60px;
 }
 input{
     padding: 1%;
 }
-.fiche_produit select,.fiche_produit option{
+.fiche_produit select,.fiche_produit option, select.fiche_bar ,option.fiche_bar{
    background: white;
    color: rgb(51, 81, 99);
    padding: 10% 0;
    font-weight: bold;
    font-size: 0.9em;
 }
+
 input:hover,
 select:hover,
 textarea:hover{
@@ -290,7 +291,6 @@ input[type=submit]:hover{
 label{
     width: 50%;
     text-align: left;
-
 }
 
 
@@ -463,7 +463,7 @@ td.total_panier{
     width: 25%;
     vertical-align: middle;
 }
- .img_produit, .infos_produit{
+.img_produit, .infos_produit{
     display: inline-block;
 }
 .img_produit{
@@ -651,6 +651,8 @@ div.tri a:hover{
   opacity: 1;
 }
 
+
+/* Vignette bar */
 .img_bar{
    height: 150px;
    overflow: hidden;

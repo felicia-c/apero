@@ -775,11 +775,11 @@ function afficheBar($req)
 					<textarea required id="commentaire" name="commentaire" style="height: 100px; "></textarea>
 					
 					<label for="note">Note sur 10</label>
-					<select required id="note" name="note">
-						<option value="">Noter ce bar</option>';
+					<select required class="fiche_bar" id="note" name="note">
+						<option class="fiche_bar" value="">Noter ce bar</option>';
 					for($i = 10; $i >= 1; $i--)
 					{
-						echo '<option value="'.$i.'">'.$i.'</option>';
+						echo '<option class="fiche_bar" value="'.$i.'">'.$i.'</option>';
 					}
 					
 					echo '</select>
@@ -817,7 +817,8 @@ function affichePromoBar($req)
 		}
 		else
 		{
-			echo '<p>Cette promotion est valable si vous portez un t-shirt de la collection: <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='.str_replace('#', '',$ma_promo['categorie_produit']).'">'.$ma_promo['categorie_produit'].'</a></p>';
+			echo '<p>Cette promotion est valable si vous portez un t-shirt de la collection: <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='.str_replace('#', '',$ma_promo['categorie_produit']).'">'.$ma_promo['categorie_produit'].'</a></p>
+			<p><i>(Voir conditions au bar)</i></p>';
 		}
 		echo '</div><br /><hr />';
 	}	
