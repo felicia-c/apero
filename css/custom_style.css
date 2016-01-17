@@ -180,6 +180,7 @@ header nav li a.active{
 .logo_admin{
    display: block;
    margin-top: 2%;
+   margin: auto;
 }
 /* FOOTER */
 footer{
@@ -518,7 +519,7 @@ div.vignette_produit{
 }
 
 .img_vignette{
-    height: 150px;
+    min-height: 150px;
     width: 100%;
     overflow: hidden;
 }

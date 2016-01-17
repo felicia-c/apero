@@ -35,7 +35,7 @@
           echo '<div class="bloc_logo"><a href="'.RACINE_SITE.'index.php"><img src="'.RACINE_SITE.'images/apero_logo.png" id="logo_header" alt="apéro" width="150px"/></a>';
           if(utilisateurEstConnecteEtEstAdmin()|| utilisateurEstConnecteEtEstGerantEtAdmin())
           {
-             echo '<img src="'.RACINE_SITE.'images/logo_admin.png" alt="apéro" class="logo_admin" width="150px"/>';
+             echo '<img src="'.RACINE_SITE.'images/logo_admin.png" alt="apéro" class="logo_admin" width="100px"/>';
           }
          
          echo '</div>
