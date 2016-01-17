@@ -58,7 +58,7 @@ if(!empty($_POST))
 	}
 
 	
-	$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9.,\% _ \'-]+$#', $_POST['description']); 
+	$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9.,\% =_ \'-]+$#', $_POST['description']); 
 	if(!$verif_caractere && !empty($_POST['description']))
 	{
 		$msg .= '<div class="msg_erreur"><h4>Description invalide.<br /> Caractères acceptés: .,_ \'- àâäçéèêëï a-z A-Z et 0-9</h4></div>';  
@@ -172,7 +172,7 @@ echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $c
 echo '<p>Cette page vous permet d\' <strong>ajouter ou modifier les apéros que vous proposez</strong> aux clients du site.
 <br/> Sentez-vous libre de <strong>préciser les modalités de la réduction</strong> dans la description: vous pouvez définir une plage horaire (de 16h à 19h par exemple) ou un type de consommation (boissons non-alcoolisées, accompagnement...) ou toute autre spécification.
 <br /> Veillez néanmoins à rester courtois dans la description de vos apéros, aucun propos à caractère discriminant ou offençant ne saurait être toléré.<br/> En cas de litige,  Apéro et les entreprises qui lui sont associées ne sauraient être tenus pour responsables.</p><br />
-<p><strong>Pour rappel</strong>: les clients membres du site peuvent laisser <strong>un commentaire et une note</strong> sur votre bar, et les bars les mieux notés apparaissent en haut de la liste...</p>';
+<p><strong>Petit rappel</strong>: les clients membres du site peuvent laisser <strong>un commentaire et une note</strong> sur votre bar, et les bars les mieux notés apparaissent en haut de la liste...</p>';
 
 $resultat = executeRequete("SELECT COUNT(id_promo_bar) AS nbre_promo FROM promo_bar");
 $donnees =$resultat -> fetch_assoc();	
@@ -256,7 +256,7 @@ if(isset($_GET['affichage']) &&  $_GET['affichage']=='affichage')
 		<br />';
 		
 	affichagePaginationGestion(5, $table, '');
-	echo '</div>';
+	echo '<br /></div><br />';
 }
 
 // DETAILs DES BARS
@@ -292,23 +292,28 @@ if(isset($_GET['id_bar']))
 				//{
 			//		echo '<td colspan="3">' . substr($valeur, 0, 70) . '...</td>'; //Pour couper la description (affiche une description de 70 caracteres maximum)
 			//	}
-				elseif($indice == 'nom_gerant' || $indice == 'adresse')
+				elseif($indice == 'nom_gerant')
 				{
-					echo '<td colspan="">' . ucfirst($valeur).' ';	
+					echo '<td colspan="2">' . ucfirst($valeur).' ';	
 				}
 				elseif($indice == 'prenom_gerant')
 				{
 					echo ucfirst($valeur) .'</td>';
 				}
+				elseif($indice == 'adresse')
+				{
+					echo '<td colspan="1">' . ucfirst($valeur).'</td>';	
+				}
+
 				elseif($indice == 'statut')
 				{
 					if($valeur === '1')
 					{
-						echo '<td >actif</td>';
+						echo '<td class="teal">actif</td>';
 					}
 					else
 					{
-						echo '<td >en attente de validation</td>';
+						echo '<td class="tomato">en attente de validation</td>';
 					}
 				}
 				elseif($indice != 'description')

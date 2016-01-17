@@ -50,10 +50,10 @@ if(!empty($_POST))
 		$msg .= '<div class="msg_erreur" >Ville - Caractères acceptés: _ - àâäçéèêëïa A à Z, 0 à 9 -_</div>';  
 	}
 	
-	$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9._ - \']+$#', $_POST['adresse']); 
+	$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9.,_ - \']+$#', $_POST['adresse']); 
 	if(!$verif_caractere && !empty($_POST['adresse']))
 	{
-		$msg .= '<div class="msg_erreur">Adresse - Caractères acceptés: _ - àâäçéèêëïa A à Z et 0 à 9</div>';  
+		$msg .= '<div class="msg_erreur">Adresse - Caractères acceptés: _ ,.\'- àâäçéèêëïa A à Z et 0 à 9</div>';  
 	}
 	
 	$verif_caractere = preg_match('#^[0-9]+$#', $_POST['cp']); 
@@ -81,8 +81,9 @@ if(!empty($_POST))
 		{
 			if(verificationExtensionPhoto())
 			{
+				$nom_bar = str_replace(' ', '_',$_POST['nom_bar']);
 				// $msg .= '<div class="bg-success" style="padding: 10px; text-align: center"><h4>OK !</h4></div>';
-				$nom_photo = $_POST['nom_bar']. '_' .$_POST['nom'] . '_' . $_FILES['photo']['name']; //afin que chaque nom de photo soit unique
+				$nom_photo = $nom_bar. '_' .$_POST['nom'] . '_' . $_FILES['photo']['name']; //afin que chaque nom de photo soit unique
 				
 				$photo_bdd = RACINE_SITE . "images/bars/$nom_photo"; //chemin src que l'on va enregistrer ds la BDD
 				
@@ -116,11 +117,12 @@ if(!empty($_POST))
 			else
 			{
 				executeRequete("INSERT INTO bar (id_membre, siret, nom_bar, photo, description, nom_gerant, prenom_gerant, ville, cp, adresse, telephone, email) VALUES ( '$id_membre', '$siret', '$nom_bar', '$photo_bdd', '$description', '$nom', '$prenom', '$ville', '$cp', '$adresse', '$telephone', '$email')"); 
+			
+				unset($_POST);
+				//executeRequete("INSERT INTO bar (id_membre, siret, nom_bar, photo, description, nom_gerant, prenom_gerant, ville, cp, adresse, telephone, email) VALUES ( '$id_membre', '$siret', '$nom_bar', '$photo_bdd', '$description', '$nom', '$prenom', '$ville', '$cp', '$adresse', '$telephone', '$email')"); 
+				header('location:profil.php?add=ok&affichage=affichage&id_bar='.$mysqli->insert_id.'');
+				exit;
 			}
-			unset($_POST);
-			//executeRequete("INSERT INTO bar (id_membre, siret, nom_bar, photo, description, nom_gerant, prenom_gerant, ville, cp, adresse, telephone, email) VALUES ( '$id_membre', '$siret', '$nom_bar', '$photo_bdd', '$description', '$nom', '$prenom', '$ville', '$cp', '$adresse', '$telephone', '$email')"); 
-			header('location:profil.php?add=ok&affichage=affichage&id_bar='.$_GET['id_bar'].'');
-			exit;
 		}	
 	}
 }
@@ -260,7 +262,7 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 
 	$resultat = executeRequete($req);
 	//$nbcol = $resultat->field_count; 
-	echo '<table>';
+	echo '<table id="form_bar">';
 
 	$nb_bars = $resultat -> num_rows;
 
@@ -309,16 +311,17 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 					echo ucfirst($valeur) .'</td>';
 				}
 				elseif($indice == 'statut')
+			{
+				if($valeur === '1')
 				{
-					if($valeur === '1')
-					{
-						echo '<td >actif</td>';
-					}
-					else
-					{
-						echo '<td >en attente de validation</td>';
-					}
+					echo '<td class="teal">actif</td>';
 				}
+				else
+				{
+					echo '<td class="tomato">en attente de validation</td>';
+				}
+				
+			}
 				elseif(($indice != 'description') && ($indice != 'siret' && $indice != 'ville') && $indice != 'adresse')
 				{
 					echo '<td >'.ucfirst($valeur).'</td>';
@@ -332,7 +335,7 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 	}
 	echo '</table><br />';
 	//affichagePaginationRecherche(5, $req);
-	echo '<a href="'.RACINE_SITE.'profil.php?action=ajouter" class="button" >Ajouter un bar</a> | 
+	echo '<a href="'.RACINE_SITE.'profil.php?action=ajouter#form_bar" class="button" >Ajouter un bar</a> | 
 		<a href="'.RACINE_SITE.'mes_promos.php" class="button" >Mes promos</a><br /><br />';	
 	
 
