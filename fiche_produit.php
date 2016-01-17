@@ -72,7 +72,7 @@ if(isset($_GET['id_produit']))
 
 	echo '<p><strong>Description:</strong> '. $mon_produit['description'].'</p><br /><br /><hr />
 	<h3 class="orange">Apéros actuellement avec ce T-shirt:</h3>';
-	$req="SELECT bar.id_bar, bar.nom_bar, promo_bar.description, promo_bar.date_debut, promo_bar.date_fin, promo_bar.id_bar, promo_bar.categorie_produit FROM bar INNER JOIN promo_bar ON bar.id_bar=promo_bar.id_bar WHERE promo_bar.categorie_produit='$mon_produit[categorie]' AND promo_bar.date_fin > NOW() ORDER BY promo_bar.date_debut";
+	$req="SELECT bar.id_bar, bar.nom_bar, promo_bar.description, promo_bar.date_debut, promo_bar.date_fin, promo_bar.id_bar, promo_bar.categorie_produit, bar.statut FROM promo_bar INNER JOIN bar ON bar.id_bar=promo_bar.id_bar WHERE promo_bar.categorie_produit='$mon_produit[categorie]' AND (promo_bar.date_fin > NOW() AND bar.statut!='0') ORDER BY promo_bar.date_debut";
 	
 	affichePromoBar($req);
 	echo '<hr />';
