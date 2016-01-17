@@ -414,13 +414,22 @@ if((isset($_GET['affichage']) && $_GET['affichage'] == 'affichage') && (isset($_
 		}
 		
 			
-		echo '<td>
-			<a href="?affichage=affichage&action=commandes&modif=valider&id_commande='.$ligne['id_commande'] . $page.''.$orderby.''.$asc_desc.'" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">valider</a>
-		</td>';
-		echo '<td>
-			<a href="?affichage=affichage&action=commandes&modif=expedier&id_commande='.$ligne['id_commande'] .$page.''.$orderby.''.$asc_desc.'" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">expédier</a>
-		</td>';
-		echo '<td>
+		echo '<td>';
+		if($ligne['etat'] == 'en cours de traitement')
+		{
+			echo'<a class="btn_edit" href="?affichage=affichage&action=commandes&modif=valider&id_commande='.$ligne['id_commande'] . $page.''.$orderby.''.$asc_desc.'" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">valider</a>';
+		}
+		elseif($ligne['etat'] == 'validee')
+		{
+			echo '<a class="btn_edit" href="?affichage=affichage&action=commandes&modif=expedier&id_commande='.$ligne['id_commande'] .$page.''.$orderby.''.$asc_desc.'" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">expédier</a>';
+		}
+		else
+		{
+			echo '<p>Commande traitée</p>';
+		}
+		
+		echo '</td>
+		<td>
 			<a class="btn_delete" href="?affichage=affichage&action=commandes&modif=suppression&id_commande='.$ligne['id_commande'] .$page.''.$orderby.''.$asc_desc.'" onClick="return(confirm(\'Voulez-vous vraiment supprimer la commande n° '.$ligne['id_commande'] .' ?\'));"> X </a>
 		</td>
 		</tr>';
