@@ -1,6 +1,6 @@
 <?php 
 require_once("inc/init.inc.php");
-$titre_page = 'Mes promos';
+$titre_page = 'Mes apéros';
 
 //APERO - Felicia Cuneo - 01/2015
 
@@ -169,7 +169,10 @@ echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $c
 */
 // FIN STATS
 
-
+echo '<p>Cette page vous permet d\' <strong>ajouter ou modifier les apéros que vous proposez</strong> aux clients du site.
+<br/> Sentez-vous libre de <strong>préciser les modalités de la réduction</strong> dans la description: vous pouvez définir une plage horaire (de 16h à 19h par exemple) ou un type de consommation (boissons non-alcoolisées, accompagnement...) ou toute autre spécification.
+<br /> Veillez néanmoins à rester courtois dans la description de vos apéros, aucun propos à caractère discriminant ou offençant ne saurait être toléré.<br/> En cas de litige,  Apéro et les entreprises qui lui sont associées ne sauraient être tenus pour responsables.</p><br />
+<p><strong>Pour rappel</strong>: les clients membres du site peuvent laisser <strong>un commentaire et une note</strong> sur votre bar, et les bars les mieux notés apparaissent en haut de la liste...</p>';
 
 $resultat = executeRequete("SELECT COUNT(id_promo_bar) AS nbre_promo FROM promo_bar");
 $donnees =$resultat -> fetch_assoc();	
@@ -501,6 +504,6 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 <?php 
 }
 echo '</div>
-<br /><br />';
+	<br /><br />';
 require_once('inc/footer.inc.php');
 

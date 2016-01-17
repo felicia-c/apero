@@ -51,7 +51,7 @@
         }
         if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdmin())
         {
-          echo '<li><a class="tomato"'; if ($titre_page == 'Mes promos') {echo ' class="active"';} echo' href="'.RACINE_SITE.'mes_promos.php">gérer mes promos</a></li>';
+          echo '<li><a class="tomato"'; if ($titre_page == 'Mes apéros') {echo ' class="active"';} echo' href="'.RACINE_SITE.'mes_promos.php">mes apéros</a></li>';
         }
 
         if(utilisateurEstConnecte())
