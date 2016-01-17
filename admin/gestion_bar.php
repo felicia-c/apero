@@ -249,7 +249,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	while ($ligne = $resultat->fetch_assoc())
 	{
 		echo '<tr '; 
-		if(isset($_GET['id_bar']) && ($_GET['id_bar'] == $ligne['id_bar']))
+		if((isset($_GET['id_bar']) && ($_GET['id_bar'] == $ligne['id_bar'])) || (isset($_GET['id_membre']) && ($_GET['id_membre'] == $ligne['id_membre'])))
 		{
 			echo ' class="tr_active" ';
 		}
@@ -289,23 +289,23 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 				echo '<td>'.substr($valeur, 0, 40).'...</td>';
 			}
 			elseif($indice == 'statut')
+			{
+				if($valeur === '1')
 				{
-					if($valeur === '1')
-					{
-						echo '<td class="teal">actif</td>';
-						echo '<td>
-							<a class="btn_delete" href="?affichage=affichage&modif=desactiver&id_bar='.$ligne['id_bar'] .$page.''.$orderby.''.$asc_desc.'#details" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">désactiver</a>
-						</td>';
-					}
-					else
-					{
-						echo '<td class="tomato">en attente de validation</td>';
-						echo '<td>
-							<a class="btn_edit" href="?affichage=affichage&modif=activer&id_bar='.$ligne['id_bar'] . $page.''.$orderby.''.$asc_desc.'#details" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">activer</a>
-						</td>';
-					}
-					
+					echo '<td class="teal">actif</td>';
+					echo '<td>
+						<a class="btn_delete" href="?affichage=affichage&modif=desactiver&id_bar='.$ligne['id_bar'] .$page.''.$orderby.''.$asc_desc.'#details" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">désactiver</a>
+					</td>';
 				}
+				else
+				{
+					echo '<td class="tomato">en attente de validation</td>';
+					echo '<td>
+						<a class="btn_edit" href="?affichage=affichage&modif=activer&id_bar='.$ligne['id_bar'] . $page.''.$orderby.''.$asc_desc.'#details" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">activer</a>
+					</td>';
+				}
+				
+			}
 			else
 			{
 				echo '<td >'.ucfirst($valeur).'</td>';
