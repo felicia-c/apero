@@ -486,10 +486,10 @@ if($nb_avis < 1)
 }
 while($mon_avis = $resultat -> fetch_assoc() )
 {
-	$resultat_titre = executerequete("SELECT nom_bar FROM bar WHERE id_bar = '$mon_avis[id_bar]'");
-	$titre = $resultat_titre -> fetch_assoc();
+	$resultat_titre = executerequete("SELECT nom_bar,id_bar FROM bar WHERE id_bar = '$mon_avis[id_bar]'");
+	$bar = $resultat_titre -> fetch_assoc();
 	echo '<tr>
-			<td> '.ucfirst($titre['nom_bar']). ' </td>
+			<td> <a href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$bar['id_bar'].'">'.ucfirst($bar['nom_bar']). ' </a></td>
 			<td>';
 			$date = date_create_from_format('Y-m-d H:i:s', $mon_avis['date']);
 			echo date_format($date, 'd/m/Y H:i') .' </td>
