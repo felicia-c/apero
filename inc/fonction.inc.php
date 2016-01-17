@@ -805,7 +805,9 @@ function affichePromoBar($req)
 	while($ma_promo = $resultat -> fetch_assoc())
 	{
 		echo '<br />
-		<div class="aperos_index bar text-center ">
+
+		<div class="bar text-center ">
+
 			<p class=" description_promo">'.$ma_promo['description'].'</p>
 			<p class="dates">'.afficheDateFr($ma_promo['date_debut'], $ma_promo['date_fin'], ' au ').'</p>';
 
@@ -828,15 +830,16 @@ function afficheVignetteBar($req)
 	$resultat = executeRequete($req);
 	while($mon_bar = $resultat -> fetch_assoc())
 	{
-		$req_promo= "SELECT COUNT(id_promo_bar) AS nb_promo, date_fin FROM promo_bar WHERE promo_bar.id_bar = '$mon_bar[id_bar]' AND date_fin > NOW()";
+		$id_bar = $mon_bar['bar_id_bar'];
+		$req_promo= "SELECT COUNT(id_promo_bar) AS nb_promo, date_fin FROM promo_bar WHERE promo_bar.id_bar = '$id_bar' AND date_fin > NOW()";
 		$promo = executeRequete($req_promo);
 		$promo = $promo -> fetch_assoc();
 		echo '<div class="box_info vignette_bar text-center">
-			<a class="noborder_lien" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$mon_bar['id_bar'].'">';
+			<a class="noborder_lien" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$id_bar.'">';
 	//echo '<h2>'.$mon_bar['nom_bar'].'</h2>';
 		
 		echo '<div class="img_bar">
-			<img class="img_vignette" src="'. $mon_bar['photo'].'" style="max-width: 100%;" />
+			<img class="img_vignette" src="'. $mon_bar['photo'].'"  />
 			<div class="switch_titre">'.$mon_bar['nom_bar'].'</div>
 		</div>
 

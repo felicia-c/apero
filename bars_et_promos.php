@@ -16,8 +16,8 @@ if(isset($_GET['action']) && $_GET['action'] == 'promos')
 else
 {	
 
-	$table="bar WHERE statut='1' ORDER BY id_bar DESC  ";	
-	$req="SELECT * FROM $table";
+	$table="bar LEFT JOIN avis ON bar.id_bar=avis.id_bar WHERE statut='1' ORDER BY avis.note DESC";	
+	$req="SELECT *, bar.id_bar AS bar_id_bar FROM $table";
 	$req = paginationGestion(6, $table, $req);
 	$lien = "";
 	echo '<div class="block_inline box_info no_border">';
