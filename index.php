@@ -13,15 +13,17 @@ $titre_page = "Accueil";
 require_once("inc/header.inc.php"); 
 
 $table="bar WHERE statut='1' ORDER BY id_bar DESC LIMIT 3";	
-	$req_bar="SELECT * FROM $table";
-	
-	$lien = "";
-	echo '<div class="block_inline box_info no_border">';
-	//echo  '<h3> > <a href="'.RACINE_SITE.'bars_et_promos.php?action=promos">Voir les apéros</a></h3>';
-	afficheVignetteBar($req_bar);
-	echo '</div>';
+$req_bar="SELECT * FROM $table";
 
-echo '<div><div class="text_index"><p class="block_inline">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+$lien = "";
+$req_tsh = "SELECT * FROM produit ORDER BY id_produit DESC LIMIT 3";
+echo '<div class="block_inline box_info no_border">';
+afficheProduits($req_tsh);
+echo '</div>
+<p><a class="btn_index text-center" href="'.RACINE_SITE.'boutique.php">Découvrir les T-shirts Apéros</a></p><br/>';
+
+
+echo '<div><div class="text_index "><p class="block_inline">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
 quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
 consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
@@ -36,8 +38,11 @@ $req_promo="SELECT bar.id_bar, bar.nom_bar, promo_bar.description, promo_bar.dat
 affichePromoBar($req_promo);
 echo '</div></div>
 <br />';*/
-$req_tsh = "SELECT * FROM produit ORDER BY id_produit DESC LIMIT 3";
-afficheProduits($req_tsh);
+echo '<div class="block_inline box_info no_border">';
+//echo  '<h3> > <a href="'.RACINE_SITE.'bars_et_promos.php?action=promos">Voir les apéros</a></h3>';
+afficheVignetteBar($req_bar);
+echo '</div>
+<p><a class="btn_index text-center" href="'.RACINE_SITE.'bars_et_promos.php">Découvrir les bars Apéros</a></p><br/>';
  echo '<br />
   	<h2 class="text-center" ><img src="images/bouteilles_apero.png" alt="apéro" class="text-center"/></h2>
         

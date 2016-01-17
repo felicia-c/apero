@@ -138,6 +138,18 @@ h3 a:hover{
    border-bottom: none;
 }
 
+a.btn_index{
+   display: block;
+   background: white;
+   width: 40%;
+   margin-left: 29%;
+   padding: 1%;
+   border: 1px solid orange;
+   border-radius: 3px;
+}
+a.btn_index:hover{
+    border: 1px solid #b4b8bb;
+}
 
 /* MENU / HEADER */
 header{
