@@ -813,7 +813,8 @@ function affichePromoBar($req)
 
 		if(isset($ma_promo['nom_bar']))
 		{
-			echo '<p>Proposé par le <a class="noborder_lien" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$ma_promo['id_bar'].'">'.$ma_promo['nom_bar'].'</a></p>';
+			echo '<p>Proposé par le <a class="noborder_lien orange" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$ma_promo['id_bar'].'">'.$ma_promo['nom_bar'].'</a> ('.$ma_promo['cp'].')</p>
+			<p><i>(Voir conditions au bar)</i></p>';
 		}
 		else
 		{
@@ -872,7 +873,6 @@ function enteteTableau($resultat, $dont_show, $dont_link)
 	for($i= 0; $i < $nbcol; $i++) 
 	{
 		$colonne= $resultat->fetch_field();
-		
 		if(($colonne->name != $dont_show) && ($colonne->name != 'prenom_gerant' && $colonne->name != 'mdp'))
 		{
 			if($dont_link == null)

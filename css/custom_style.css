@@ -143,6 +143,8 @@ a.btn_index{
    background: white;
    width: 40%;
    margin-left: 29%;
+   margin-top: 2%;
+   margin-bottom: 2%;
    padding: 1%;
    border: 1px solid orange;
    border-radius: 3px;

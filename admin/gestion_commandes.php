@@ -255,7 +255,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 	{
 		//$resultat = executeRequete("SELECT * FROM details_commande");
 		$req .= "SELECT * FROM details_commande";
-		$req = paginationGestion(5,'details_commande',$req);  // PAGINATION + TRI
+		$req = paginationGestion(10,'details_commande',$req);  // PAGINATION + TRI
 		$resultat = executeRequete($req);
 		//$nbcol = $resultat->field_count; 
 		$dont_link = null; // entete du tablau sans order by
@@ -304,7 +304,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 	if(isset($_GET['action']) && ($_GET['action'] == 'detail') && !isset($_GET['id_commande']))
 	{
 		$lien = '<a href="?affichage=affichage&action=detail&';
-		affichagePaginationGestion(5, 'details_commande', $lien);
+		affichagePaginationGestion(10, 'details_commande', $lien);
 	}
 	//echo '</div>';		
 	
