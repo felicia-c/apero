@@ -15,8 +15,8 @@ if(isset($_GET['action']) && $_GET['action'] == 'promos')
 }
 else
 {	
-
-	$table="bar LEFT JOIN avis ON bar.id_bar=avis.id_bar WHERE statut='1' ORDER BY avis.note DESC";	
+	$table="bar WHERE statut='1' ORDER BY id_bar DESC";
+	//$res_avg = executeRequete("SELECT  AS moyenne FROM avis WHERE id_bar='$id_bar' ");
 	$req="SELECT *, bar.id_bar AS bar_id_bar FROM $table";
 	$req = paginationGestion(6, $table, $req);
 	$lien = "";
