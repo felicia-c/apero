@@ -7,7 +7,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="Apéro | Le T-shirt qui paye l'apéro">
     <meta name="author" content="Felicia Cuneo">
-    <link rel="icon" href="<?php echo RACINE_SITE; ?>images/favicon.ico">
+    <link rel="icon" href="<?php echo RACINE_SITE; ?>/images/favicon.ico">
 
     <title>Apéro ?</title>
 

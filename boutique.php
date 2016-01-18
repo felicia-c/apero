@@ -77,8 +77,6 @@ while ($ligne = $resultat_categorie->fetch_assoc())
 {
 	echo ' <a class="button" style="margin-bottom: 20px;" href="?action=tri_categorie&categorie='. $ligne['categorie'] .'" > '. $ligne['categorie'] .' </a> | ';
 }
-//echo '<a class="button" style="margin-bottom: 20px;" href="?action=order&tri=tous">Tous les articles</a>
-
 // COULEUR
 /*
 echo '<form class="form" method="get" action="?action=tri">
@@ -89,8 +87,7 @@ echo '<form class="form" method="get" action="?action=tri">
 	{
 		echo '<option value="'. $ligne['couleur'] .'" >'. $ligne['couleur'] .'</option>' ;
 	}
-	echo '</select>';
-*/
+	echo '</select>'; */	
 
 	//PRIX
 echo '
@@ -101,7 +98,6 @@ echo '
 	</div>';
 
 echo $msg;
-
 
 //AFFICHAGE
 

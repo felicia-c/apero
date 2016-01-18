@@ -673,7 +673,7 @@ function afficheProduits($req)
 		echo '<div class ="produit vignette_produit">
 			<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="noborder_lien"><h2>'. $mon_produit['titre'] .'</h2></a>
 			<div class="img_produit">
-				<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="noborder_lien"><img class="make-it-slow make-it-fast box" src="'.RACINE_SITE. $mon_produit['photo'].'" style=" width: 200px; max-width: 100%;" /></a>
+				<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="noborder_lien"><img class="make-it-slow make-it-fast box" src="'.$mon_produit['photo'].'" style=" width: 200px; max-width: 100%;" /></a>
 			</div>
 			<div class="infos_produit">
 				<!-- <div class="collection_produit"><p>Collection:<br /> '.$mon_produit['categorie'].'<br /> -->
@@ -713,7 +713,7 @@ function afficheBar($req)
 			echo '<h1><a href="'.RACINE_SITE.'bars_et_promos.php">Bars</a> / '.$mon_bar['nom_bar'].'</h1>';
 			echo '<div class="bar text-center">
 			<h1>'.$mon_bar['nom_bar'].'</h1>
-				<img src="'.RACINE_SITE. $mon_bar['photo'].'" style="max-width: 100%;" />
+				<img src="'. $mon_bar['photo'].'" style="max-width: 100%;" />
 				
 				<p class=" description_bar">'.$mon_bar['description'].'</p>
 				<hr />
@@ -841,7 +841,7 @@ function afficheVignetteBar($req)
 		//$res_avg = executeRequete("SELECT AVG(note) AS moyenne FROM avis WHERE id_bar='$id_bar' ");
 		//$moyenne= $res_avg -> fetch_assoc();
 		echo '<div class="img_bar">
-			<img class="img_vignette" src="'.RACINE_SITE. $mon_bar['photo'].'"  />
+			<img class="img_vignette" src="'. $mon_bar['photo'].'"  />
 			<div class="switch_titre">'.$mon_bar['nom_bar'].'</div>
 		</div>';
 		/*if($mon_bar['moyenne'] != 0)
