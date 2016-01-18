@@ -1,7 +1,7 @@
 <?php
 //header('Content-type: text/html; charset="UTF-8')
 
-define ("RACINE_SITE", "/"); 
+define ("RACINE_SITE", ""); 
 
 define ("RACINE_SERVER", $_SERVER['DOCUMENT_ROOT'] ); 
 
