@@ -79,8 +79,6 @@ while ($ligne = $resultat_categorie->fetch_assoc())
 }
 //echo '<a class="button" style="margin-bottom: 20px;" href="?action=order&tri=tous">Tous les articles</a>
 
-
-
 // COULEUR
 /*
 echo '<form class="form" method="get" action="?action=tri">
@@ -92,21 +90,7 @@ echo '<form class="form" method="get" action="?action=tri">
 		echo '<option value="'. $ligne['couleur'] .'" >'. $ligne['couleur'] .'</option>' ;
 	}
 	echo '</select>';
-	
-	//TAILLE
-
-	echo '<label for="taille">Ou par taille </label>
-		<select class="form-control" id="taille" name="taille">
-			<option value="" >Séléctionnez une taille</option>';
-
-	while ($ligne = $resultat_taille->fetch_assoc()) 
-	{
-		echo '<option value="'. $ligne['taille'] .'" >'. $ligne['taille'] .'</option>' ;
-	}
-	echo '</select>
-		<input type="submit" class="btn" style="margin-top: 20px; margin-bottom: 40px" name="action" value="Trier">';
-	</form>    */
-	
+*/
 
 	//PRIX
 echo '
