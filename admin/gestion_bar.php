@@ -164,7 +164,7 @@ if(isset($_GET['modif']) && $_GET['modif'] == 'desactiver')
 	$produit_a_supprimer = $resultat->fetch_assoc();
 	//Spécial pour la suppression de fichiers (et pas de données):
 	$chemin_produit = RACINE_SERVER . $produit_a_supprimer['photo'] ; // Nous avons besoin du chemin du produit depuis la racine serveur pour supprimer la photo du serveur
-	if(!empty($produit_a_supprimer['photo'] && file_exists($chemin_produit))) // FILE_EXISTS verifie si l'élément existe
+	if(!empty($produit_a_supprimer['photo']) && file_exists($chemin_produit)) // FILE_EXISTS verifie si l'élément existe
 	{
 		unlink($chemin_produit); //UNLINK() va  SUPPRIMER le fichier du serveur
 	}
@@ -258,7 +258,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 		{
 			if($indice == 'photo')
 			{
-				echo '<td ><img src="'.$valeur.'" alt="'.$ligne['nom_bar'].'" title="'.$ligne['nom_bar'].'" class="thumbnail_tableau" width="80px" /></td>';
+				echo '<td ><img src="'.RACINE_SITE.$valeur.'" alt="'.$ligne['nom_bar'].'" title="'.$ligne['nom_bar'].'" class="thumbnail_tableau" width="80px" /></td>';
 			}
 			//elseif($indice == 'description')
 			//{
@@ -442,7 +442,7 @@ if(isset($_GET['action']) &&  (($_GET['action']=='modification') || ($_GET['acti
 			if(isset($bar_actuel['photo'])) // on affiche la photo actuelle par defaut
 			{
 				echo '<label>Photo actuelle</label><br />';
-				echo '<img src="'. $bar_actuel['photo'].'" width="140"/><br />';
+				echo '<img src="'.RACINE_SITE. $bar_actuel['photo'].'" width="140"/><br />';
 				echo '<input type="hidden" name="photo_actuelle" id="photo_actuelle" value="'. $bar_actuel['photo'].'" /><br />';
 			}
 			?>	

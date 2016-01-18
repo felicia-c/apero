@@ -354,7 +354,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 
 						if($indice == 'photo')
 						{
-							echo '<td ><img src="'.$valeur.'" alt="'.$ligne['nom_bar'].'" title="'.$ligne['nom_bar'].'" class="thumbnail_tableau" width="80px" /></td>';
+							echo '<td ><img src="'.RACINE_SITE.$valeur.'" alt="'.$ligne['nom_bar'].'" title="'.$ligne['nom_bar'].'" class="thumbnail_tableau" width="80px" /></td>';
 						}
 						//elseif($indice == 'description')
 						//{
@@ -523,7 +523,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 				}
 				elseif($indice == 'photo')
 				{
-					echo '<td ><img src="'.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
+					echo '<td ><img src="'.RACINE_SITE.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
 				}
 				else
 				{
