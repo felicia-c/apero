@@ -4,11 +4,6 @@ require_once("inc/init.inc.php");
 $titre_page = "Accueil";
 ?>
 
-<body>
-
-
-
-
 <?php 
 require_once("inc/header.inc.php"); 
 
@@ -20,7 +15,9 @@ echo '</div><br />
 <p><a class="btn_index text-center" href="'.RACINE_SITE.'boutique.php">Choisir mon T-shirt Apéro</a></p><br/>';
 
 
-echo '<div><div class="text_index "><p class="block_inline">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+echo '<div class="text_index ">
+<h2>Quand votre t-shirt vous paye l\'apéro</h2>
+<p class="block_inline">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
 quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
 consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
@@ -42,18 +39,15 @@ $table_new="bar WHERE statut='1' ORDER BY id_bar DESC LIMIT 3";
 $req_bar="SELECT *, bar.id_bar AS bar_id_bar FROM $table_new";
 afficheVignetteBar($req_bar);
 echo '</div>';
-echo '<div class="block_inline box_info no_border">';
-echo '<h3 class="orange">Les premiers de la classe</h3>';
+//echo '<div class="block_inline box_info no_border">';
+//echo '<h3 class="orange">Les premiers de la classe</h3>';
 //echo  '<h3> > <a href="'.RACINE_SITE.'bars_et_promos.php?action=promos">Voir les apéros</a></h3>';
-$table_note="bar LEFT JOIN avis ON bar.id_bar=avis.id_bar WHERE statut='1' GROUP BY avis.note ORDER BY avis.note DESC LIMIT 3";	
-$req_bar="SELECT *, bar.id_bar AS bar_id_bar FROM $table_note";
-afficheVignetteBar($req_bar);
-echo '</div>
-<br />
+//$table_note="bar LEFT JOIN avis ON bar.id_bar=avis.id_bar WHERE statut='1' GROUP BY avis.note ORDER BY avis.note DESC LIMIT 3";	
+//$req_bar="SELECT *, bar.id_bar AS bar_id_bar FROM $table_note";
+//afficheVignetteBar($req_bar);
+//</div>
+echo '<br />
 <p><a class="btn_index text-center" href="'.RACINE_SITE.'bars_et_promos.php">Découvrir les bars Apéros</a></p><br/>';
  
-
-
-
 
 require_once("inc/footer.inc.php");

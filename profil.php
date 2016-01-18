@@ -149,7 +149,7 @@ if($_GET)
 		$produit_a_supprimer = $resultat->fetch_assoc();
 		//Spécial pour la suppression de fichiers (et pas de données):
 		$chemin_produit = RACINE_SERVER . $produit_a_supprimer['photo'] ; // Nous avons besoin du chemin du produit depuis la racine serveur pour supprimer la photo du serveur
-		if(!empty($produit_a_supprimer['photo'] && file_exists($chemin_produit))) // FILE_EXISTS verifie si l'élément existe
+		if(!empty($produit_a_supprimer['photo']) && file_exists($chemin_produit)) // FILE_EXISTS verifie si l'élément existe
 		{
 			unlink($chemin_produit); //UNLINK() va  SUPPRIMER le fichier du serveur
 		}
@@ -292,7 +292,7 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 
 				if($indice == 'photo')
 				{
-					echo '<td ><img src="'.$valeur.'" alt="'.$ligne['nom_bar'].'" title="'.$ligne['nom_bar'].'" class="thumbnail_tableau" width="80px" /></td>';
+					echo '<td ><img src="'.RACINE_SITE.$valeur.'" alt="'.$ligne['nom_bar'].'" title="'.$ligne['nom_bar'].'" class="thumbnail_tableau" width="80px" /></td>';
 				}
 				//elseif($indice == 'description')
 				//{
@@ -373,7 +373,7 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 			if(isset($bar_actuel['photo'])) // on affiche la photo actuelle par defaut
 			{
 				echo '<label>Photo actuelle</label><br />';
-				echo '<img src="'. $bar_actuel['photo'].'" width="140"/><br />';
+				echo '<img src="'.RACINE_SITE. $bar_actuel['photo'].'" width="140"/><br />';
 				echo '<input type="hidden" name="photo_actuelle" id="photo_actuelle" value="'. $bar_actuel['photo'].'" /><br />';
 			}
 			?>	
@@ -404,6 +404,7 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 			<textarea required type="text" id="adresse" name="adresse" maxlength="100" placeholder="86 rue de la Ville" required><?php if(isset($_POST['adresse'])) {echo $_POST['adresse'];} elseif(isset($bar_actuel['adresse'])){ echo $bar_actuel['adresse']; }?></textarea><br />
 			
 			<br />
+			<p><i>ATTENTION: Si vous validez ces modifications, votre bar et les apéros qui lui sont asociés n'appaîtront plus sur le site jusqu'à la validation de notre équipe</i></p>
 			<input onClick="return(confirm(\'Votre bar et les apéro seront inaccessibles jusqu'à validation par l'équipe apéro. <br /> Continuer ?\'));" type="submit" id="enregistrer" name="enregistrer" value="Enregistrer" class="button" /><br />
 			<br />
 			<a class="button " href="<?php echo RACINE_SITE; ?>profil.php?affichage=affichage">Annuler</a><br />

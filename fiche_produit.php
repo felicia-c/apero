@@ -22,7 +22,7 @@ if(isset($_GET['id_produit']))
 		
 	echo '<div class="text-center"><img src="images/apero_logo.png" width="300"></div>';
 	echo '<div class="bloc_fiche block_inline text-center">';
-	echo '<img class="make-it-slow make-it-fast box" src="'. $mon_produit['photo'].'" style=" width: 300px; max-width: 100%;" />';
+	echo '<img class="make-it-slow make-it-fast box" src="'.RACINE_SITE. $mon_produit['photo'].'" style=" width: 300px; max-width: 100%;" />';
 	echo '</div>';
 	echo '<div class="bloc_fiche block_inline text-center"">';	
 	echo '<h2>'. $mon_produit['titre'] .'</h2>';

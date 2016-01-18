@@ -277,7 +277,7 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 			$taille = $infos_taille -> fetch_assoc();
 			echo '<tr>
 					<td>'. $produit['reference'].'</td>
-					<td><a href="'.RACINE_SITE.'fiche_produit.php?id_produit='.$produit['id_produit'].'" title="Détails" ><img src="'.$produit['photo'].'" alt="'.$produit['titre'].'" title="'.$produit['titre'].'" class="thumbnail_tableau" width="80px" /></a></td>
+					<td><a href="'.RACINE_SITE.'fiche_produit.php?id_produit='.$produit['id_produit'].'" title="Détails" ><img src="'.RACINE_SITE.$produit['photo'].'" alt="'.$produit['titre'].'" title="'.$produit['titre'].'" class="thumbnail_tableau" width="80px" /></a></td>
 					<td>'. $produit['titre'].'</td>
 					<td>'. $taille['taille'].'</td>
 					<td>'. $produit['couleur'].'</td>';
