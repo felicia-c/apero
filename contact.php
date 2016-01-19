@@ -53,7 +53,7 @@ $destinataire = 'apero_contact@yopmail.com'; // mail des membres inscrits a la N
             if( mail($destinataire, $object, $message, "From: $from\nReply-to: $from\n" ) ) // tentative d'envoi du message  
             {  
                 $mailSent = true;  
-                $msg .= '<div class="msg_success"><h4>Votre message a bien été envoyé :</h4><br /> <p>adresse de retour : '.$from.' <br /> Message envoyé : '.$message.' </p></div>';
+                $msg .= '<div class="msg_success"><h4>Votre message a bien été envoyé :</h4><br /> <p>adresse de retour : '.$from.' </p></div>';
             }  
             else // échec de l'envoi  
             {  
