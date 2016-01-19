@@ -140,8 +140,8 @@ if($_POST)
 // VERIF CONCORDANCE mdp
 	if(!empty($_POST['mdp']) && !empty($_POST['old_mdp']))
 	{
-		$old_mdp = sha1($_POST['old_mdp']); 
-		if($old_mdp != $pseudo_dispo['mdp'] )
+		$old_mdp = $_POST['old_mdp']; 
+		if($old_mdp != sha1($pseudo_dispo['mdp']))
 		{
 			$msg .= '<div class="msg_erreur">Veuillez entrer votre mot de passe actuel</div>';
 		}
@@ -166,11 +166,11 @@ if($_POST)
 				if(!empty($_POST['mdp']) && !empty($_POST['old_mdp']))
 				{
 					$mdp= sha1($_POST['mdp']);
-					$modif=executeRequete("UPDATE membre  SET  pseudo='$pseudo', mdp='$mdp', nom='$nom', prenom='$prenom', email='$email', sexe='$sexe', ville='$ville', cp='$cp', adresse='$adresse' WHERE id_membre='$_POST[id_membre]' ");
+					$modif=executeRequete("UPDATE membre SET pseudo='$pseudo', mdp='$mdp', nom='$nom', prenom='$prenom', email='$email', sexe='$sexe', ville='$ville', cp='$cp', adresse='$adresse' WHERE id_membre='$_POST[id_membre]' ");
 				}
 				else
 				{
-					$modif=executeRequete("UPDATE membre  SET  pseudo='$pseudo', nom='$nom', prenom='$prenom', email='$email', sexe='$sexe', ville='$ville', cp='$cp', adresse='$adresse' WHERE id_membre='$_POST[id_membre]' ");
+					$modif=executeRequete("UPDATE membre SET pseudo='$pseudo', nom='$nom', prenom='$prenom', email='$email', sexe='$sexe', ville='$ville', cp='$cp', adresse='$adresse' WHERE id_membre='$_POST[id_membre]' ");
 				}
 				
 				$msg .='<div class="msg_success">Modification réussie </div>';

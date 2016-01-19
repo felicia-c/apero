@@ -66,27 +66,53 @@ if($_POST){
 	}
 	
 	
-	foreach($_POST AS $indice => $valeur)
+	// VERIF STRLEN
+	if(strlen($_POST['pseudo'])< 4 || strlen($_POST['pseudo'])>15) 
 	{
-		$_POST[$indice] = htmlentities($valeur, ENT_QUOTES);
-	} // SECURITE on retravaille les valeurs contenues dans $_POST avec htmlentities afin d'éviter les injection de code via le formulaire. 
-	
-	
-	         // VERIF STRLEN
-	
-	if(strlen($_POST['pseudo'])< 4 || strlen($_POST['pseudo'])>14) 
-	{
-		$msg .= '<div class="msg_erreur" ><h4>Le pseudo doit avoir entre 4 et 14 caractères inclus</h4></div>';
+		$msg .= '<div class="msg_erreur" ><h4>Le pseudo doit avoir entre 4 et 15 caractères inclus</h4></div>';
 	}
-	if(strlen($_POST['mdp'])< 4 || strlen($_POST['mdp'])>14) 
+	if(!empty($_POST['mdp']) && ((strlen($_POST['mdp'])< 4 || strlen($_POST['mdp'])>15)))
 	{
-		$msg .= '<div class="msg_erreur"><h4>Le mot de passe doit avoir entre 4 et 14 caractères inclus</h4></div>';
+		$msg .= '<div class="msg_erreur" ><h4>Le mot de passe doit avoir entre 4 et 15 caractères inclus</h4></div>';
 	}
-
-	if(strlen($_POST['cp']) != 5) //pb de taille  ?
+	if(!empty($_POST['mdp2']) && ((strlen($_POST['mdp2'])< 4 || strlen($_POST['mdp2'])>15)))
+	{
+		$msg .= '<div class="msg_erreur" ><h4>Le mot de passe doit avoir entre 4 et 15 caractères inclus</h4></div>';
+	}
+	if(strlen($_POST['nom'])< 1 || strlen($_POST['nom'])>20) 
+	{
+		$msg .= '<div class="msg_erreur" ><h4>Le nom doit avoir entre 2 et 20 caractères inclus</h4></div>';
+	}
+	if(strlen($_POST['prenom'])< 1 || strlen($_POST['prenom'])>20) 
+	{
+		$msg .= '<div class="msg_erreur"><h4>Le prénom doit avoir entre 1 et 20 caractères inclus</h4></div>';
+	}
+	if(strlen($_POST['email']) < 8)
+	{
+		$msg .= '<div class="msg_erreur"><h4>L\'email renseigné est trop court !</h4></div>';
+	}
+	if(strlen($_POST['email']) > 30) 
+	{
+		$msg .= '<div class="msg_erreur"><h4>L\'email renseigné trop long !</h4></div>';
+	}
+	if(strlen($_POST['ville']) > 20)
+	{
+		$msg .= '<div class="msg_erreur"><h4>Le nom de la ville est trop long !</h4></div>';
+	}
+	if(strlen($_POST['adresse']) > 50)
+	{
+		$msg .= '<div class="msg_erreur"><h4>Cette adresse est trop longue !</h4></div>';
+	}
+	if(strlen($_POST['cp']) < 5 || strlen($_POST['cp']) > 5 )
 	{
 		$msg .= '<div class="msg_erreur"><h4>Le code postal doit contenir 5 caractères</h4></div>';
 	}
+	// HTMLENTITIES 	
+	foreach($_POST AS $indice => $valeur)
+	{
+		$_POST[$indice] = htmlentities($valeur, ENT_QUOTES);
+	} 
+	
 	
 	// VERIF CONCORDANCE mdp
 	
