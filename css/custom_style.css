@@ -257,7 +257,7 @@ input{
 .fiche_produit select,.fiche_produit option, select.fiche_bar ,option.fiche_bar{
    background: white;
    color: rgb(51, 81, 99);
-   padding: 10% 0;
+   padding: 1% 0;
    font-weight: bold;
    font-size: 0.9em;
 }
