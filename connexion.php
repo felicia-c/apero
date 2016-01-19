@@ -27,7 +27,7 @@ if(!empty($_POST))
 	 {
 		$pseudo = htmlentities($_POST['pseudo'], ENT_QUOTES);
 		$mdp = htmlentities($_POST['mdp'], ENT_QUOTES);
-		
+		$mdp = sha1($mdp);
 		
 		$resultat = executeRequete("SELECT * FROM membre WHERE pseudo='$pseudo' AND mdp='$mdp'"); 
 
@@ -50,7 +50,7 @@ if(!empty($_POST))
 				}
 				else{
 					
-					$_SESSION['utilisateur']['mdp'] = md5($_POST['mdp']);
+					$_SESSION['utilisateur']['mdp'] = $pass_hache = sha1($_POST['mdp']);
 				}
 			}
 			if(isset($_POST['remember']) == 'remember')

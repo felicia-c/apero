@@ -108,11 +108,12 @@ if($_POST){
 		else
 		{
 
-			extract($_POST); // EXTRACT marche sur un tableau array (si indices non-numerique)
+			extract($_POST); 
+			$mdp= sha1($_POST['mdp']);
 			executeRequete("INSERT INTO membre (pseudo, mdp, nom, prenom, email, sexe, ville, cp, adresse) VALUES ('$pseudo', '$mdp', '$nom', '$prenom', '$email', '$sexe', '$ville', '$cp', '$adresse')"); //requete d'inscription 
 			$msg .='<div class="msg_success"><h4>Inscription réussie !</h4></div>';
 			$id_membre = $mysqli-> insert_id; 
-			if($_POST['bar'])
+			if(isset($_POST['bar']))
 			{
 				executeRequete("UPDATE membre SET statut=3 WHERE id_membre='$id_membre'");
 			}

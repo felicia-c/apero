@@ -20,6 +20,11 @@ if($_POST)
 	{
 		$msg .= '<div class="msg_erreur" ><h4> Caractères acceptés: A à Z et 0 à 9</h4></div>';  
 	}
+	$verif_caractere = preg_match('#^[a-zA-Z0-9._-]+$#', $_POST['old_mdp']);
+	if(!$verif_caractere && !empty($_POST['old_mdp']))
+	{
+		$msg .= '<div class="msg_erreur" ><h4> 2 Caractères acceptés: -_ A à Z et 0 à 9</h4></div>';  
+	}
 	$verif_caractere = preg_match('#^[a-zA-Z0-9._-]+$#', $_POST['mdp']);
 	if(!$verif_caractere && !empty($_POST['mdp']))
 	{
@@ -75,11 +80,11 @@ if($_POST)
 	{
 		$msg .= '<div class="msg_erreur" ><h4>Le pseudo doit avoir entre 4 et 15 caractères inclus</h4></div>';
 	}
-	if(strlen($_POST['mdp'])< 4 || strlen($_POST['mdp'])>15) 
+	if(!empty($_POST['mdp']) && ((strlen($_POST['mdp'])< 4 || strlen($_POST['mdp'])>15)))
 	{
 		$msg .= '<div class="msg_erreur" ><h4>Le mot de passe doit avoir entre 4 et 15 caractères inclus</h4></div>';
 	}
-	if(strlen($_POST['mdp2'])< 4 || strlen($_POST['mdp2'])>15) 
+	if(!empty($_POST['mdp2']) && ((strlen($_POST['mdp2'])< 4 || strlen($_POST['mdp2'])>15)))
 	{
 		$msg .= '<div class="msg_erreur" ><h4>Le mot de passe doit avoir entre 4 et 15 caractères inclus</h4></div>';
 	}
@@ -120,7 +125,7 @@ if($_POST)
 	// VERIF DISPO PSEUDO
 	$new_pseudo = $_POST['pseudo'];
 	$id_membre = $_POST['id_membre'];
-	$resultat = executeRequete("SELECT pseudo, id_membre AS id FROM membre WHERE pseudo = '$new_pseudo'");
+	$resultat = executeRequete("SELECT pseudo, id_membre AS id, mdp FROM membre WHERE pseudo = '$new_pseudo'");
 	$pseudo_dispo = $resultat -> fetch_assoc();
 	if($pseudo_dispo !== NULL) 
 	{
@@ -133,12 +138,19 @@ if($_POST)
 
 	}
 // VERIF CONCORDANCE mdp
-	
-	if($_POST['mdp2'] != $_POST['mdp'] ){
-		
-		$msg .= '<div class="msg_erreur">Veuillez confirmer votre mot de passe</div>';
-
+	if(!empty($_POST['mdp']) && !empty($_POST['old_mdp']))
+	{
+		$old_mdp = sha1($_POST['old_mdp']); 
+		if($old_mdp != $pseudo_dispo['mdp'] )
+		{
+			$msg .= '<div class="msg_erreur">Veuillez entrer votre mot de passe actuel</div>';
+		}
+		if($_POST['mdp2'] != $_POST['mdp'] ){
+			
+			$msg .= '<div class="msg_erreur">Veuillez confirmer votre mot de passe</div>';
+		}
 	}
+
 
 		//FIN SECURITE
 	// MODIFICATION DU PROFIL	
@@ -149,9 +161,17 @@ if($_POST)
 			
 			if(utilisateurEstConnecte())
 			{
-				extract($_POST);
-				 //requete de modif
-				$modif=executeRequete("UPDATE membre  SET  pseudo='$pseudo', mdp='$mdp', nom='$nom', prenom='$prenom', email='$email', sexe='$sexe', ville='$ville', cp='$cp', adresse='$adresse' WHERE id_membre='$_POST[id_membre]' ");
+				extract($_POST); 
+				//requete de modif
+				if(!empty($_POST['mdp']) && !empty($_POST['old_mdp']))
+				{
+					$mdp= sha1($_POST['mdp']);
+					$modif=executeRequete("UPDATE membre  SET  pseudo='$pseudo', mdp='$mdp', nom='$nom', prenom='$prenom', email='$email', sexe='$sexe', ville='$ville', cp='$cp', adresse='$adresse' WHERE id_membre='$_POST[id_membre]' ");
+				}
+				else
+				{
+					$modif=executeRequete("UPDATE membre  SET  pseudo='$pseudo', nom='$nom', prenom='$prenom', email='$email', sexe='$sexe', ville='$ville', cp='$cp', adresse='$adresse' WHERE id_membre='$_POST[id_membre]' ");
+				}
 				
 				$msg .='<div class="msg_success">Modification réussie </div>';
 				
@@ -175,6 +195,7 @@ require_once("inc/header.inc.php");
 $membre_actuel = $_SESSION['utilisateur'];
 $mdp_membre = executeRequete("SELECT mdp FROM membre WHERE id_membre = '$membre_actuel[id_membre]' ");
 $mdp_membre = $mdp_membre -> fetch_assoc();
+$mdp = sha1($mdp_membre['mdp']);
 ?>
 
 
@@ -193,11 +214,14 @@ $mdp_membre = $mdp_membre -> fetch_assoc();
 					<label for="pseudo">Pseudo</label>
 					<input type="text" id="pseudo" name="pseudo"  maxlength="15" value="<?php if(isset($membre_actuel['pseudo'])) {echo $membre_actuel['pseudo'];} elseif(isset($_POST['pseudo'])){ echo $_POST['pseudo'];}?>" placeholder="JohnDoe"  required/><br /><br />
 				
-					<label for="mdp">Mot de passe</label><br />
-					<input type="password" id="mdp" name="mdp"  maxlength="15" value="<?php if(isset($mdp_membre['mdp'])) {echo $mdp_membre['mdp'];} elseif(isset($_POST['mdp'])) {echo $_POST['mdp'];}?>"  placeholder="Password"  required /><br /><br />				
+					<label for="old_mdp">Mot de passe actuel</label><br />
+					<input type="password" id="old_mdp" name="old_mdp"  maxlength="15" value="<?php if(isset($_POST['mdp'])) {echo $_POST['mdp'];}?>"  placeholder="Password" /><br /><br />
+					
+					<label for="mdp">Nouveau mot de passe</label><br />
+					<input type="password" id="mdp" name="mdp"  maxlength="15" value="<?php if(isset($_POST['mdp'])) {echo $_POST['mdp'];}?>"  placeholder="Password"  /><br /><br />				
 						
 					<label for="mdp2">Confirmer le mot de passe</label><br />
-					<input type="password" id="mdp2" maxlength="15" name="mdp2" value="<?php if(isset($mdp_membre['mdp'])) {echo $mdp_membre['mdp'];} elseif(isset($_POST['mdp'])) {echo $_POST['mdp'];}?>" required /><br /><br />	
+					<input type="password" id="mdp2" maxlength="15" name="mdp2" value=""  /><br /><br />	
 					</fieldset>
 					<fieldset>
 					<legend> Informations </legend>
