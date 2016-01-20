@@ -166,6 +166,8 @@ function affichagePaginationGestion($items_par_page, $table, $lien) // arguments
 				$id = $_GET['id_details_commande'];
 				echo 'id_details_commande='.$id.'&';
 			}
+
+			//ORDER BY
 			if(isset($_GET['orderby']))
 			{
 				$orderby = $_GET['orderby'];
@@ -179,7 +181,7 @@ function affichagePaginationGestion($items_par_page, $table, $lien) // arguments
 			{
 				echo 'desc=desc&';
 			}
-
+	//AFFICHAGE
 			echo 'page='.$i.'#details"> '.$i.' </a>';
 		}
 	}
