@@ -7,6 +7,7 @@ $titre_page = "Panier";
 
 creationDuPanier(); //s'il est deja créé, cette fonction ne l'ecrase pas
 
+date_default_timezone_set('Europe/Paris');
 
 if($_POST)
 {
@@ -69,8 +70,8 @@ if($_POST)
 					header("location:panier.php?empty");
 					exit;
 				}
-
-				executeRequete("INSERT INTO commande(montant, id_membre, date) VALUES ('".montantTotal()."', '".$_SESSION['utilisateur']['id_membre']."', now() )");  //on enregistre la commande dans la table BDD commande
+				$date_commande = date("Y-m-d H:i:s");
+				executeRequete("INSERT INTO commande(montant, id_membre, date) VALUES ('".montantTotal()."', '".$_SESSION['utilisateur']['id_membre']."', '$date_commande' )");  //on enregistre la commande dans la table BDD commande
 				$id_commande = $mysqli-> insert_id;
 
 				for($i=0; $i < count($_SESSION['panier']['taille_stock']); $i++)
@@ -96,18 +97,71 @@ if($_POST)
 						executeRequete("UPDATE taille_stock SET stock= stock-".$_SESSION['panier']['quantite'][$i]." WHERE id_taille_stock='$taille[id_taille_stock]' "); // On modifie le stock dans la BDD produit
 					}
 				}
-				 // Si tout est ok (commande validée, pas d'erreur)on vide le panier
-				$msg .= '<div class="msg_success">Merci pour vos achats !<br />Un e-mail de confirmation va vous être envoyé à l\'adresse suivante : <br /><strong>'. $_SESSION['utilisateur']['email'] .'</strong><br /> N° de suivi: '. $id_commande .'</div>';
-				
-				$mail_vendeur = 'vendeur_apero@yopmail.com';
-					
-				$message = "<h1>Apéro</h1>
-							<p>Merci pour votre commande, votre n° de suivi est le ".$id_commande.". <br />
-							<strong>Votre commande sera validée dès réception de votre paiement.</strong><br />
-							L'équipe d'Apéro se tient à votre disposition pour répondre à toute question concernant votre commande.</p>";
+				 // Si tout est ok (commande validée, pas d'erreur)on envoit un mail et on vide le panier
 
-				mail($_SESSION['utilisateur']['email'], "APERO | Confirmation de votre commande", $message, "From: $mail_vendeur");
+				$msg .= '<div class="msg_success">Merci pour vos achats !<br />Un e-mail de confirmation va vous être envoyé à l\'adresse suivante : <br /><strong>'. $_SESSION['utilisateur']['email'] .'</strong><br /> N° de suivi: '. $id_commande .'</div><br /><br />';
 				
+				//MAIL CLIENT
+
+				$headers = 'From: vendeur_apero@yopmail.com'.'/r /n' ;
+				$headers .='Content-Type: text/plain; charset= "utf-8"';
+				//$headers .='Content-Type: text/plain; charset="utf-8"'." "; // ici on envoie le mail au format texte encodé en UTF-8
+				//$headers .='Content-Transfer-Encoding: 8bit'; 	
+				$message = "<h1>Apéro</h1>
+					<p>Merci pour votre commande,<br />
+					<strong>Votre commande sera validée dès réception de votre paiement.</strong><br />
+					L'équipe d'Apéro se tient à votre disposition pour répondre à toute question concernant votre commande.</p>
+					<table border=\"1\" bordercolor=\"silver\" cellpadding=\"5\" cellspacing=\"0\">
+						<tr>
+							<td><strong>Numéro de commande <strong></td>
+							<td> ".$id_commande."</td>
+						</tr>
+						<tr>
+							<td><strong>Date <strong></td>
+							<td>".date("d/m/Y H:i:s")."</td>
+						</tr>
+						<tr>
+							<td><strong>Total <strong></td>
+							<td>".montantTotal()." €</td>
+						</tr>
+					</table></p>";
+				//$message = utf8_encode($message);
+				mail($_SESSION['utilisateur']['email'], "APERO | Confirmation de votre commande", $message, $headers);
+
+				// MAIL VENDEUR
+				
+				$headers = 'From: commande_apero@yopmail.com'.'/r /n' ;
+				$headers .='Content-Type: text/plain; charset= "utf-8"';
+				//$headers .='Content-Type: text/plain; charset="utf-8"'." "; // ici on envoie le mail au format texte encodé en UTF-8
+				//$headers .='Content-Transfer-Encoding: 8bit'; 	
+				$message = "<h1>Apéro</h1>
+					<h2>Vous avez une nouvelle commande à traiter !</h2>
+					<table border=\"1\" bordercolor=\"silver\" cellpadding=\"5\" cellspacing=\"0\">
+						<tr>
+							<td><strong>Numéro de commande <strong></td>
+							<td> ".$id_commande."</td>
+						</tr>
+						<tr>
+							<td><strong>Date <strong></td>
+							<td>".date("d/m/Y H:i:s")."</td>
+						</tr>
+						<tr>
+							<td><strong>Total <strong></td>
+							<td>".montantTotal()." €</td>
+						</tr>
+						<tr>
+							<td rowspan=\"2\" ><strong>Client<strong></td>
+							<td>".$_SESSION['utilisateur']['prenom']." ".$_SESSION['utilisateur']['nom']."</td>
+						</tr>
+						<tr>
+							<td>".$_SESSION['utilisateur']['email']."</td>
+						</tr>
+					</table></p>";
+				//$message = utf8_encode($message);
+				mail('vendeur_apero@yopmail.com', "APERO | Nouvelle commande", $message, $headers);
+
+
+				//UNSET PANIER
 				unset($_SESSION['panier']); // On vide la session (panier)	
 			}
 		}
