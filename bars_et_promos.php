@@ -4,28 +4,45 @@ $titre_page = "Bars Apéro";
 require_once('inc/header.inc.php');
 $id_bar = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING ); 
 
-if(isset($_GET['action']) && $_GET['action'] == 'promos')
-{
-	echo '<h1><a href="'.RACINE_SITE.'bars_et_promos.php">Bars</a> / Promos</h1>';
-	echo '<div class="block_inline">';
-	echo '<h2>les apéros</h2>';
-	$req_promo= "SELECT * FROM promo_bar INNER JOIN bar ON promo_bar.id_bar=bar.id_bar WHERE promo_bar.date_fin > NOW() GROUP BY promo_bar.id_bar ORDER BY promo_bar.date_debut ";
-	affichePromoBar($req_promo);
-	echo '</div>';
+$req = "";
+$table=" bar WHERE statut='1'";
+if(isset($_GET['action']) && (isset($_GET['ville'])))
+{ 
+	$req .= "SELECT *, bar.id_bar AS bar_id_bar FROM $table AND ";
+//AFFICHAGE CATEGORIE
+	
+		$req .= " ville ='$_GET[ville]' ";
 }
 else
 {	
-	$table="bar WHERE statut='1' ORDER BY id_bar DESC";
+	
 	//$res_avg = executeRequete("SELECT  AS moyenne FROM avis WHERE id_bar='$id_bar' ");
 	$req="SELECT *, bar.id_bar AS bar_id_bar FROM $table";
-	$req = paginationGestion(6, $table, $req);
-	$lien = "";
-	echo '<div class="block_inline box_info no_border">';
-	//echo  '<h3> > <a href="'.RACINE_SITE.'bars_et_promos.php?action=promos">Voir les apéros</a></h3>';
-	afficheVignetteBar($req);
-	echo '</div>';
-	affichagePaginationGestion(6, $table, $lien);
+	
 }
+echo '<div class="box_info no_border">
+	<h2><a href="'.RACINE_SITE.'bars_et_promos.php" >Bars</a> /</h2>';
+echo '<br /><div class="tri"><p>';
+$resultat_ville = executeRequete("SELECT DISTINCT ville FROM bar ORDER BY ville");
+
+while ($ligne = $resultat_ville->fetch_assoc()) 
+{
+	echo ' <a class="button" style="margin-bottom: 20px;" href="?action=tri&ville='. $ligne['ville'] .'" > '. $ligne['ville'] .' </a> | ';
+}
+
+$req = paginationGestion(6, $table, $req);
+$lien = "";
+//echo '<h2><a href="'.RACINE_SITE.'bars_et_promos.php" >Bars</a> /</h2> ';
+if(isset($_GET['ville']))
+{ 
+	$ville = filter_input( INPUT_GET, 'ville', FILTER_SANITIZE_STRING );
+	//echo $ville;
+}
+echo '<div class="block_inline box_info no_border">';
+//echo  '<h3> > <a href="'.RACINE_SITE.'bars_et_promos.php?action=promos">Voir les apéros</a></h3>';
+afficheVignetteBar($req);
+echo '</div>';
+affichagePaginationGestion(6, $table, $lien);
 echo '<br /><br />';
 
 require_once('inc/footer.inc.php');
