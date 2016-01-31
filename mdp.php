@@ -55,31 +55,22 @@ if($_POST)
 require_once("inc/header.inc.php");
 ?>
 <!-- JAVASCRIPT : Compteur 5s/ -->
-	<script src="<?php echo RACINE_SITE; ?>js/mdp.js"></script>
-	<!-- Formulaire MDP --> 
+<script src="<?php echo RACINE_SITE; ?>js/mdp.js"></script>
+<!-- Formulaire MDP --> 
 
-		<div class="box_info">
-			<div id="texte_ml">
-				<h1>Connexion</h1>
-				<p><a href="" onClick="(window.history.back())" title="page précédente"> < Retour</a></p>
-				<br />
-				<?php	echo $msg;  ?>
-				<br />
-				<div class="box_info">
-					<h2>Mot de passe perdu</h2>					
-					<!-- <div id="boite_connexion" > -->
-						
-						<p>Pour recevoir <strong>votre nouveau mot de passe</strong>, veuillez renseigner votre adresse e-mail :</p>
-						<form method="post" action="#" class="form">
-							<label class="label" for="email">E-mail :</label>
-							<input type="email" id="email" name="email" value="<?php if (isset($_POST['email'])){ echo $_POST['email'];}?>" placeholder="mail@votre-mail.fr" />
-							<br />	<br />
-							<input class="button" type="submit" id="envoyer" name="envoyer" value="Envoyer" />
-						</form>
-					<!-- </div> -->
-				</div>
-			</div>
-		</div>
+<div class="box_info">
+	<p><a href="" onClick="(window.history.back())" title="page précédente"> < Retour</a></p>
+				
+	<?php	echo $msg;  ?>
+	<br />
+	<p>Pour recevoir <strong>votre nouveau mot de passe</strong>, veuillez renseigner votre adresse e-mail :</p>
+	<br />
+	<form method="post" action="#" class="form">
+		<input type="email" id="email" name="email" value="<?php if (isset($_POST['email'])){ echo $_POST['email'];}?>" placeholder="mail@votre-mail.fr" />
+		
+		<input class="button" type="submit" id="envoyer" name="envoyer" value="Envoyer" />
+	</form>
+</div>
 <?php
 require_once("inc/footer.inc.php");
 ?>
