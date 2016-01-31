@@ -82,7 +82,7 @@ require_once("inc/header.inc.php");
 				<label id="label_remember" for="remember">Se souvenir de moi</label>
 				<input type="checkbox" name="remember" id="remember"/><br /><br />
 				<input type="submit" class="button" id="connexion" name="connexion" value="connexion" /><br />
-				<p><a class="text-center" href="<?php echo RACINE_SITE;?>mdp_perdu.php" title="Générer un nouveau mot de passe">Mot de passe perdu ?</a><br />
+				<p><a class="text-center" href="<?php echo RACINE_SITE;?>mdp.php" title="Générer un nouveau mot de passe">Mot de passe perdu ?</a><br />
 				<a class="text-center" href="<?php echo RACINE_SITE; ?>inscription.php" title="Inscription">Créer un compte</a></p>		
 			</fieldset>		
 					
