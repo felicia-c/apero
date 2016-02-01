@@ -19,7 +19,7 @@ if($_POST)
 			// E-mail avec un nouveau mdp généré:
 			$pass = chaine_aleatoire(8); // Récuperation d'un mdp aléatoire
 			$to      = $_POST['email']; // Récuperation de l'adresse mail 
-			$from    = 'From: Apéro'; // Expéditeur (Nous)
+			$from    = 'From: apero@yopmail.com'; // Expéditeur (Nous)
 			$object  = "Votre demande de nouveau mot de passe sur Apéro"; // Sujet de Message
 			$message = utf8_decode("<p font-family='verdana' >Bonjour,\n Votre mot de passe vient d'être réinitialisé.\n Voici votre nouveau mot de passe :<strong> $pass </strong>\n Pour plus de sécurité il vous est conseillé de le changer dans votre profil une fois connecté.\n Cordialement, \n L'équipe Apéro.</p>");
 			
@@ -36,20 +36,20 @@ if($_POST)
 				else
 				{ 
 				// Echec de l'envoi du mail. 
-					$msg .='<div class="msg-erreur"><h4>Oups ! Une erreur est survenue, votre message n\'a pas été envoyé. Veuillez réessayer</h4></div>';
+					$msg .='<div class="msg_erreur"><h4>Oups ! Une erreur est survenue, votre message n\'a pas été envoyé. Veuillez réessayer</h4></div>';
 				} 	
 			}		
 		}
 		else
 		{
 			// Adresse e-mail inconnue on bloque.
-			$msg .='<div class="msg-erreur"><h4>Cette adresse e-mail est inconnue, veuillez vérifier votre adresse e-mail</h4></div>';
+			$msg .='<div class="msg_erreur"><h4>Cette adresse e-mail est inconnue, veuillez vérifier votre adresse e-mail</h4></div>';
 		}
 	}
 	else
 	{
 		// Adresse e-mail avec un format non valide on bloque.
-		$msg .='<div class="bg-danger"><h4>Format non Valide.</h4></div>';
+		$msg .='<div class="msg_erreur"><h4>Format non Valide.</h4></div>';
 	}
 }
 require_once("inc/header.inc.php");
