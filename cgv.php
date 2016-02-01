@@ -39,10 +39,10 @@ require_once("inc/header.inc.php");
     <p>Conformément à la loi Informatique et Libertés du 6 janvier 1978, vous disposez auprès de Checkpoint d'un droit d'accès, de rectification ou de suppression concernant les données personnelles que nous pourrions être amenés à recueillir.
         Ces données sont celles que vous aurez volontairement enregistrées lors de vos demandes de renseignements en ligne. Aucune information personnelle vous concernant n'est cédée à des tiers ou utilisée à des fins non prévues.</p>
 
-    <h4>Article 11 : acceptation des conditions de vente.</h4>
+    <h4>Article 5 : acceptation des conditions de vente.</h4>
     <p>Cette acceptation est liée à la signature du bon de réservation.</p>
 
-    <h4>Article 12 : contestation.</h4>
+    <h4>Article 6 : contestation.</h4>
     <p>Toute contestation relative aux présentes prestations relève de la seule compétence des tribunaux du ressort de la Cour d’appel de Paris.</p>
     <h4>Developpement et hébergement</h4>
     <p>Felicia Cuneo - contact @ feliciacuneo.com </p>
