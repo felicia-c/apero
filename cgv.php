@@ -10,7 +10,7 @@ require_once("inc/header.inc.php");
    <br />
 
 	<p>Ce site FICTIF a été réalisé dans le cadre de l'atelier PHP prévu lors de la formation Développeur Intégrateur Web de <strong>l'institut IFOCOP</strong> pour la session DIW33. Toutes les informations qui y figurent sont factices.</p> 
-	<h4>Site réalisé par: <a href="http://wwww.feliciacuneo.com" alt="">Felicia Cuneo</a></h4>
+	<h4>Site réalisé par: <a href="http://www.feliciacuneo.com" alt="">Felicia Cuneo</a></h4>
 	
     <h4>Article 1 : Objet</h4>
     <p>Les présentes conditions régissent la vente des produits présentés sur ce site par la société : APERO XXXX <br />
