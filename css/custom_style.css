@@ -140,7 +140,7 @@ h3 a:hover{
 
 a.btn_index{
    display: block;
-   background: white;
+   background: #FF9133;
    width: 40%;
    margin-left: 29%;
    margin-top: 2%;
@@ -148,9 +148,14 @@ a.btn_index{
    padding: 1%;
    border: 1px solid orange;
    border-radius: 3px;
+   color: white;
+   font-weight: bold;
+   letter-spacing: 2px;
 }
 a.btn_index:hover{
     border: 1px solid #b4b8bb;
+    background: white;
+    color: #b4b8bb;
 }
 
 /* MENU / HEADER */
@@ -200,8 +205,8 @@ header nav li a.active{
 /* FOOTER */
 footer{
    margin-top: 5%;
-   padding-top: 5%;
-   padding-bottom: 5%;
+   padding-top: 4%;
+   padding-bottom: 4%;
    background-color: white;
    border-top: 1px solid #b4b8bb;
 }
