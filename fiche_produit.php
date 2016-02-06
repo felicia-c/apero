@@ -20,7 +20,7 @@ if(isset($_GET['id_produit']))
 	echo '<h1><a href="'.RACINE_SITE.'boutique.php">T-shirts</a> / <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='. $mon_produit['categorie'] .'">'.$mon_produit['categorie'].'</a> / '.$mon_produit['titre'].'</h1><br />';
 	
 		
-	echo '<div class="text-center"><img src="images/apero_logo.png" width="300"></div>';
+	//echo '<div class="text-center"><img src="images/apero_logo.png" width="300"></div>';
 	echo '<div class="bloc_fiche block_inline text-center">';
 	echo '<img class="make-it-slow make-it-fast box" src="'.$mon_produit['photo'].'" style=" width: 300px; max-width: 100%;" />';
 	echo '</div>';

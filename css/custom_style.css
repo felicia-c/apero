@@ -664,7 +664,7 @@ div.tri a:hover{
  
 /* Scale up the box */
 .box:hover {
-  transform: scale(1.4, 1.4);
+  transform: scale(1.8, 1.8);
 }
 
 /* Fade in the pseudo-element with the bigger shadow */
