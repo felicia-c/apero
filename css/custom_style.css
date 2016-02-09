@@ -1,4 +1,16 @@
 
+@font-face {
+    font-family: 'apero';
+    src: url('../fonts/ufonts.com_blockbe-webfont.eot');
+    src: url('../fonts/ufonts.com_blockbe-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/ufonts.com_blockbe-webfont.woff2') format('woff2'),
+         url('../fonts/ufonts.com_blockbe-webfont.woff') format('woff'),
+         url('../fonts/ufonts.com_blockbe-webfont.ttf') format('truetype'),
+         url('../fonts/ufonts.com_blockbe-webfont.svg#blockberegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
 
 @font-face {
     font-family: 'lubalgraphxl';
@@ -85,7 +97,14 @@ body{
 
 
 /* titres et liens */
-h1, h2, h3, h4{
+h1{
+  font-family: 'apero';
+  /*color: #335163; */
+  color: #335163;
+  opacity: 0.4;
+  letter-spacing: 1px;
+}
+h2, h3, h4{
     font-family: 'lubalgraphxl', helvetica;
 }
 h2{
@@ -517,6 +536,9 @@ div.vignette_produit h2{
    padding-top: 7%;
    margin-bottom: 0; 
 }
+.msg_apero{
+  font-family: 'apero';
+}
 @media(max-width: 830px) {
   div.vignette_produit{  
       width: 40%;
@@ -662,9 +684,14 @@ div.tri a:hover{
  
 }
  
-/* Scale up the box */
+/* Zoom produits */
+
 .box:hover {
   transform: scale(1.8, 1.8);
+}
+
+.vignette_produit .box:hover {
+  transform: scale(1.4, 1.4);
 }
 
 /* Fade in the pseudo-element with the bigger shadow */
