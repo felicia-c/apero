@@ -103,13 +103,13 @@ echo $msg;
 
 echo '<div class="box_info no_border">';	
 
-echo '<h1><a href="'.RACINE_SITE.'boutique.php" >T-shirts </a>/ ';
+echo '<h2><a href="'.RACINE_SITE.'boutique.php" >T-shirts </a>/ ';
 if(isset($_GET['categorie']))
 { 
 	$categorie = filter_input( INPUT_GET, 'categorie', FILTER_SANITIZE_STRING );
 	echo $categorie;
 }
-echo '</h1>';
+echo '</h2>';
 //paginationRecherche(5, $req); // pagination /tri
 afficheProduits($req); // affichage Produit
 //affichagePaginationRecherche(5, $req); // pagination / tri 2

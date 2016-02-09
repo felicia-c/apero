@@ -17,7 +17,7 @@ if(isset($_GET['id_produit']))
 	}
 	
 	$mon_produit = $resultat->fetch_assoc();
-	echo '<h1><a href="'.RACINE_SITE.'boutique.php">T-shirts</a> / <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='. $mon_produit['categorie'] .'">'.$mon_produit['categorie'].'</a> / '.$mon_produit['titre'].'</h1><br />';
+	echo '<h2><a href="'.RACINE_SITE.'boutique.php">T-shirts</a> / <a href="'.RACINE_SITE.'boutique.php?action=tri_categorie&categorie='. $mon_produit['categorie'] .'">'.$mon_produit['categorie'].'</a> / '.$mon_produit['titre'].'</h2><br />';
 	
 		
 	//echo '<div class="text-center"><img src="images/apero_logo.png" width="300"></div>';
@@ -77,7 +77,7 @@ if(isset($_GET['id_produit']))
 	affichePromoBar($req);
 	
 	//lien de retour vers la categorie du produit
-	echo '<br /><a href="boutique.php?action=tri_categorie&categorie='.str_replace('#', '',$mon_produit['categorie']).'">Retour à '.$mon_produit['categorie'] .'</a> ';
+	echo '<br /><a href="boutique.php?action=tri_categorie&categorie='.str_replace('#', '',$mon_produit['categorie']).'"> Retour à la Collection '.$mon_produit['categorie'] .'</a> ';
 }
 else
 {
