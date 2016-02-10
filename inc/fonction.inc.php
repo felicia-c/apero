@@ -687,7 +687,7 @@ function afficheProduits($req)
 		$promo = $promo -> fetch_assoc();
 		if(count($promo['id_bar'])> 0)
 		{
-			echo '<div class="promo_afficheproduit"><p class="tomato small">Ce T-shirt vous offre l\'apéro</p></div>';
+			echo '<div class="promo_afficheproduit"><p class="tomato small msg_apero">Ce T-shirt vous offre l\'apéro</p></div>';
 			//echo '<div class="promo_afficheproduit"><h4 >Apéro offert au <a class="orange" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$promo_bar['id_bar'].'">'. $promo_bar['nom_bar'].'</a>!</h4></div>';
 		}
 		else
@@ -712,9 +712,9 @@ function afficheBar($req)
 		}
 		else
 		{
-			echo '<h1><a href="'.RACINE_SITE.'bars_et_promos.php">Bars</a> / '.$mon_bar['nom_bar'].'</h1>';
+			echo '<h2><a href="'.RACINE_SITE.'bars_et_promos.php">Bars</a> / '.$mon_bar['nom_bar'].'</h2>';
 			echo '<div class="bar text-center">
-			<h1>'.$mon_bar['nom_bar'].'</h1>
+			<h1 class="orange">'.$mon_bar['nom_bar'].'</h1>
 				<img src="'. $mon_bar['photo'].'" style="max-width: 100%;" />
 				
 				<p class=" description_bar">'.$mon_bar['description'].'</p>
@@ -737,7 +737,7 @@ function afficheBar($req)
 			echo '<div><iframe class="googleMaps" style="width: 100%;" max-width="1000" height="300" src="http://maps.google.fr/maps?q='.$MapCoordsUrl.'&amp;t=h&amp;output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" ></iframe></div>
 				</div>
 				<br/><br />	
-				<h2 class="tomato"> Votre avis sur le '. $mon_bar['nom_bar'].'</h2>';
+				<h2 class="tomato msg_apero"> Votre avis sur le '. $mon_bar['nom_bar'].'</h2>';
 
 			$resultat = executeRequete("SELECT membre.pseudo AS pseudo, avis.commentaire, avis.note, avis.date FROM avis, membre WHERE id_bar = '$mon_bar[id_bar]' AND avis.id_membre = membre.id_membre");
 			
@@ -756,8 +756,8 @@ function afficheBar($req)
 			if(!utilisateurEstConnecte()) //Si l'utilisateur n'est PAS connecté, il ne peut pas laisser d'avis
 			{
 				echo '<p>Connectez-vous pour donner votre avis<br />
-					<a href="'.RACINE_SITE.'connexion.php" class="button produit no_border">Se connecter</a><br />
-					<a href="'.RACINE_SITE.'inscription.php" class="button produit no_border">Créer un compte</a><br /></p> <hr />';
+					<a href="'.RACINE_SITE.'connexion.php" class="button produit no_border msg_apero">Se connecter</a><br />
+					<a href="'.RACINE_SITE.'inscription.php" class="button produit no_border msg_apero">Créer un compte</a><br /></p> <hr />';
 			}
 			else
 			{
@@ -863,7 +863,7 @@ function afficheVignetteBar($req)
 		echo '</div>';
 		if($promo['nb_promo'] > 0)
 		{
-			echo '<div class="tomato">On vous offre un apéro ?</div>';
+			echo '<div class="tomato msg_apero">On vous offre un apéro ?</div>';
 		}
 		else{
 			echo '<br/>';
