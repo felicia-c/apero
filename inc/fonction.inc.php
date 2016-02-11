@@ -166,7 +166,21 @@ function affichagePaginationGestion($items_par_page, $table, $lien) // arguments
 				$id = $_GET['id_details_commande'];
 				echo 'id_details_commande='.$id.'&';
 			}
-
+			if(isset($_GET['ville']))
+			{
+				$ville = $_GET['ville'];
+				echo 'ville='.$ville.'&';
+			}
+			if(isset($_GET['all']))
+			{
+				$all = $_GET['all'];
+				echo 'all='.$all.'&';
+			}
+			if(isset($_GET['tri']))
+			{
+				$tri = $_GET['tri'];
+				echo 'tri='.$tri.'&';
+			}
 			//ORDER BY
 			if(isset($_GET['orderby']))
 			{

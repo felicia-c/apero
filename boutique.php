@@ -122,7 +122,7 @@ echo '<div class="box_info no_border">';
 if(isset($_GET['categorie']))
 { 
 	$categorie = filter_input( INPUT_GET, 'categorie', FILTER_SANITIZE_STRING );
-	echo $categorie;
+	//echo $categorie;
 }
 echo '</h1>';
 //paginationRecherche(5, $req); // pagination /tri

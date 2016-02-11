@@ -26,7 +26,7 @@ else
 }
 //echo '<h2><a href="'.RACINE_SITE.'bars_et_promos.php" >Bars</a> /</h2><div class="box_info no_border">';
 echo '<div class="tri"><p>';
-$resultat_ville = executeRequete("SELECT DISTINCT ville FROM bar ORDER BY ville");
+$resultat_ville = executeRequete("SELECT DISTINCT ville FROM bar WHERE statut='1' ORDER BY ville");
 
 while ($ligne = $resultat_ville->fetch_assoc()) 
 {
@@ -37,6 +37,12 @@ while ($ligne = $resultat_ville->fetch_assoc())
 	}
 	echo 'button" style="margin-bottom: 20px;" href="?action=tri&ville='. $ligne['ville'] .'" > '. $ligne['ville'] .' </a> | ';
 }
+echo '<a class="'; 
+	if(isset($_GET['all']))
+	{
+		echo ' actif ';
+	}
+	echo 'button" style="margin-bottom: 20px;" href="?all" >Tous les bars</a>';
 
 $req = paginationGestion(6, $table, $req);
 $lien = "";
