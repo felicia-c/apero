@@ -345,6 +345,59 @@ function utilisateurEstConnecteEtEstGerant()
 
 }
 
+function formulaireNewsletter()
+{
+	if(!utilisateurEstConnecte()) //Si l'utilisateur n'est PAS connecté (SECURITE)
+	{
+		echo '<p>Connectez-vous pour vous inscrire à la newsletter d\' Apéro</p><br />
+			<p><a href="connexion.php" class="button btn-resadetails" title="Se connecter">Connectez-vous</a></p><br />
+			<p>Pas encore de compte ? Créez-en un en 2 minutes !</p><br />
+			<p><a href="inscription.php" class="button btn-resadetails" title="Créer un compte">Créer un compte</a></p>';
+	}
+	elseif(!$_POST)
+	{
+	?>
+		<form class="form" method="post" action="">
+
+			<label for="newsletter">Recevez des informations sur <span class="orange">nos dernières offres, les apéros du moment et tous nos bons plans </span>: </label><br />
+			<br />
+			<fieldset>
+			<input type="checkbox" value="ok" id="newsletter" class="float" style="margin: 0;" name="newsletter" value="ok" <?php if(isset($_POST['newsletter']) && $_POST['newsletter'] == "ok") { echo 'checked';} elseif(!isset($_POST['newsletter'])){echo 'checked';} ?> required / ><label ><i>Oui, je souhaite recevoir des promotions et informations de la part d'Apéro</i></label>
+			<br /><br />
+
+			<input type="submit" class="button" id="inscription" name="inscription" value="inscription" />
+			</fieldset>
+		</form>
+
+	<?php
+	}	
+}		
+
+function inscriptionNewsletter($msg)
+{
+	
+	if(utilisateurEstConnecte())
+	{
+		if(isset($_POST['newsletter']) && ($_POST['newsletter']=='ok'))
+		{
+			$msg ='';
+			$id_membre = $_SESSION['utilisateur']['id_membre'];
+			$inscrit = executeRequete("SELECT COUNT(*) FROM newsletter WHERE id_membre = '$id_membre'");;
+			if($inscrit)
+			{
+				$msg .='<h4>Vous êtes <span class="tomato">déjà inscrit</span> à notre newsletter<br />Vous recevez actuellement nos mails à l\'adresse suivante : <span class="teal"> '.$_SESSION['utilisateur']['email'].' </span> <br /> Rendez-vous sur <a href="'.RACINE_SITE.'profil.php'.'" title="Mon profil">votre profil</a> pour modifier cette adresse.</h4>';
+			}
+			else
+			{
+				executeRequete("INSERT INTO newsletter VALUES ('', '$id_membre')");
+				$msg .='<div class="msg_success"><h4>Inscription réussie !</h4></div>';	
+			}
+		}
+
+	}
+	echo $msg;	
+}
+
 /******************************FIN FONCTIONS USER**********************************/
 
 /******************************FONCTIONS ADMIN*******************************/
@@ -809,7 +862,7 @@ function affichePromoBar($req)
 
 		<div class="bar text-center ">
 
-			<p class=" description_promo">'.$ma_promo['description'].'</p>
+			<p class="orange description_promo">'.$ma_promo['description'].'</p>
 			<p class="dates">'.afficheDateFr($ma_promo['date_debut'], $ma_promo['date_fin'], ' au ').'</p>';
 
 		if(isset($ma_promo['nom_bar']))
