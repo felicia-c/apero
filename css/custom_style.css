@@ -96,30 +96,21 @@ body{
     background-color: white;
 }
 
-.msg_success{
-   color: teal;
-   text-align: center;
-   font-family: 'dejavu';
-}
-.msg_erreur{
-   color: tomato;
-   text-align: center;
-   font-family: 'dejavu';
-}
-
 
 /* titres et liens */
-h1, h4, h3{
+h1, h4{
   font-family: 'apero';
   /*color: #335163; */
   color: #335163;
   opacity: 0.4;
   letter-spacing: 1px;
 }
-h2{
-    font-family: 'dejavu', helvetica;
+h3{
+    font-family: 'apero', helvetica;
+    letter-spacing: 1px;
 }
 h2{
+    font-family: 'dejavu', helvetica;
     font-size: 1.2em;
 }
 p{
@@ -189,6 +180,27 @@ a.btn_index:hover{
     color: #b4b8bb;
 }
 
+/* Messages erreur / success */
+
+
+
+.msg_success, .msg_success h4{
+   color: teal;
+   text-align: center;
+   font-family: 'apero';
+   letter-spacing: 1px;
+   opacity: 1;
+}
+.msg_erreur, .msg_erreur h4{
+   color: tomato;
+   text-align: center;
+   font-family: 'apero';
+   letter-spacing: 1px;
+   opacity: 1;
+}
+
+
+
 /* MENU / HEADER */
 header{
    /*box-shadow: 0px 0px 9px -1px;*/
@@ -253,7 +265,7 @@ fieldset{
     margin-bottom: 1%;
     padding: 1% 5%;
     padding-top: 5%;
-    font-family: 'lubalgraphmd';
+    font-family: 'dejavu';
     border: 2px solid  #b4b8bb;
        -moz-border-radius-topleft: 3px;
     -moz-border-radius-topright:3px;
@@ -274,7 +286,7 @@ input, select, textarea{
     margin: 5%;
     margin-top: 1%;
     display: block;
-    font-family: 'lubalgraphmd';
+    font-family: 'dejavu';
     border: 1px solid  #b4b8bb;
        -moz-border-radius-topleft: 3px;
     -moz-border-radius-topright:3px;
@@ -315,8 +327,8 @@ input[type=checkbox], input[type=radio]{
 }
 input[type=submit]{
    font-size: 1em;
-   font-family: 'lubalgraphmd';
-   font-weight: bold;
+   font-family: 'apero';
+   letter-spacing: 1px;
    font-size: 1.2em;
    border: none;
    background-color: rgb(51, 81, 99);
@@ -400,9 +412,9 @@ td{
     text-align: center;
 }
 td a{
-   font-family: 'lubalgraphmd';
+   font-family: 'apero';
+   letter-spacing: 1px;
    font-size: 1.3em;
-   font-weight: bold;
    padding: 15px;
 }
 td a:hover{
