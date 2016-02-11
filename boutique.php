@@ -75,41 +75,56 @@ require_once("inc/header.inc.php");
 echo '<br /><div class="tri"><p>';
 while ($ligne = $resultat_categorie->fetch_assoc()) 
 {
-	echo ' <a class="button" style="margin-bottom: 20px;" href="?action=tri_categorie&categorie='. $ligne['categorie'] .'" > '. $ligne['categorie'] .' </a> | ';
-}
-// COULEUR
-/*
-echo '<form class="form" method="get" action="?action=tri">
-			<label for="couleur">Trier par couleur</label>
-			<select class="form-control" id="couleur" name="couleur">
-				<option value="" >Séléctionnez une couleur</option>';
-	while ($ligne = $resultat_couleur->fetch_assoc()) 
+	echo ' <a class="'; 
+	if(isset($_GET['categorie']) && $_GET['categorie'] == $ligne['categorie'])
 	{
-		echo '<option value="'. $ligne['couleur'] .'" >'. $ligne['couleur'] .'</option>' ;
+		echo ' actif ';
 	}
-	echo '</select>'; */	
+	echo 'button" style="margin-bottom: 20px;" href="?action=tri_categorie&categorie='. $ligne['categorie'] .'" > '. $ligne['categorie'] .' </a> | ';
+}
+
 
 	//PRIX
-echo '
-		<a class="btn" style="margin-bottom: 20px;" href="?action=order&tri=min" >- de 15€</a> |  
-		<a class="btn" style="margin-bottom: 20px;" href="?action=order&tri=mid">  de 15€ à 25€</a> |  
-		<a class="btn" style="margin-bottom: 20px;" href="?action=order&tri=max">  + de 25€</a> | 
-		<a class="btn" style="margin-bottom: 20px;" href="?action=order&tri=tous">Tous les articles</a> 
-	</div>';
+	echo '<a  class="'; 
+	if(isset($_GET['tri']) && $_GET['tri'] == 'min')
+	{
+		echo ' actif ';
+	}
+	echo 'btn" style="margin-bottom: 20px;" href="?action=order&tri=min" >- de 15€</a> |  
+	<a class="'; 
+	if(isset($_GET['tri']) && $_GET['tri'] == 'mid')
+	{
+		echo ' actif ';
+	}
+	echo 'btn" style="margin-bottom: 20px;" href="?action=order&tri=mid">  de 15€ à 25€</a> |  
+	<a class="'; 
+	if(isset($_GET['tri']) && $_GET['tri'] == 'max')
+	{
+		echo ' actif ';
+	}
+	echo 'btn" style="margin-bottom: 20px;" href="?action=order&tri=max">  + de 25€</a> | 
+	<a class="'; 
+	if(isset($_GET['tri']) && $_GET['tri'] == 'tous')
+	{
+		echo ' actif ';
+	}
+	echo 'btn" style="margin-bottom: 20px;" href="?action=order&tri=tous">Tous les articles</a> 
+</div>';
 
 echo $msg;
+
 
 //AFFICHAGE
 
 echo '<div class="box_info no_border">';	
 
-echo '<h2><a href="'.RACINE_SITE.'boutique.php" >T-shirts </a>/ ';
+//echo '<h1><a href="'.RACINE_SITE.'boutique.php" >T-shirts </a>/ ';
 if(isset($_GET['categorie']))
 { 
 	$categorie = filter_input( INPUT_GET, 'categorie', FILTER_SANITIZE_STRING );
 	echo $categorie;
 }
-echo '</h2>';
+echo '</h1>';
 //paginationRecherche(5, $req); // pagination /tri
 afficheProduits($req); // affichage Produit
 //affichagePaginationRecherche(5, $req); // pagination / tri 2

@@ -30,7 +30,12 @@ $resultat_ville = executeRequete("SELECT DISTINCT ville FROM bar ORDER BY ville"
 
 while ($ligne = $resultat_ville->fetch_assoc()) 
 {
-	echo ' <a class="button" style="margin-bottom: 20px;" href="?action=tri&ville='. $ligne['ville'] .'" > '. $ligne['ville'] .' </a> | ';
+	echo ' <a class="'; 
+	if(isset($_GET['ville']) && $_GET['ville'] == $ligne['ville'])
+	{
+		echo ' actif ';
+	}
+	echo 'button" style="margin-bottom: 20px;" href="?action=tri&ville='. $ligne['ville'] .'" > '. $ligne['ville'] .' </a> | ';
 }
 
 $req = paginationGestion(6, $table, $req);
