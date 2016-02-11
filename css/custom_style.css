@@ -13,6 +13,18 @@
 }
 
 @font-face {
+    font-family: 'dejavu';
+    src: url('../fonts/dejavu/DejaVuSans-webfont.eot');
+    src: url('../fonts/dejavu/DejaVuSans-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/dejavu/DejaVuSans-webfont.woff') format('woff'),
+         url('../fonts/dejavu/DejaVuSans-webfont.ttf') format('truetype'),
+         url('../fonts/dejavu/DejaVuSans-webfont.svg#dejavu_sansbook') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
     font-family: 'lubalgraphxl';
     src: url('../fonts/lubgr/lubgrxl-webfont.eot');
     src: url('../fonts/lubgr/lubgrxl-webfont.eot?#iefix') format('embedded-opentype'),
@@ -45,7 +57,7 @@ body{
     font-size: 18px;
 }
 .container{
-    font-family: 'lubalgraphxl', helvetica;
+    font-family: 'dejavu', helvetica;
     color: black;
     max-width: 1000px;
     margin: 0 auto;
@@ -87,25 +99,25 @@ body{
 .msg_success{
    color: teal;
    text-align: center;
-   font-family: 'lubalgraphmd';
+   font-family: 'dejavu';
 }
 .msg_erreur{
    color: tomato;
    text-align: center;
-   font-family: 'lubalgraphmd';
+   font-family: 'dejavu';
 }
 
 
 /* titres et liens */
-h1{
+h1, h4, h3{
   font-family: 'apero';
   /*color: #335163; */
   color: #335163;
   opacity: 0.4;
   letter-spacing: 1px;
 }
-h2, h3, h4{
-    font-family: 'lubalgraphxl', helvetica;
+h2{
+    font-family: 'dejavu', helvetica;
 }
 h2{
     font-size: 1.2em;
@@ -122,7 +134,7 @@ ul, li{
 a,th{
    color: black;
    text-decoration: none;
-	font-family: 'lubalgraphmd';
+	font-family: 'apero';
 }
 a:hover,tr,input[type=submit], input, textarea, select{
     transition: all 0.3s ease-in-out;
@@ -195,7 +207,7 @@ header nav li{
 }
 header nav li a{
     padding-bottom: 2px;
-    font-family: 'lubalgraphmd', helvetica;
+    font-family: 'dejavu', helvetica;
 }
 header a.admin{
    color: orange;
