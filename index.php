@@ -48,6 +48,9 @@ echo '</div>';
 //</div>
 echo '<br />
 <p><a class="btn_index text-center" href="'.RACINE_SITE.'bars_et_promos.php">Découvrir les bars Apéros</a></p><br/>';
- 
+ echo '<hr /><div>';
+	formulaireNewsletter();
+	inscriptionNewsletter($msg);
+echo '</div>';
 
 require_once("inc/footer.inc.php");

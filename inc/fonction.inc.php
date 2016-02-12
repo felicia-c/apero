@@ -373,8 +373,7 @@ function formulaireNewsletter()
 	?>
 		<form class="form" method="post" action="">
 
-			<label for="newsletter">Recevez des informations sur <span class="orange">nos dernières offres, les apéros du moment et tous nos bons plans </span>: </label><br />
-			<br />
+			<label for="newsletter">Restez informé sur l'actualité d'apéro: <span class="orange">les dernières offres et les apéros du moment dans vos bars préférés</span> </label><br />
 			<fieldset>
 			<input type="checkbox" value="ok" id="newsletter" class="float" style="margin: 0;" name="newsletter" value="ok" <?php if(isset($_POST['newsletter']) && $_POST['newsletter'] == "ok") { echo 'checked';} elseif(!isset($_POST['newsletter'])){echo 'checked';} ?> required / ><label ><i>Oui, je souhaite recevoir des promotions et informations de la part d'Apéro</i></label>
 			<br /><br />

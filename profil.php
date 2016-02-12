@@ -106,7 +106,7 @@ if(!empty($_POST))
 				$_POST[$indice] = htmlentities($valeur, ENT_QUOTES); 
 			}
 			extract($_POST);
-
+			
 			$resultat = executeRequete("SELECT statut FROM membre WHERE id_membre = '$id_membre' ");
 			$statut = $resultat -> fetch_assoc();
 			if($_GET['action'] == 'modification')
@@ -251,7 +251,7 @@ echo '</div>
 <p><strong>'. ucfirst($membre_actuel['prenom']) .' '. ucfirst($membre_actuel['nom']) .'</strong><br />'.$membre_actuel['adresse'] .'<br />'.$membre_actuel['cp'] .' '. ucfirst($membre_actuel['ville']) .'</p>';
 	echo '<br /><br /><a class="teal" href="'.RACINE_SITE.'modif_profil.php?id_membre='.$id_membre_actuel.'&action=Modifier" class="button" >Modifier mon compte</a>';	
 echo '</div>
-	</div><br />';
+</div><br />';
 
 if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdmin())
 {
@@ -404,7 +404,7 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 			<textarea required type="text" id="adresse" name="adresse" maxlength="100" placeholder="86 rue de la Ville" required><?php if(isset($_POST['adresse'])) {echo $_POST['adresse'];} elseif(isset($bar_actuel['adresse'])){ echo $bar_actuel['adresse']; }?></textarea><br />
 			
 			<br />
-			<p><i>ATTENTION: Si vous validez ces modifications, votre bar et les apéros qui lui sont asociés n'appaîtront plus sur le site jusqu'à la validation de notre équipe</i></p>
+			<p><i>ATTENTION: Si vous validez ces modifications, votre bar et les apéros qui lui sont associés n'appaîtront plus sur le site jusqu'à la validation de notre équipe</i></p>
 			<input onClick="return(confirm(\'Votre bar et les apéro seront inaccessibles jusqu'à validation par l'équipe apéro. <br /> Continuer ?\'));" type="submit" id="enregistrer" name="enregistrer" value="Enregistrer" class="button" /><br />
 			<br />
 			<a class="button " href="<?php echo RACINE_SITE; ?>profil.php?affichage=affichage">Annuler</a><br />
@@ -506,7 +506,10 @@ while($mon_avis = $resultat -> fetch_assoc() )
 echo '</table>
 <br />
 <br />
-
+<div>';
+	formulaireNewsletter();
+	inscriptionNewsletter($msg);
+echo '</div>
 </div>
 <br />
 <br />';
