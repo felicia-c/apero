@@ -12,18 +12,13 @@ $req = "";
 $table=" bar WHERE statut='1'";
 if(isset($_GET['action']) && (isset($_GET['ville'])))
 { 
-	$req .= "SELECT *, bar.id_bar AS bar_id_bar FROM $table AND ";
-//AFFICHAGE CATEGORIE
-	
-		$req .= " ville ='$ville' ";
+	//AFFICHAGE CATEGORIE
+	$table .= "AND ville ='$ville' ";
 }
-else
-{	
+
+$req="SELECT *, bar.id_bar AS bar_id_bar FROM $table";
 	
-	//$res_avg = executeRequete("SELECT  AS moyenne FROM avis WHERE id_bar='$id_bar' ");
-	$req="SELECT *, bar.id_bar AS bar_id_bar FROM $table";
-	
-}
+
 //echo '<h2><a href="'.RACINE_SITE.'bars_et_promos.php" >Bars</a> /</h2><div class="box_info no_border">';
 echo '<div class="tri"><p>';
 $resultat_ville = executeRequete("SELECT DISTINCT ville FROM bar WHERE statut='1' ORDER BY ville");
