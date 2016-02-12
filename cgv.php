@@ -16,7 +16,7 @@ require_once("inc/header.inc.php");
     <p>Les présentes conditions régissent la vente des produits présentés sur ce site par la société : APERO XXXX <br />
     Téléphone : ++ 33X XX XX XX XX
     <br />e-mail : XXXXX@XXXX.com
-    <br />La commande implique l'adhésion aux conditions générales de vente. Toute commande ne sera prise en considération qu'après acceptation du GIE Cartes Bancaires, interrogé via le service de paiements sécurisés CyberPlus Paiements de la BANQUE POPULAIRE DU NORD. Les parties conviennent que le contrat est soumis au droit Français.
+    <br />La commande implique l'adhésion aux conditions générales de vente. Toute commande ne sera traitée qu'après réception de votre paiement par chèque ou virement, avec un delais de livraison de 1 à 3 semaines à compter de la réception du paiement. L'acheteur dispose d'un délais de retractation de 14 jours ouvrant droit à remboursement, conformément à la réglementation en vigueure. Les parties conviennent que le contrat est soumis au droit Français.
     Les produits sont offerts à la vente depuis la France ou l'étranger, livrables en France métropolitaine et dans toute l'Europe.
     Pour les livraisons à l'étranger, veuillez appeler notre service de commandes par téléphone au ++ 33X XX XX XX XX. Seuls les produits disponibles peuvent être commandés. Concernant les articles en rupture de stock, vous pouvez demander à être informé(e) de leur disponibilité par e-mail. Les photographies illustrant à l'appui du texte les produits,
     n'entrent pas dans le champ contractuel. L'offre est valable jusqu'à épuisement des stocks.
