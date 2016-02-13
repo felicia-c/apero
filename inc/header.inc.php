@@ -7,7 +7,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="Apéro | Le T-shirt qui paye l'apéro">
     <meta name="author" content="Felicia Cuneo">
-    <link rel="icon" href="<?php echo RACINE_SITE; ?>/images/favicon.ico">
+    <link rel="icon" href="<?php echo RACINE_SITE; ?>images/favicon.ico">
 
     <title>Apéro ?</title>
 
@@ -64,24 +64,11 @@
                 <li><a '; if ($titre_page == 'Connexion') {echo 'class="active"';} echo' href="'.RACINE_SITE.'connexion.php">connexion</a></li>';
         } 
  
-   
+        echo '</ul>';
         
         if(utilisateurEstConnecteEtEstAdmin() || utilisateurEstConnecteEtEstGerantEtAdmin())
         {
-          /*echo '<ul id="menu-adm">
-            <li>';
-          if ($titre_page == 'Gestion des commandes') {echo 'Gestion des commandes';} 
-          elseif ($titre_page == 'Gestion des produits') {echo 'Gestion des produits';} 
-          elseif ($titre_page == 'Gestion des membres') {echo 'Gestion des membres';} 
-          elseif ($titre_page == 'Gestion des bars') {echo 'Gestion des bars';} 
-          elseif ($titre_page == 'Gestion des promos') {echo 'Gestion des promos';} 
-          elseif ($titre_page == 'Gestion des avis') {echo 'Gestion des avis';} 
-          elseif ($titre_page == 'Envoi de Newsletter') {echo 'Envoyer une Newsletter';} 
-          else { echo 'admin';}
-          echo '</li>';
-  */
-
-            echo'<br />
+            echo'<ul>
                 <li><a class="admin no_border '; if ($titre_page == 'Gestion des commandes') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_commandes.php">commandes</a></li>
                 <li><a class="admin no_border '; if ($titre_page == 'Gestion des produits') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_produit.php">produits</a></li>
                 <li><a class="admin no_border '; if ($titre_page == 'Gestion des membres') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_membre.php">membres</a></li>
@@ -97,6 +84,7 @@
 
         <br />
         <div class="section">';
+        echo '<div class="msg_apero accroche">Le T-shirt qui te paye l\'apéro </div>';
         if(isset($titre_page) && $titre_page !== 'Accueil')
         {
           echo '<h1>'.$titre_page.'</h1>';
