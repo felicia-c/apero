@@ -66,12 +66,7 @@ body{
     z-index: 3;
    background-color: white; 
 }
-/* .bg{
-   width: 100%;
-   background: white url(../images/background.png) left top repeat-x;
-   z-index: 0;
-   opacity: 0.5;
-} */
+
 
 .col1{
     border: none;
@@ -105,12 +100,10 @@ h1, h4{
   opacity: 0.4;
   letter-spacing: 1px;
 }
-h3{
-    font-family: 'apero', helvetica;
-    letter-spacing: 1px;
+h2, h3{
+    font-family: 'dejavu', helvetica;
 }
 h2{
-    font-family: 'dejavu', helvetica;
     font-size: 1.2em;
 }
 p{
@@ -183,19 +176,16 @@ a.btn_index:hover{
 /* Messages erreur / success */
 
 
-
 .msg_success, .msg_success h4{
    color: teal;
    text-align: center;
-   font-family: 'apero';
-   letter-spacing: 1px;
+   font-family: 'dejavu';
    opacity: 1;
 }
 .msg_erreur, .msg_erreur h4{
    color: tomato;
    text-align: center;
-   font-family: 'apero';
-   letter-spacing: 1px;
+   font-family: 'dejavu';
    opacity: 1;
 }
 
@@ -203,12 +193,11 @@ a.btn_index:hover{
 
 /* MENU / HEADER */
 header{
-   /*box-shadow: 0px 0px 9px -1px;*/
    height: auto;
    min-height: 55px;
    margin-bottom: 2%;
    background-color: white;
-   line-height: 30px;
+   line-height: 25px;
    vertical-align: middle;
    border-bottom: 1px solid #b4b8bb;
 }
@@ -219,23 +208,26 @@ header nav li{
 }
 header nav li a{
     padding-bottom: 2px;
-    font-family: 'dejavu', helvetica;
+    font-family: 'apero', helvetica;
+    letter-spacing: 1px;
+    color: #335163;
+    font-size: 1.5em;
 }
 header a.admin{
    color: orange;
+   font-size: 1em;
 }
 header nav li a:hover,
 a.admin:hover{
    color: #b4b8bb;
-   /*border-color: #335163; */
    border-bottom: none;
 }
 header nav li a.active{
-   border-bottom: #335163; 
+   color: #b4b8bb; 
 }
 .bloc_logo{
-    float: left;
-   margin: 1%;
+  float: left;
+  margin: 1%;
 }
 #logo_header{
   display: block;
@@ -245,6 +237,13 @@ header nav li a.active{
    margin-top: 2%;
    margin: auto;
 }
+.accroche{
+  font-size: 2.5em;
+  width: 100%;
+  text-align: center;
+
+}
+
 /* FOOTER */
 footer{
    margin-top: 5%;
@@ -265,7 +264,7 @@ fieldset{
     margin-bottom: 1%;
     padding: 1% 5%;
     padding-top: 5%;
-    font-family: 'dejavu';
+    font-family: 'apero';
     border: 2px solid  #b4b8bb;
        -moz-border-radius-topleft: 3px;
     -moz-border-radius-topright:3px;
@@ -286,7 +285,8 @@ input, select, textarea{
     margin: 5%;
     margin-top: 1%;
     display: block;
-    font-family: 'dejavu';
+    font-family: 'dejavu', helvetica;
+    font-size: 1.2em;
     border: 1px solid  #b4b8bb;
        -moz-border-radius-topleft: 3px;
     -moz-border-radius-topright:3px;
@@ -329,6 +329,7 @@ input[type=submit]{
    font-size: 1em;
    font-family: 'apero';
    letter-spacing: 1px;
+   font-weight: bold;
    font-size: 1.2em;
    border: none;
    background-color: rgb(51, 81, 99);
@@ -362,20 +363,6 @@ label{
     padding: 2%;
 }
 /* fin FORM */
-
-
-
- /* div.backstretch{
-  -webkit-filter: blur(5px);
-  -moz-filter: blur(5px);
-  -o-filter: blur(5px);
-  -ms-filter: blur(5px);
-  filter: blur(5px);
-
-  margin: -10px; /* Added to get rid of white blur borders */
-/*} */ 
-
-
 
 img.thumbnail{
     width: 200px;
@@ -415,6 +402,7 @@ td a{
    font-family: 'apero';
    letter-spacing: 1px;
    font-size: 1.3em;
+   font-weight: bold;
    padding: 15px;
 }
 td a:hover{
@@ -476,7 +464,6 @@ td.total_panier{
     color: #2c616b;
  }
 .bg_color2{
- /*   background-color: #2c616b; */
     border: none;
 }
   div.bg_color1 h2{
@@ -484,7 +471,6 @@ td.total_panier{
     padding: 0;
 }
 .prix_produit{
-    /*border: 2px solid grey; */
     -moz-border-radius-topleft: 3px;
     -moz-border-radius-topright:3px;
     -moz-border-radius-bottomleft:3px;
@@ -535,7 +521,7 @@ div.vignette_bar{
    display: inline-block;
    border: none;
    box-shadow: 0px -1px 9px -4px;
-   height: 320px;
+   height: 300px;
    margin: 2%;
    padding:0;
    padding-bottom: 2%;
@@ -607,15 +593,7 @@ div.bar .contact_bar{
    width: 100%;
   
 } 
-/*.aperos_index div{
-   width: 40%;
-   display: inline-block;
-}
-.text_index{
-   display: inline-block;
-   width: 50%;
-}
-*/
+
 .fiche_produit h1{
   font-size: 1.3em;
 }
@@ -664,25 +642,7 @@ div.tri a:hover{
 }
 /*    ANIM PHOTOS   */ 
 
-/* The slow way */
-.make-it-slow {
- /* box-shadow: 0 1px 2px rgba(0,0,0,0.15);
-  transition: box-shadow 0.3s ease-in-out: */
-}
-
-/* Transition to a bigger shadow on hover */
-.make-it-slow:hover {
-/*  box-shadow: 0 5px 15px rgba(0,0,0,0.3); */
-}
-
-/* The fast way */
-.make-it-fast {
- /* box-shadow: 0 1px 2px rgba(0,0,0,0.15); */
-}
-
-/* Pre-render the bigger shadow, but hide it */
 .make-it-fast:after {
-/*  box-shadow: 0 5px 15px rgba(0,0,0,0.3); */
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }
@@ -701,11 +661,7 @@ div.tri a:hover{
 /* Create the hidden pseudo-element */
 /* include the shadow for the end state */
 .box:after  {
-
-  opacity: 0;
-
-/*  box-shadow: 0 5px 15px rgba(0,0,0,0.3); */
- 
+  opacity: 0; 
 }
  
 /* Zoom produits */
@@ -737,7 +693,7 @@ div.tri a:hover{
     z-index: 11;
     color: black;
     position: relative;
-    bottom: 75px;
+    top: -75px;
     font-size: 1.8em;
     opacity: 0;
 }
