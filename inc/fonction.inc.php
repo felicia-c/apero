@@ -166,21 +166,17 @@ function affichagePaginationGestion($items_par_page, $table, $lien) // arguments
 				$id = $_GET['id_details_commande'];
 				echo 'id_details_commande='.$id.'&';
 			}
-			if(isset($_GET['ville']))
-			{
-				$ville = $_GET['ville'];
-				echo 'ville='.$ville.'&';
-			}
-			if(isset($_GET['all']))
-			{
-				$all = $_GET['all'];
-				echo 'all='.$all.'&';
-			}
 			if(isset($_GET['tri']))
 			{
 				$tri = $_GET['tri'];
 				echo 'tri='.$tri.'&';
 			}
+			if(isset($_GET['ville']))
+			{
+				$ville = $_GET['ville'];
+				echo 'ville='.$ville.'&';
+			}
+
 			//ORDER BY
 			if(isset($_GET['orderby']))
 			{
@@ -357,58 +353,6 @@ function utilisateurEstConnecteEtEstGerant()
 		return FALSE;
 	}
 
-}
-
-function formulaireNewsletter()
-{
-	if(!utilisateurEstConnecte()) //Si l'utilisateur n'est PAS connecté (SECURITE)
-	{
-		echo '<p>Connectez-vous pour vous inscrire à la newsletter d\' Apéro</p><br />
-			<p><a href="connexion.php" class="button btn-resadetails" title="Se connecter">Connectez-vous</a></p><br />
-			<p>Pas encore de compte ? Créez-en un en 2 minutes !</p><br />
-			<p><a href="inscription.php" class="button btn-resadetails" title="Créer un compte">Créer un compte</a></p>';
-	}
-	elseif(!$_POST)
-	{
-	?>
-		<form class="form" method="post" action="">
-
-			<label for="newsletter">Restez informé sur l'actualité d'apéro: <span class="orange">les dernières offres et les apéros du moment dans vos bars préférés</span> </label><br />
-			<fieldset>
-			<input type="checkbox" value="ok" id="newsletter" class="float" style="margin: 0;" name="newsletter" value="ok" <?php if(isset($_POST['newsletter']) && $_POST['newsletter'] == "ok") { echo 'checked';} elseif(!isset($_POST['newsletter'])){echo 'checked';} ?> required / ><label ><i>Oui, je souhaite recevoir des promotions et informations de la part d'Apéro</i></label>
-			<br /><br />
-
-			<input type="submit" class="button" id="inscription" name="inscription" value="inscription" />
-			</fieldset>
-		</form>
-
-	<?php
-	}	
-}		
-
-function inscriptionNewsletter($msg)
-{
-	
-	if(utilisateurEstConnecte())
-	{
-		if(isset($_POST['newsletter']) && ($_POST['newsletter']=='ok'))
-		{
-			$msg ='';
-			$id_membre = $_SESSION['utilisateur']['id_membre'];
-			$inscrit = executeRequete("SELECT COUNT(*) FROM newsletter WHERE id_membre = '$id_membre'");;
-			if($inscrit)
-			{
-				$msg .='<h4>Vous êtes <span class="tomato">déjà inscrit</span> à notre newsletter<br />Vous recevez actuellement nos mails à l\'adresse suivante : <span class="teal"> '.$_SESSION['utilisateur']['email'].' </span> <br /> Rendez-vous sur <a href="'.RACINE_SITE.'profil.php'.'" title="Mon profil">votre profil</a> pour modifier cette adresse.</h4>';
-			}
-			else
-			{
-				executeRequete("INSERT INTO newsletter VALUES ('', '$id_membre')");
-				$msg .='<div class="msg_success"><h4>Inscription réussie !</h4></div>';	
-			}
-		}
-
-	}
-	echo $msg;	
 }
 
 /******************************FIN FONCTIONS USER**********************************/
@@ -731,7 +675,64 @@ function AfficheDateFr($date1, $date2, $stringAuChoix)
 }
 
 
-//// VIEW ////
+// NEWSLETTER
+
+function formulaireNewsletter()
+{
+	if(!utilisateurEstConnecte()) //Si l'utilisateur n'est PAS connecté (SECURITE)
+	{
+		echo '<p><a href="connexion.php" class="button btn-resadetails" title="Se connecter">Connectez-vous</a> pour vous inscrire à la newsletter d\' Apéro</p><br />
+			<br />
+			<p>Pas encore de compte ? <a href="inscription.php" class="button btn-resadetails" title="Créer un compte">Créez-en un en 2 minutes !</a></p><br />';
+	}
+	elseif(!$_POST)
+	{
+	?>
+		<form class="form" method="post" action="">
+
+			<label for="newsletter">Restez informé sur l'actualité d'apéro: <span class="orange">les dernières offres et les apéros du moment dans vos bars préférés</span> </label><br />
+			<fieldset>
+			<input type="checkbox" value="ok" id="newsletter" class="float" style="margin: 0;" name="newsletter" value="ok" <?php if(isset($_POST['newsletter']) && $_POST['newsletter'] == "ok") { echo 'checked';} elseif(!isset($_POST['newsletter'])){echo 'checked';} ?> required / ><label ><i>Oui, je souhaite recevoir des promotions et informations de la part d'Apéro</i></label>
+			<br /><br />
+
+			<input type="submit" class="button" id="inscription" name="inscription" value="inscription" />
+			</fieldset>
+		</form>
+
+	<?php
+	}	
+}		
+
+function inscriptionNewsletter($msg)
+{
+	
+	if(utilisateurEstConnecte())
+	{
+		if(isset($_POST['newsletter']) && ($_POST['newsletter']=='ok'))
+		{
+			$msg ='';
+			$id_membre = $_SESSION['utilisateur']['id_membre'];
+			$inscrit = executeRequete("SELECT COUNT(*) FROM newsletter WHERE id_membre = '$id_membre'");;
+			if($inscrit)
+			{
+				$msg .='<h4>Vous êtes <span class="tomato">déjà inscrit</span> à notre newsletter<br />Vous recevez actuellement nos mails à l\'adresse suivante : <span class="teal"> '.$_SESSION['utilisateur']['email'].' </span> <br /> Rendez-vous sur <a href="'.RACINE_SITE.'profil.php'.'" title="Mon profil">votre profil</a> pour modifier cette adresse.</h4>';
+			}
+			else
+			{
+				executeRequete("INSERT INTO newsletter VALUES ('', '$id_membre')");
+				$msg .='<div class="msg_success"><h4>Inscription réussie !</h4></div>';	
+			}
+		}
+
+	}
+	echo $msg;	
+}
+
+
+
+
+
+
 function afficheProduits($req)
 {
 	$resultat = executeRequete($req);
@@ -741,7 +742,9 @@ function afficheProduits($req)
 		echo '<div class ="produit vignette_produit">
 			<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="noborder_lien"><h2>'. $mon_produit['titre'] .'</h2></a>
 			<div class="img_produit">
-				<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="noborder_lien"><img class="make-it-slow make-it-fast box" src="'.$mon_produit['photo'].'" style=" width: 200px; max-width: 100%;" /></a>
+				<a href="fiche_produit.php?id_produit='. $mon_produit['id_produit'].'" class="noborder_lien">
+					<img class="make-it-slow make-it-fast box" src="'.RACINE_SITE.$mon_produit['photo'].'" style=" width: 200px; max-width: 100%;" />
+				</a>
 			</div>
 			<div class="infos_produit">
 				<!-- <div class="collection_produit"><p>Collection:<br /> '.$mon_produit['categorie'].'<br /> -->
@@ -781,7 +784,7 @@ function afficheBar($req)
 			echo '<h2><a href="'.RACINE_SITE.'bars_et_promos.php">Bars</a> / '.$mon_bar['nom_bar'].'</h2>';
 			echo '<div class="bar text-center">
 			<h1 class="orange">'.$mon_bar['nom_bar'].'</h1>
-				<img src="'. $mon_bar['photo'].'" style="max-width: 100%;" />
+				<img src="'.RACINE_SITE. $mon_bar['photo'].'" style="max-width: 100%;" />
 				
 				<p class=" description_bar">'.$mon_bar['description'].'</p>
 				<hr />
@@ -904,29 +907,17 @@ function afficheVignetteBar($req)
 		$promo = executeRequete($req_promo);
 		$promo = $promo -> fetch_assoc();
 		echo '<div class="box_info vignette_bar text-center">
-			<a class="noborder_lien" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$id_bar.'">';
-	//echo '<h2>'.$mon_bar['nom_bar'].'</h2>';
-		//$res_avg = executeRequete("SELECT AVG(note) AS moyenne FROM avis WHERE id_bar='$id_bar' ");
-		//$moyenne= $res_avg -> fetch_assoc();
-		echo '<div class="img_bar">
-			<img class="img_vignette" src="'. $mon_bar['photo'].'"  />
-			<div class="switch_titre">'.$mon_bar['nom_bar'].'</div>
-		</div>';
-		/*if($mon_bar['moyenne'] != 0)
-		{
-			echo '<p>'.round($mon_bar['moyenne'], 1).' /10</p>';
-		}
-		else
-		{
-			echo '<br />';
-		}*/
-		echo '<div class="contact_bar">
-			<br />
-			<h3>'. $mon_bar['nom_bar'].'</h3><br />
-			<div class="adresse_bar">'.$mon_bar['adresse'].'<br /> '. $mon_bar['cp'].' '.$mon_bar['ville'].'</div>';
-		//echo '<strong>'. $mon_bar['cp'].' '.$mon_bar['ville'].'</strong>';
-		
-		echo '</div>';
+			<a class="noborder_lien" href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$id_bar.'">
+			<div class="img_bar">
+				<img class="img_vignette" src="'.RACINE_SITE.$mon_bar['photo'].'"  />
+				<div class="switch_titre">'.$mon_bar['nom_bar'].'</div>
+			</div>
+
+			<div class="contact_bar">
+				<br />
+				<h3>'. $mon_bar['nom_bar'].'</h3><br />
+				<div class="adresse_bar">'.$mon_bar['adresse'].'<br /> '. $mon_bar['cp'].' '.$mon_bar['ville'].'</div>
+			</div>';
 		if($promo['nb_promo'] > 0)
 		{
 			echo '<div class="tomato msg_apero">On vous offre un apéro ?</div>';
@@ -935,7 +926,8 @@ function afficheVignetteBar($req)
 			echo '<br/>';
 		}
 		echo '</a>
-		<br /></div>';
+		<br />
+		</div>';
 	}
 }
 
