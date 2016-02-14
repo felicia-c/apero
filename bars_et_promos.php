@@ -2,7 +2,14 @@
 require_once('inc/init.inc.php');
 $titre_page = "Bars Apéro";
 require_once('inc/header.inc.php');
-$id_bar = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING ); 
+
+
+
+if(isset($_GET['tri']))
+{ 
+	$tri = filter_input( INPUT_GET, 'tri', FILTER_SANITIZE_STRING );
+	//echo $ville;
+}
 if(isset($_GET['ville']))
 { 
 	$ville = filter_input( INPUT_GET, 'ville', FILTER_SANITIZE_STRING );
@@ -10,44 +17,66 @@ if(isset($_GET['ville']))
 }
 $req = "";
 $table=" bar WHERE statut='1'";
-if(isset($_GET['action']) && (isset($_GET['ville'])))
+if(isset($tri) && $tri == 'ville' )
 { 
-	//AFFICHAGE CATEGORIE
-	$table .= "AND ville ='$ville' ";
+//AFFICHAGE VILLES
+	$table .= " AND ville ='$ville' ";
 }
+$orderby = "";
 
-$req="SELECT *, bar.id_bar AS bar_id_bar FROM $table";
-	
+//AFFICHAGE ORDRE ALPHA
+if((isset($tri) && $tri == 'alpha') && isset($_GET['asc']))
+{
+	$orderby .= " ORDER BY nom_bar";
+}
+if((isset($tri) && $tri == 'alpha') && isset($_GET['desc']))
+{
+	$orderby .= " ORDER BY nom_bar";
+}
+$req = "SELECT *, bar.id_bar AS bar_id_bar FROM $table $orderby";
 
-//echo '<h2><a href="'.RACINE_SITE.'bars_et_promos.php" >Bars</a> /</h2><div class="box_info no_border">';
 echo '<div class="tri"><p>';
 $resultat_ville = executeRequete("SELECT DISTINCT ville FROM bar WHERE statut='1' ORDER BY ville");
 
 while ($ligne = $resultat_ville->fetch_assoc()) 
 {
 	echo ' <a class="'; 
-	if(isset($_GET['ville']) && $_GET['ville'] == $ligne['ville'])
+	if(isset($ville) && $ville == $ligne['ville'])
 	{
 		echo ' actif ';
 	}
-	echo 'button" style="margin-bottom: 20px;" href="?action=tri&ville='. $ligne['ville'] .'" > '. $ligne['ville'] .' </a> | ';
+	echo 'button" style="margin-bottom: 20px;" href="?tri=ville&ville='. $ligne['ville'] .'" > '. $ligne['ville'] .' </a> | ';
 }
-echo '<a class="'; 
-	if(isset($_GET['all']))
-	{
-		echo ' actif ';
+echo '<br /><a class="'; 
+if((isset($tri) && $tri =='all'))
+{
+	echo ' actif ';
 	}
-	echo 'button" style="margin-bottom: 20px;" href="?all" >Tous les bars</a>';
+echo 'button" style="margin-bottom: 20px;" href="?tri=all" >Tous les bars</a>';
+echo '<br /><a class="'; 
+if((isset($tri) && $tri =='alpha') && isset($_GET['asc']))
+{
+	echo ' actif ';
+}
+echo 'button" style="margin-bottom: 20px;" href="?tri=alpha&asc" >A-Z</a>';
+echo ' | <a class="'; 
+if((isset($tri) && $tri =='alpha') && isset($_GET['desc']))
+{
+	echo ' actif ';
+	}
+echo 'button" style="margin-bottom: 20px;" href="?tri=alpha&desc" >Z-A</a>';
 
-$req = paginationGestion(6, $table, $req);
+
+
+$req = paginationGestion(9, $table, $req);
 $lien = "";
-//echo '<h2><a href="'.RACINE_SITE.'bars_et_promos.php" >Bars</a> /</h2> ';
+
 
 echo '<div class="block_inline box_info no_border">';
-//echo  '<h3> > <a href="'.RACINE_SITE.'bars_et_promos.php?action=promos">Voir les apéros</a></h3>';
+
 afficheVignetteBar($req);
 echo '</div>';
-affichagePaginationGestion(6, $table, $lien);
+affichagePaginationGestion(9, $table, $lien);
 echo '<br /><br />';
 
 require_once('inc/footer.inc.php');
