@@ -7,7 +7,7 @@ $titre_page = "Panier";
 
 creationDuPanier(); //s'il est deja créé, cette fonction ne l'ecrase pas
 
-date_default_timezone_set('Europe/Paris');
+
 
 if($_POST)
 {
@@ -104,14 +104,14 @@ if($_POST)
 				//MAIL CLIENT
 
 				$headers = 'From: vendeur_apero@yopmail.com'.'/r /n' ;
-				$headers .='Content-Type: text/plain; charset= "utf-8"';
+				$headers .='Content-Type: text/plain; charset= "utf-8"'.'/r /n';
 				//$headers .='Content-Type: text/plain; charset="utf-8"'." "; // ici on envoie le mail au format texte encodé en UTF-8
 				//$headers .='Content-Transfer-Encoding: 8bit'; 	
 				$message = "<h1>Apéro</h1>
 					<p>Merci pour votre commande,<br />
 					<strong>Votre commande sera validée dès réception de votre paiement.</strong><br />
 					L'équipe d'Apéro se tient à votre disposition pour répondre à toute question concernant votre commande.</p>
-					<table border=\"1\" bordercolor=\"silver\" cellpadding=\"5\" cellspacing=\"0\">
+					<table border=\"1\" bordercolor=\"silver\" cellpadding=\"5\" cellspacing=\"0\" margin=\"0\">
 						<tr>
 							<td><strong>Numéro de commande <strong></td>
 							<td> ".$id_commande."</td>
@@ -124,17 +124,17 @@ if($_POST)
 							<td><strong>Total <strong></td>
 							<td>".montantTotal()." €</td>
 						</tr>
-					</table></p>";
-				//$message = utf8_encode($message);
+					</table>
+					<p>A bientôt pour l'Apéro !</p>";
+				
 				mail($_SESSION['utilisateur']['email'], "APERO | Confirmation de votre commande", $message, $headers);
 
 				// MAIL VENDEUR
 				
-				$headers = 'From: commande_apero@yopmail.com'.'/r /n' ;
-				$headers .='Content-Type: text/plain; charset= "utf-8"';
-				//$headers .='Content-Type: text/plain; charset="utf-8"'." "; // ici on envoie le mail au format texte encodé en UTF-8
-				//$headers .='Content-Transfer-Encoding: 8bit'; 	
-				$message = "<h1>Apéro</h1>
+				$headers_vendeur = 'From: commande_apero@yopmail.com'.'/r /n' ;
+				$headers_vendeur .='Content-Type: text/plain; charset= "utf-8"'.'/r /n';
+
+				$message_vendeur = "<h1>Apéro</h1>
 					<h2>Vous avez une nouvelle commande à traiter !</h2>
 					<table border=\"1\" bordercolor=\"silver\" cellpadding=\"5\" cellspacing=\"0\">
 						<tr>
@@ -151,14 +151,15 @@ if($_POST)
 						</tr>
 						<tr>
 							<td rowspan=\"2\" ><strong>Client<strong></td>
-							<td>".$_SESSION['utilisateur']['prenom']." ".$_SESSION['utilisateur']['nom']."</td>
+							<td>".ucfirst($_SESSION['utilisateur']['prenom'])." ".ucfirst($_SESSION['utilisateur']['nom'])."</td>
 						</tr>
 						<tr>
 							<td>".$_SESSION['utilisateur']['email']."</td>
 						</tr>
-					</table></p>";
-				//$message = utf8_encode($message);
-				mail('vendeur_apero@yopmail.com', "APERO | Nouvelle commande", $message, $headers);
+					</table>
+					<p>A bientôt pour l'Apéro !</p>";
+				
+				mail('vendeur_apero@yopmail.com', "APERO | Nouvelle commande !", $message_vendeur, $headers_vendeur);
 
 
 				//UNSET PANIER
@@ -172,7 +173,6 @@ if($_POST)
 if(isset($_GET['action']) && $_GET['action'] == 'vider')
 {
 	unset($_SESSION['panier']); // On vide la session (panier)
-	//header("location:panier.php");
 }
 
 // AJOUT D'ARTICLE
@@ -289,16 +289,6 @@ echo '<!-- TITRES TABLEAU PANIER  -->
 					<th>Total</th>
 					<th></th>
 				</tr>';
-			//	if(!utilisateurEstConnecte())  // liens creation compte / connexion
-			//	{
-			/*		echo '<tr>
-							<td colspan="4"><p>Vous devez être connecté pour créer un panier <br /><br /> <a href="'.RACINE_SITE.'connexion.php" class="button">Connexion</a></p></td>
-							<td></td>
-							<td colspan="5"><p>Pas encore de compte ? <br /> Créez-en un en 2 minutes<br /><br /> <a href="'.RACINE_SITE.'inscription.php" class="button">Créer un compte</a></p></td>
-						</tr>'; */
-			//	}
-				//else
-				//{
 					
 				
 	if(empty($_SESSION['panier']['id_produit'])) // s'il n'y a pas de produit dans le panier : mesg panier vide + liens recherche et profil
@@ -508,6 +498,53 @@ if(utilisateurEstConnecte())  // par securité
 				</adress>
 			</article>
 		</div>
+
+<div class="block_inline infos_panier">
+<h4 class=orange>Vos dernières commandes</h4>';
+//selection des commandes de l'utilisateur
+$id_utilisateur = $_SESSION['utilisateur']['id_membre'];
+$req = "SELECT * FROM commande WHERE id_membre = '$id_utilisateur' ORDER BY date DESC LIMIT 3";
+$resultat = executeRequete($req);
+echo '<table class="tableau_panier">
+		<tr>
+			<th>Numero de Suivi</th>
+			<th>Date de Commande</th>
+			<th>Montant TTC</th>
+			<th>Etat de la commande</th>
+		</tr>';
+$nb_commandes = $resultat -> num_rows;
+if($nb_commandes < 1)
+{
+	echo '<tr>
+			<td colspan="4">Vous n\'avez pas encore passé de commande</td>	
+		</tr>';
+}
+while($ma_commande = $resultat -> fetch_assoc() )
+{
+	echo '<tr>
+		<td> '.$ma_commande['id_commande']. ' </td>';
+			
+			$date_avis = date_create_from_format('Y-m-d H:i:s', $ma_commande['date']);
+	echo '<td>'. date_format($date_avis, 'd/m/Y H:i').' </td>
+			<td> '.$ma_commande['montant']. ' €</td>
+			<td> '; 
+			if($ma_commande['etat'] == 'validee')
+			{
+				echo 'Validée';
+			} 
+			elseif($ma_commande['etat'] == 'expediee')
+			{
+				echo 'Expédiée';
+			}
+			else
+			{
+				echo ucfirst($ma_commande['etat']);
+			}
+			echo '</td>
+		</tr>';
+}
+echo '</table>
+</div>
 	<br />
 	<br />
 	<br />';
