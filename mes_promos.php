@@ -1,7 +1,7 @@
 <?php 
 require_once("inc/init.inc.php");
 $titre_page = 'Mes apéros';
-
+date_default_timezone_set('Europe/Paris');
 //APERO - Felicia Cuneo - 01/2015
 
 //Redirection si l'utilisateur n'est pas admin et/ou gerant
@@ -58,10 +58,10 @@ if(!empty($_POST))
 	}
 
 	
-	$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9.,\% =_ \'-]+$#', $_POST['description']); 
+	$verif_caractere = preg_match('#^[àâäçéèêëïa-zA-Z0-9.,\%\(\)\! \?=_ \'-]+$#', $_POST['description']); 
 	if(!$verif_caractere && !empty($_POST['description']))
 	{
-		$msg .= '<div class="msg_erreur"><h4>Description invalide.<br /> Caractères acceptés: .,_ \'- àâäçéèêëï a-z A-Z et 0-9</h4></div>';  
+		$msg .= '<div class="msg_erreur"><h4>Description invalide.<br /> Caractères acceptés: .,_ \'- % ! ? () àâäçéèêëï a-z A-Z et 0-9</h4></div>';  
 	}
 	
 	//ENREGISTREMENT 
@@ -150,49 +150,41 @@ if(isset($_GET['action']) && $_GET['action'] == 'suppression')
 
 $id_membre_session = $_SESSION['utilisateur']['id_membre'];
 
-$req_promo_utilisateur="SELECT id_promo_bar, promo_bar.id_bar, promo_bar.description, categorie_produit, date_debut, date_fin FROM promo_bar INNER JOIN bar ON promo_bar.id_bar = bar.id_bar WHERE bar.id_membre ='$id_membre_session'";
-$req_bar_utilisateur = "SELECT * FROM bar WHERE id_membre = '$id_membre_session'";
+$req_promo_utilisateur="SELECT id_promo_bar, promo_bar.id_bar, promo_bar.description, bar.nom_bar, categorie_produit, date_debut, date_fin FROM promo_bar INNER JOIN bar ON promo_bar.id_bar = bar.id_bar WHERE bar.id_membre ='$id_membre_session'";
+//$req_bar_utilisateur = "SELECT * FROM bar WHERE id_membre = '$id_membre_session'";
 
 $req = "";
+
 require_once("inc/header.inc.php");
 
-echo '<div="box_info">';
-		
-//STATS  A MODIFIER ///////
-/*$resultat = executeRequete("SELECT SUM(montant) AS total,
-								COUNT(commande.id_commande) AS nbre_commandes,
-								ROUND(AVG(montant),0) AS panier_moyen,
-								MAX(date) AS der_commande 
-							FROM commande INNER JOIN details_commande ON details_commande.id_commande=commande.id_commande WHERE details_commande.id_produit IN (SELECT id_produit FROM promo_bar WHERE id_bar IN (SELECT id_bar FROM bar WHERE id_membre='$id_membre_session')) ");
-$commandes = $resultat -> fetch_assoc();
-echo '<h3>CA Total : '. $commandes['total'] .'€  |  Nombre de commandes: '. $commandes['nbre_commandes'].' | Commande moyenne : '.$commandes['panier_moyen'].'€</h3><br />';
-*/
-// FIN STATS
+echo '<div="box_info">
+	<p>Cette page vous permet d\' <strong>ajouter ou modifier les apéros que vous proposez</strong> aux clients du site.
+	<br/> Sentez-vous libre de <strong>préciser les modalités de la réduction</strong> dans la description: vous pouvez définir une plage horaire (de 16h à 19h par exemple) ou un type de consommation (boissons non-alcoolisées, accompagnement...) ou toute autre spécification.
+	<br /> Veillez néanmoins à rester courtois dans la description de vos apéros, aucun propos à caractère discriminant ou offençant ne saurait être toléré.<br/> En cas de litige,  Apéro et les entreprises qui lui sont associées ne sauraient être tenus pour responsables.</p><br />
+	<p><strong>Petit rappel</strong>: les clients membres du site peuvent laisser <strong>un commentaire et une note</strong> sur votre bar</p>';
 
-echo '<p>Cette page vous permet d\' <strong>ajouter ou modifier les apéros que vous proposez</strong> aux clients du site.
-<br/> Sentez-vous libre de <strong>préciser les modalités de la réduction</strong> dans la description: vous pouvez définir une plage horaire (de 16h à 19h par exemple) ou un type de consommation (boissons non-alcoolisées, accompagnement...) ou toute autre spécification.
-<br /> Veillez néanmoins à rester courtois dans la description de vos apéros, aucun propos à caractère discriminant ou offençant ne saurait être toléré.<br/> En cas de litige,  Apéro et les entreprises qui lui sont associées ne sauraient être tenus pour responsables.</p><br />
-<p><strong>Petit rappel</strong>: les clients membres du site peuvent laisser <strong>un commentaire et une note</strong> sur votre bar</p>';
+$resultat = executeRequete($req_promo_utilisateur);
+$resultat_nb = executeRequete("SELECT COUNT(id_promo_bar) AS nb_promos FROM promo_bar INNER JOIN bar ON promo_bar.id_bar=bar.id_bar WHERE bar.id_membre = '$id_membre_session'");
+$nb_promos =$resultat_nb -> fetch_assoc();	
+//$promos =$resultat -> fetch_assoc();	
 
-$resultat = executeRequete("SELECT COUNT(id_promo_bar) AS nbre_promo FROM promo_bar");
-$donnees =$resultat -> fetch_assoc();	
 // LIENS
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {	
 	
-	echo '<h2><a href="?affichage=affichage" class="button active" >Tous mes apéros ('. $donnees['nbre_promo'].')</a></h2>
+	echo '<h2 class="tomato">Tous mes apéros ('. $nb_promos['nb_promos'].')</h2>
 	<a href="?action=ajout" class="button"> > Ajouter un apéro</a><br />
 	<a href="'.RACINE_SITE.'profil.php#details"> >Gestion Bars</a><br />';
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'ajout')
 {
-	echo '<h2><a href="?action=ajout" class="button active">Ajouter un apéro</a></h2>
+	echo '<h2 class="tomato">Ajouter un apéro</h2>
 	<a href="?affichage=affichage" class="button" > > Tous les apéro</a><br />
 	<a href="'.RACINE_SITE.'profil.php#details"> >Gestion Bars</a><br />';
 }
 else
 {
-	echo '<h2><a href="?affichage=affichage" class="button" >Tous les apéros</a></h2>
+	echo '<h2 class="tomato"><a href="?affichage=affichage" class="button" >Tous les apéros</a></h2>
 		<h2><a href="?action=ajout" class="button">Ajouter un apéro</a></h2>
 		<h2><a href="'.RACINE_SITE.'profil.php#details"> >Gestion Bars</a></h2>';
 }
@@ -203,60 +195,58 @@ echo '<br />';
 
 if(isset($_GET['affichage']) &&  $_GET['affichage']=='affichage')
 {
-
 	echo '<table>'; 
-	$table= 'promo_bar';
-	//$req .= "SELECT * FROM promo_bar INNER JOIN bar ON promo_bar.id_bar = bar.id_bar WHERE bar.id_membre = '$id_membre_session'";
-	$req = paginationGestion(5, $table, $req_promo_utilisateur);
-	$resultat = executeRequete($req_promo_utilisateur);
-
-	$dont_link = null; // entete du tablau sans order by
-	$dont_show = ''; // colonne non affichée
+	//$table= 'promo_bar';
+	
+	$dont_link = 'nono'; // colonne du tablau sans order by
+	$dont_show = 'nom_bar'; // colonne non affichée
 	enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
-			
-	while ($ligne = $resultat->fetch_assoc())
+	if($nb_promos['nb_promos'] < '1')
 	{
-		echo '<tr '; 
-		if(isset($_GET['id_bar']) && ($_GET['id_bar'] == $ligne['id_bar']))
+		echo '<tr>
+				<td colspan="6">Aucun apéro proposé actuellement - <a href="?action=ajout">Ajouter un apéro</a></td>	
+			</tr>';
+	}
+	else
+	{ 
+		while ($ligne = $resultat->fetch_assoc())
 		{
-			echo ' class="tr_active" ';
-		}
-		echo '>';
-		foreach($ligne AS $indice => $valeur)
-		{
-			if($indice == 'id_bar')
+			echo '<tr '; 
+			if(isset($_GET['id_bar']) && ($_GET['id_bar'] == $ligne['id_bar']))
 			{
-				echo '<td><a href="?affichage=affichage&action=detail&id_bar='.$ligne['id_bar'].'">'.$valeur.'</a></td>';
+				echo ' class="tr_active" ';
 			}
-			
-			elseif($indice == 'id_promo')
+			echo '>';
+			foreach($ligne AS $indice => $valeur)
 			{
-				echo '<td><a href="?affichage=affichage&action=detail&categorie='.$ligne['categorie'].'">'.$valeur.'</a></td>';
-			}	
-			elseif (($indice == 'date_debut') || ($indice == 'date_fin'))
-			{
-				echo '<td>';
-					$date = date_create_from_format('Y-m-d', $valeur);
-				echo date_format($date, 'd/m/Y') . '</td>';
-			}					
-			else
-			{
-				echo '<td >'.$valeur.'</td>';
+				if($indice == 'id_bar')
+				{
+					echo '<td><a href="?affichage=affichage&action=detail&id_bar='.$ligne['id_bar'].'#details">'.$ligne['nom_bar'].'</a></td>';
+				}
+					
+				elseif (($indice == 'date_debut') || ($indice == 'date_fin'))
+				{
+					echo '<td>';
+						$date = date_create_from_format('Y-m-d', $valeur);
+					echo date_format($date, 'd/m/Y') . '</td>';
+				}					
+				elseif($indice != 'nom_bar')
+				{
+					echo '<td >'.$valeur.'</td>';
+				}
 			}
-		}
-		echo '<td>
-				<a class="btn_delete" href="?affichage=affichage&action=suppression&id_promo_bar='.$ligne['id_promo_bar'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
-			</td>
-			<td>
-				<a class="btn_edit" href="?action=modifier&id_promo_bar='.$ligne['id_promo_bar'] .'" >éditer</a>
-			</td>
-		</tr>';
-	}						
-	echo '</table>
-		<br />';
+			echo '<td>
+					<a class="btn_delete" href="?affichage=affichage&action=suppression&id_promo_bar='.$ligne['id_promo_bar'] .'" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
+				</td>
+				<td>
+					<a class="btn_edit" href="?action=modifier&id_promo_bar='.$ligne['id_promo_bar'] .'" >éditer</a>
+				</td>
+			</tr>';
+		}					
+	}
 		
-	affichagePaginationGestion(5, $table, '');
-	echo '<br /></div><br />';
+	echo '</table>
+	<br /><br />';
 }
 
 // DETAILs DES BARS
@@ -286,12 +276,8 @@ if(isset($_GET['id_bar']))
 			{
 				if($indice == 'photo')
 				{
-					echo '<td ><img src="'.$valeur.'" alt="'.$ligne['nom_bar'].'" title="'.$ligne['nom_bar'].'" class="thumbnail_tableau" width="80px" /></td>';
+					echo '<td ><img src="'.RACINE_SITE.$valeur.'" alt="'.$ligne['nom_bar'].'" title="'.$ligne['nom_bar'].'" class="thumbnail_tableau" width="80px" /></td>';
 				}
-				//elseif($indice == 'description')
-				//{
-			//		echo '<td colspan="3">' . substr($valeur, 0, 70) . '...</td>'; //Pour couper la description (affiche une description de 70 caracteres maximum)
-			//	}
 				elseif($indice == 'nom_gerant')
 				{
 					echo '<td colspan="2">' . ucfirst($valeur).' ';	
@@ -333,7 +319,6 @@ if(isset($_GET['id_bar']))
 	$resultat_bar_promo = executeRequete("SELECT COUNT(id_promo_bar) AS nbre_promo FROM promo_bar WHERE id_bar = '$_GET[id_bar]'");
 	$bar_promo = $resultat_bar_promo -> fetch_assoc();
 	echo '<h3>Tous les apéros proposés par ce bar ('. $bar_promo['nbre_promo'].')</h3>';
-
 	$req = "SELECT * FROM promo_bar WHERE id_bar = '$_GET[id_bar]'";
 	$resultat = executeRequete($req); 
 	
@@ -341,7 +326,7 @@ if(isset($_GET['id_bar']))
 	$dont_link = 'nono'; // entete du tablau sans order by
 	$dont_show = ''; // colonne non affichée
 	enteteTableau($resultat, $dont_show, $dont_link); //entete tableau
-			
+	
 	while ($ligne = $resultat->fetch_assoc())
 	{
 		echo '<tr>';
@@ -351,11 +336,6 @@ if(isset($_GET['id_bar']))
 				{
 					echo '<td>'.$valeur.'</td>'; 
 				}
-				
-				//elseif($indice == 'categorie_produit')
-				//{
-				//	echo '<td><a href="?affichage=affichage&action=detail&id_bar='.$ligne['id_bar'].'&id_promo_bar='.$ligne['id_promo_bar'].'&categorie='.$ligne['categorie_produit'].'">'.$valeur.'</a></td>'; //Lien au niveau de l'id pour afficher les details du membre
-				//}	
 				elseif (($indice == 'date_debut') || ($indice == 'date_fin'))
 				{
 					echo '<td>';
@@ -376,7 +356,7 @@ if(isset($_GET['id_bar']))
 		</tr>';
 	}						
 	echo '</table>
-		<br /></div>';
+		<br />';
 }
 
 //FORM AJOUT / MODIF
@@ -385,9 +365,9 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 ?>		
 	
 		<form class="form" method="post" action="" enctype="multipart/form-data"> <!--enctype pour ajout eventuel d'un champs photo -->
-			<fieldset>
+			
 	<?php
-		echo '<legend><h3>';
+		echo '<legend><h3 class="tomato">';
 		if(isset($_GET['id_promo_bar']) && (isset($_GET['action']) && ($_GET['action']=='modifier')))
 		{
 			$resultat = executeREquete("SELECT * FROM promo_bar WHERE id_promo_bar ='$_GET[id_promo_bar]'") ; // on recupere les infos de l'article à partir de l'id_article récupéré dans l'URL pour les afficher ds le formulaire
@@ -424,11 +404,11 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 					{
 						echo 'selected';
 					}
-					elseif(isset($_POST['id_bar']) && isset($_POST['id_bar']) == $ligne['id_bar'])
+					elseif(isset($_POST['id_bar']) && $_POST['id_bar'] == $ligne['id_bar'])
 					{
 						echo 'selected';
 					}
-					elseif(isset($promo_actuelle) && isset($promo_actuelle['id_bar']) == $ligne['id_bar'])
+					elseif(isset($promo_actuelle) && $promo_actuelle['id_bar'] == $ligne['id_bar'])
 					{
 						echo 'selected';
 					}
@@ -441,7 +421,7 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 			
 				$req = "SELECT DISTINCT categorie FROM produit ORDER BY categorie";
 				$resultat = executeRequete($req);
-				//$nb_ligne = count($resultat)
+				
 				while($ligne = $resultat -> fetch_assoc())
 				{
 					foreach($ligne AS $indice => $valeur) 
@@ -451,11 +431,11 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 						{
 							echo ' selected ';
 						}
-						elseif(isset($_POST['categorie']) && isset($_POST['categorie']) == $ligne['categorie'])
+						elseif(isset($_POST['categorie']) && $_POST['categorie'] == $ligne['categorie'])
 						{
 							echo ' selected ';
 						}
-						elseif(isset($promo_actuelle['categorie_produit']) && isset($promo_actuelle['categorie_produit']) == $ligne['categorie'])
+						elseif(isset($promo_actuelle) && $promo_actuelle['categorie_produit'] == $ligne['categorie'])
 						{
 							echo ' selected ';
 						}
@@ -467,7 +447,7 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 				echo '</select>';	
 	?>	
 				<label for="date_debut">Date de début (JJ/MM/AAAA)</label>
-				<input required type="text" id="date_debut" name="date_debut" maxlength="10" value="<?php
+				<input required type="text" id="date_debut" name="date_debut" maxlength="10" placeholder=" JJ/MM/AAAA" value="<?php
 					if(isset($_POST['date_debut']))
 					{ 
 						$date1 = $_POST['date_debut'];
@@ -480,7 +460,7 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 					} ?>" /><br /> 
 					
 				<label for="date_fin">Date de fin (JJ/MM/AAAA)</label>
-				<input required type="text" id="date_fin" name="date_fin" maxlength="10" value="<?php
+				<input required type="text" id="date_fin" name="date_fin" maxlength="10" placeholder=" JJ/MM/AAAA" value="<?php
 				if(isset($_POST['date_fin']))
 					{ 
 						$date1 = $_POST['date_fin'];
@@ -494,7 +474,7 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 					
 				
 				<label for="description">Description </label><br />
-				<textarea id="description" name="description" maxlength="200" class="description_form" ><?php if(isset($_POST['description'])) {echo $_POST['description'];}  elseif(isset($promo_actuelle)){ echo $promo_actuelle['description'];} ?></textarea>
+				<textarea id="description" name="description" maxlength="200" placeholder="-10% sur l'addition !" class="description_form" ><?php if(isset($_POST['description'])) {echo $_POST['description'];}  elseif(isset($promo_actuelle)){ echo $promo_actuelle['description'];} ?></textarea>
 				
 			
 				
@@ -503,7 +483,7 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 				<br />
 				<a class="button " href="?affichage=affichage">Retour aux apéros</a><br />
 				<br />
-				</fieldset>
+				
 			</form>	
 
 <?php 
