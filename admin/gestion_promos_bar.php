@@ -132,19 +132,19 @@ $donnees =$resultat -> fetch_assoc();
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {	
 	
-	echo '<h2><a href="?affichage=affichage" class="button active" >Tous les apéros ('. $donnees['nbre_promo'].')</a></h2>
+	echo '<h2 class="orange">Tous les apéros ('. $donnees['nbre_promo'].')</h2>
 	<a href="?action=ajout" class="button"> > Ajouter un apéro</a><br />
 	<a href="'.RACINE_SITE.'admin/gestion_bar.php"> >Gestion Bars</a><br />';
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'ajout')
 {
-	echo '<h2><a href="?action=ajout" class="button active">Ajouter un apéro</a></h2>
-	<a href="?affichage=affichage" class="button" > > Tous les apéro</a><br />
+	echo '<h2 class="orange">Ajouter un apéro</h2>
+	<a href="?orderby=id_promo_bar&affichage=affichage&desc=desc" class="button" > > Tous les apéro</a><br />
 	<a href="'.RACINE_SITE.'admin/gestion_bar.php"> >Gestion Bars</a><br />';
 }
 else
 {
-	echo '<h2><a href="?affichage=affichage" class="button" >Tous les apéros</a></h2>
+	echo '<h2><a href="?orderby=id_promo_bar&affichage=affichage&desc=desc" class="button" >Tous les apéros</a></h2>
 		<h2><a href="?action=ajout" class="button">Ajouter un apéro</a></h2>
 		<h2><a href="'.RACINE_SITE.'admin/gestion_bar.php"> >Gestion Bars</a></h2>';
 }
@@ -379,7 +379,7 @@ if(isset($_GET['action']) && (($_GET['action']=='ajout') || ($_GET['action'] == 
 					{
 						echo 'selected';
 					}
-					echo ' >'.$ligne['id_bar'].' - '.$ligne['nom_bar'].' '.$ligne['cp'].'</option>';
+					echo ' >'.$ligne['id_bar'].' - '.$ligne['cp'].' - '.$ligne['nom_bar'].'</option>';
 				}
 	
 				echo '</select>

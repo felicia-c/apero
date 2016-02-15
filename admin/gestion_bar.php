@@ -212,13 +212,13 @@ $donnees =$resultat -> fetch_assoc();
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {	
 	
-	echo '<h2><a href="?affichage=affichage" class="button active" >Tous les bars ('. $donnees['nbre_bar'].')</a></h2>
+	echo '<h2 class="orange">Tous les bars ('. $donnees['nbre_bar'].')</h2>
 	<a href="?action=ajout" class="button"> > Ajouter un bar</a><br />
 	<a href="'.RACINE_SITE.'admin/gestion_promos_bar.php"> > Offres Apéro</a>';
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'ajout')
 {
-	echo '<h2><a href="?action=ajout" class="button active">Ajouter un bar</a></h2>
+	echo '<h2 class="orange">Ajouter un bar</h2>
 	<a href="?affichage=affichage" class="button" > > Tous les bars</a><br />
 	<a href="'.RACINE_SITE.'admin/gestion_promos_bar.php"> > Offres Apéro</a>';
 }
@@ -239,7 +239,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 		<table class="large_table" id="details">';
 	$req = "SELECT * FROM bar";
 
-	$req = paginationGestion(5, 'bar', $req);
+	$req = paginationGestion(7, 'bar', $req);
 	$resultat = executeRequete($req); 
 	
 	$dont_link = null; // entete du tablau sans order by
@@ -320,8 +320,8 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	}						
 	echo '</table><br />';
 
-	affichagePaginationGestion(5, 'bar', '');
-	echo '</div>';
+	affichagePaginationGestion(7, 'bar', '');
+	
 }
 
 //DETAILS MEMBRE

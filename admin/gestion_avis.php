@@ -40,7 +40,7 @@ echo $msg;
 
 echo '<br />';
 
-echo '<h2>Tous les avis</h2>
+echo '<h2 class="orange">Tous les avis</h2>
 
 	<table id="details">'; 
 $req .= "SELECT * FROM avis"; 

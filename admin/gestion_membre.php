@@ -204,19 +204,19 @@ $donnees =$resultat -> fetch_assoc();
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {	
 	
-	echo '<h2><a href="?affichage=affichage" class="button active" >Tous les membres ('. $donnees['nbre_membre'].')</a></h2>
+	echo '<h2 class="orange">Tous les membres ('. $donnees['nbre_membre'].')</h2>
 	<a href="?action=ajout" class="button">Ajouter un membre / admin</a><br />';
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'ajout')
 {
-	echo '<h2><a href="?action=ajout" class="button active">Ajouter un membre /admin</a></h2>
+	echo '<h2  class="orange>Ajouter un membre /admin</h2>
 	<a href="?affichage=affichage" class="button" >Tous les membres</a>';
 }
 else
 {
 	echo '<h2><a href="?affichage=affichage" class="button" >Tous les membres</a></h2>
 		<h2><a href="?action=ajout" class="button">Ajouter un membre / admin</a></h2><br />
-		<a href="'.RACINE_SITE.'admin/gestion_newsletter.php">Newsletter</a>';
+		<a href="'.RACINE_SITE.'admin/gestion_newsletter.php">Mailing / Newsletter</a>';
 }
 
 // FIN LIENS

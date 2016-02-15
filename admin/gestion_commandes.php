@@ -12,7 +12,7 @@ foreach($_GET AS $indice => $valeur )
 {
 	$_GET[$indice] = htmlentities($valeur, ENT_QUOTES); 
 }
-//pagination liens
+//pagination (liens)
 $page='';
 $orderby=''; 
 $asc_desc='';
@@ -34,20 +34,20 @@ elseif(isset($_GET['desc']))
 	$asc_desc.='&desc='.$_GET['desc'];
 }
 
-//
+//CHANGEMENT ETAT COMMANDE
 if(isset($_GET['id_commande']))
 {
 	if(isset($_GET['modif']) && $_GET['modif'] == 'expedier')
 	{
 		executeRequete("UPDATE commande SET etat='expediee' WHERE id_commande='$_GET[id_commande]'");
-		$msg .='<div class="msg_success"><h4>Commande N°'. $_GET['id_commande'] .' exédiée!</h4></div>';
+		$msg .='<div class="msg_success"><h4>Commande N°'. $_GET['id_commande'] .' expédiée !</h4></div>';
 	}
 
 	//VALIDER UNE COMMANDE ( = PAYEE, prête à envoyer)
 	 if(isset($_GET['modif']) && $_GET['modif'] == 'valider')
 	{
 		executeRequete("UPDATE commande SET etat='validee' WHERE id_commande='$_GET[id_commande]'");
-		$msg .='<div class="msg_success"><h4>Commande N°'. $_GET['id_commande'] .' validée!</h4></div>';
+		$msg .='<div class="msg_success"><h4>Commande N°'. $_GET['id_commande'] .' validée !</h4></div>';
 	}
 	// SUPPRESSION DES COMMANDES
 	 
@@ -87,22 +87,22 @@ $donnees =$resultat -> fetch_assoc();
 
 if((isset($_GET['affichage']) && $_GET['affichage'] == 'affichage') && (isset($_GET['action']) && $_GET['action'] == 'commandes'))
 {	
-	echo '<h2><a href="?affichage=affichage&action=commandes" class="button active" >Toutes les commandes ('. $donnees['nbre_commandes'].')</a></h2>
-	<a href="?affichage=all_details&action=detail" class="button">Détails des commandes</a><br />
+	echo '<h2 class="orange">Toutes les commandes ('. $donnees['nbre_commandes'].')</h2>
+	<a href="?orderby=id_details_commande&affichage=all_details&action=detail&desc=desc" class="button">Détails des commandes</a><br />
 	<p><a href="" onClick="(window.history.back())" title="retour"> < Retour</a></p>';
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'detail')
 {
 	$resultat_details = executeRequete("SELECT COUNT(id_details_commande) AS nbre_details FROM  details_commande");
 	$details =$resultat_details -> fetch_assoc();	
-	echo '<h2><a href="?affichage=all_details&action=detail" class="button active">Détails des commandes ('. $details['nbre_details'].')</a></h2>
-	<a href="?affichage=affichage&action=commandes" class="button" >Toutes les commandes</a>
+	echo '<h2 class="orange">Détails des commandes ('. $details['nbre_details'].')</h2>
+	<a href="?orderby=id_commande&affichage=affichage&action=commandes&desc=desc" class="button" >Toutes les commandes</a>
 	<p><a href="" onClick="(window.history.back())" title="retour"> < Retour</a></p>';
 }
 else
 {
-	echo '<h2><a href="?affichage=affichage&action=commandes" class="button" >Toutes les commandes</a></h2>
-		<h2><a href="?affichage=all_details&action=detail" class="button">Détails des commandes</a></h2><br />';
+	echo '<h2><a href="?orderby=id_commande&affichage=affichage&action=commandes&desc=desc" class="button" >Toutes les commandes</a></h2>
+		<h2><a href="?orderby=id_details_commande&affichage=all_details&action=detail&desc=desc" class="button">Détails des commandes</a></h2><br />';
 }
 
 echo $msg; 
@@ -255,7 +255,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 	{
 		//$resultat = executeRequete("SELECT * FROM details_commande");
 		$req .= "SELECT * FROM details_commande";
-		$req = paginationGestion(10,'details_commande',$req);  // PAGINATION + TRI
+		$req = paginationGestion(20,'details_commande',$req);  // PAGINATION + TRI
 		$resultat = executeRequete($req);
 		//$nbcol = $resultat->field_count; 
 		$dont_link = null; // entete du tablau sans order by
@@ -304,7 +304,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 	if(isset($_GET['action']) && ($_GET['action'] == 'detail') && !isset($_GET['id_commande']))
 	{
 		$lien = '<a href="?affichage=affichage&action=detail&';
-		affichagePaginationGestion(10, 'details_commande', $lien);
+		affichagePaginationGestion(20, 'details_commande', $lien);
 	}
 	//echo '</div>';		
 	
@@ -329,7 +329,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'detail')
 			{
 				if($indice == 'photo')
 				{
-					echo '<td ><img src="'.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
+					echo '<td ><img src="'.RACINE_SITE.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
 				}
 				elseif($indice == 'id_promo_produit')
 				{
@@ -367,7 +367,7 @@ if((isset($_GET['affichage']) && $_GET['affichage'] == 'affichage') && (isset($_
 {
 // PAGINATION + TRI
 	$req .= "SELECT * FROM commande";
-	$req = paginationGestion(10, 'commande', $req);  
+	$req = paginationGestion(15, 'commande', $req);  
 	$resultat = executeRequete($req);
 
 	$dont_link = null; // entete du tablau sans order by
@@ -403,25 +403,39 @@ if((isset($_GET['affichage']) && $_GET['affichage'] == 'affichage') && (isset($_
 					$date = date_create_from_format('Y-m-d H:i:s', $valeur);
 				echo date_format($date, 'd/m/Y H:i') . '</td>';
 			}
-			elseif($indice == 'montant') // affichage du timestamp de la commande en format fr
+			elseif($indice == 'montant') 
 			{		
 				echo  '<td>'.$valeur. ' € </td>';
+			}
+			
+			elseif($ligne['etat'] == 'validee')
+			{
+				echo '<td class="orange"> Validée</td>';	
+			} 
+			elseif($ligne['etat'] == 'expediee')
+			{
+				echo '<td class="teal"> Expédiée</td>';
+			}
+			elseif($ligne['etat'] == 'en cours de traitement')
+			{
+				echo '<td>A traiter</td>';
 			}
 			else
 			{
 				echo '<td >'.$valeur.'</td>';
 			}
+			
 		}
 		
 			
 		echo '<td>';
 		if($ligne['etat'] == 'en cours de traitement')
 		{
-			echo'<a class="btn_edit" href="?affichage=affichage&action=commandes&modif=valider&id_commande='.$ligne['id_commande'] . $page.''.$orderby.''.$asc_desc.'" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">valider</a>';
+			echo'<a class="btn_edit" href="?affichage=affichage&action=commandes&modif=valider&id_commande='.$ligne['id_commande'] . $page.''.$orderby.''.$asc_desc.'" class="btn" onClick="return(confirm(\'Valider la commande n° '.$ligne['id_commande'].' ?\'));">valider</a>';
 		}
 		elseif($ligne['etat'] == 'validee')
 		{
-			echo '<a class="btn_edit" href="?affichage=affichage&action=commandes&modif=expedier&id_commande='.$ligne['id_commande'] .$page.''.$orderby.''.$asc_desc.'" class="btn" onClick="return(confirm(\'En êtes-vous certain ?\'));">expédier</a>';
+			echo '<a class="btn_edit" href="?affichage=affichage&action=commandes&modif=expedier&id_commande='.$ligne['id_commande'] .$page.''.$orderby.''.$asc_desc.'" class="btn" onClick="return(confirm(\'expédier la commande n° '.$ligne['id_commande'].' ?\'));">expédier</a>';
 		}
 		else
 		{
@@ -439,11 +453,10 @@ if((isset($_GET['affichage']) && $_GET['affichage'] == 'affichage') && (isset($_
 	if((isset($_GET['affichage']) && $_GET['affichage'] == 'affichage') && (isset($_GET['action']) && $_GET['action'] == 'commandes'))
 	{
 		$lien = '<a href="?affichage=affichage&action=commandes&';
-		affichagePaginationGestion(10, 'commande', $lien);
+		affichagePaginationGestion(15, 'commande', $lien);
 	}
 
-	echo '</div>
-	</div>';
+	echo '</div>';
 }
 	?>
 		

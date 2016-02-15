@@ -133,12 +133,12 @@ $donnees =$resultat -> fetch_assoc();
 if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 {	
 	
-	echo '<h2><a href="?affichage=affichage" class="button active" >Toutes les promos ('. $donnees['nbre_promos'].')</a></h2>
+	echo '<h2 class="orange">Toutes les promos ('. $donnees['nbre_promos'].')</h2>
 	<a href="?action=ajout" class="button">Ajouter des promos</a><br />';
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'ajout')
 {
-	echo '<h2><a href="?action=ajout" class="button active">Ajouter des promos</a></h2>
+	echo '<h2 class="orange">Ajouter des promos</a></h2>
 	<a href="?affichage=affichage" class="button" >Toutes les promos</a>';
 }
 else
@@ -162,7 +162,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	
 	$req .= "SELECT * FROM promo_produit"; 
 	
-	$req = paginationGestion(5, 'promo_produit', $req);
+	$req = paginationGestion(15, 'promo_produit', $req);
 	$resultat = executeRequete($req);
 	$dont_link= null;
 	$dont_show = ''; // colonne non affichée
@@ -223,7 +223,7 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	{
 		$lien = '';
 	}
-	affichagePaginationGestion(5, 'promo_produit', $lien);
+	affichagePaginationGestion(15, 'promo_produit', $lien);
 }
 
 // DETAILS PRODUITS/PROMO
@@ -244,17 +244,12 @@ if((isset($_GET['detail']) && $_GET['detail'] == 'produit') && isset($_GET['id_p
 		
 		while ($ligne = $resultat->fetch_assoc()) 
 		{
-			if(!$ligne)
-			{
-				echo 'NO RESULT';
-			}
-
 			echo '<tr>';
 			foreach($ligne AS $indice => $valeur) // foreach = pour chaque element du tableau
 			{
 				if($indice == 'photo')
 				{
-					echo '<td ><img src="'.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
+					echo '<td ><img src="'.RACINE_SITE.$valeur.'" alt="'.$ligne['titre'].'" title="'.$ligne['titre'].'" class="thumbnail_tableau" width="80px" /></td>';
 				}
 				elseif($indice == 'stock')
 				{
