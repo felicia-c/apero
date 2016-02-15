@@ -303,6 +303,7 @@ input, select, textarea{
 }
 textarea{
     height: 60px;
+    padding: 1%;
 }
 input{
     padding: 1%;
@@ -348,7 +349,9 @@ label{
     width: 50%;
     text-align: left;
 }
-
+input:focus, textarea:focus, select:focus{
+    border-color: rgb(51, 81, 99);
+}
 
 /* PROFIL */
 .photo_profil{
@@ -682,9 +685,9 @@ div.tri a:hover{
 
 /* Vignette bar */
 .img_bar{
-   height: 150px;
-   overflow: hidden;
-   z-index: 10; 
+  max-height: 150px;
+  overflow: hidden;
+  z-index: 10; 
 }
 .img_bar .switch_titre{
     height: 35px;
@@ -698,8 +701,8 @@ div.tri a:hover{
     opacity: 0;
 }
 .img_bar .switch_titre p{
-   position: relative;
-   bottom: 75px;
+  position: relative;
+  top: -75px;
 }
 
 .img_bar:hover .img_bar .switch_titre p{
