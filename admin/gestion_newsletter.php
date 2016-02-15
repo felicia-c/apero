@@ -15,10 +15,23 @@ if(!empty($_POST))
 	$liste = '';
 
 	// Requete pour récuerer les adresses mail des membres et introduire dans le forumlaire. 
-	$result = executeRequete("SELECT email FROM membre,newsletter WHERE newsletter.id_membre=membre.id_membre");
-	while ($abonne = $result->fetch_assoc())
+	if(isset($_POST['to']) && $_POST['to']=='abonnes')
 	{
-	    $liste .= $abonne['email'];
+		$result = executeRequete("SELECT email FROM membre,newsletter WHERE newsletter.id_membre=membre.id_membre");
+	}
+	elseif(isset($_POST['to']) && $_POST['to']=='membres')
+	{
+		$result = executeRequete("SELECT email FROM membre");
+
+	}
+	elseif(isset($_POST['to']) && $_POST['to']=='bars')
+	{
+		$result = executeRequete("SELECT email FROM bar");
+	}
+	
+	while ($to = $result->fetch_assoc())
+	{
+	    $liste .= $to['email'];
 	    $liste .= ','; //On sépare les adresses par une virgule.
 
 	}
@@ -79,9 +92,9 @@ require_once("../inc/header.inc.php");
 ?>	
 	<div class="box_info">
 		
-		<h1>Quoi de neuf chez Apéro ?</h1>
+		<h2 class="orange">Quoi de neuf chez Apéro ?</h2>
 	
-			<p>Bienvenue sur la page d'envoi des Newsletters. Vous pouvez envoyer une newsletter à tous les abonnés grâce au formulaire ci-dessous.</p>
+			<p>Bienvenue sur la page d'envoi des Mailings et Newsletters. Vous pouvez envoyer une newsletter ou un mail aux membres du site grâce au formulaire ci-dessous.</p>
 		
 			<br />	
 		
@@ -90,36 +103,16 @@ require_once("../inc/header.inc.php");
 	{  
 	?>
 			<div class="msg_success">
-
 				<h4>Votre message a bien été envoyé</h4>
 			</div>
 		</div>
-		<br />
-		<p>Objet :<br /><?php echo( $object ); ?></p><br />
-		<p>Message :<br /><?php echo( nl2br( $message ) ); ?></p>
-		<p><a href="envoi_newsletter.php" >Retour Envoi Newsletter</a></p>
 <?php
+		//echo '<p><a href="'.RACINE_SITE.'admin/gestion_newsletter.php" >Retour Mailings / Newsletters</a></p>';
+
 	}  
 		else
 		{  
-
 			echo $msg;
-			/*if(count($msg) > 0 )  
-			{  
-				echo '<div class="msg_erreur">
-						<ul>';  
-				foreach( $msg as $error )  
-				{  
-					echo '<li>'.$error.'</li>';  
-				}  
-				echo '</ul>
-				
-					</div>';  
-			}  
-			elseif(isset($_POST['envoyer']))
-			{  
-				echo '<div class="msg_erreur"><em>Tous les champs sont obligatoires.</em></div><br />';  
-			}*/ 
 		}
 	?>
 			<div>
@@ -129,22 +122,24 @@ require_once("../inc/header.inc.php");
 		<br />
 		<div class="box_info">
 			<form class="form" method="post" action="<?php echo( $_SERVER['REQUEST_URI'] ); ?>"> 
-						
-					<label for="from" >Expéditeur</label> 
-						<input type="email" name="from" id="from" value="<?php if(!empty($_POST)){echo( $from );} ?>" class="form-control-contact"/><br />
+				<label for="to" >Envoyer à</label>
+				<select name="to" id="to" required>
+					<option value="abonnes">Abonnés newsletter</option>
+					<option value="membres">Tous les membres</option>
+					<option value="bars">Tous les Bars</option>
+				</select><br />
+				<label for="from" >Expéditeur</label> 
+					<input type="email" name="from" id="from" value="<?php if(!empty($_POST)){echo( $from );} ?>" class="form-control-contact"/><br />
+				
+				<label for="object">Objet</label>
+					<input type="text" name="object" id="object" value="<?php if(!empty($_POST)){echo( $object );} ?>" class="form-control-contact"/><br /> 
 					
-					<label for="object">Objet</label>
-						<input type="text" name="object" id="object" value="<?php if(!empty($_POST)){echo( $object );} ?>" class="form-control-contact"/><br /> 
-						
-					<label for="message" >Message</label> 
-						<textarea name="message" id="message" style=" height: 150px;"><?php if(!empty($_POST)){ echo( $message ); } ?></textarea><br /><br />
-						
-					<!--Validation formulaire Contact-->					
-					<input class="button" type="submit" name="envoyer" id="envoyer" value="Envoyer la Newsletter" /> 
+				<label for="message" >Message</label> 
+					<textarea name="message" id="message" style=" height: 150px;"><?php if(!empty($_POST)){ echo( $message ); } ?></textarea>
 					
+				<!--Validation formulaire Contact-->					
+				<input class="button" type="submit" name="envoyer" id="envoyer" value="Envoyer la Newsletter" /> 	
 			</form> 
-		</div>
-	
 <?php 		
 echo '</div>';	
 require_once("../inc/footer.inc.php");
