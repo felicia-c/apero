@@ -49,11 +49,11 @@
         {
           echo '<li><a '; if ($titre_page == 'Profil') {echo 'class="active"';} echo' href="'.RACINE_SITE.'profil.php">profil</a></li>';
         }
-        if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdmin())
+       /* if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdmin())
         {
-          echo '<li><a class="tomato"'; if ($titre_page == 'Mes apéros') {echo ' class="active"';} echo' href="'.RACINE_SITE.'mes_promos.php">mes apéros</a></li>';
+          echo '<li><a'; if ($titre_page == 'Mes apéros') {echo ' class="active"';} echo' href="'.RACINE_SITE.'mes_promos.php">mes apéros</a></li>';
         }
-
+*/
         if(utilisateurEstConnecte())
         {
           echo '<li><a href="'.RACINE_SITE.'connexion.php?action=deconnexion">déconnexion</a></li>';
@@ -69,12 +69,12 @@
         if(utilisateurEstConnecteEtEstAdmin() || utilisateurEstConnecteEtEstGerantEtAdmin())
         {
             echo'<ul>
-                <li><a class="admin no_border '; if ($titre_page == 'Gestion des commandes') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_commandes.php">commandes</a></li>
-                <li><a class="admin no_border '; if ($titre_page == 'Gestion des produits') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_produit.php">produits</a></li>
-                <li><a class="admin no_border '; if ($titre_page == 'Gestion des membres') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_membre.php">membres</a></li>
-                <li><a class="admin no_border '; if ($titre_page == 'Gestion des bars') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_bar.php">bars</a></li>
-                <li><a class="admin no_border '; if ($titre_page == 'Gestion des promos') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_promo.php">codes promos</a></li>
-                <li><a class="admin no_border '; if ($titre_page == 'Gestion des avis') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_avis.php">avis</a></li>
+                <li><a class="admin no_border '; if ($titre_page == 'Gestion des commandes') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_commandes.php?orderby=id_commande&affichage=affichage&action=commandes&desc=desc">commandes</a></li>
+                <li><a class="admin no_border '; if ($titre_page == 'Gestion des produits') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_produit.php?orderby=id_produit&affichage=affichage&desc=desc">produits</a></li>
+                <li><a class="admin no_border '; if ($titre_page == 'Gestion des membres') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_membre.php?orderby=id_membre&affichage=affichage&desc=desc">membres</a></li>
+                <li><a class="admin no_border '; if ($titre_page == 'Gestion des apéros') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_promos_bar.php?orderby=id_promo_bar&affichage=affichage&desc=desc">apéros</a></li>
+                <li><a class="admin no_border '; if ($titre_page == 'Gestion des promos') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_promo.php?orderby=id_promo_produit&affichage=affichage&desc=desc">codes promos</a></li>
+                <li><a class="admin no_border '; if ($titre_page == 'Gestion des avis') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_avis.php?orderby=date&affichage=affichage&desc=desc">avis</a></li>
                 <li><a class="admin no_border '; if ($titre_page == 'Envoi de Newsletter') {echo 'active';} echo'" href="'.RACINE_SITE.'admin/gestion_newsletter.php">envoi newsletter</a></li>
             </ul>';
         }
@@ -84,7 +84,14 @@
 
         <br />
         <div class="section">';
-        echo '<div class="msg_apero accroche">Le T-shirt qui te paye l\'apéro </div>';
+        if(isset($titre_page) && ($titre_page == 'Accueil'))
+        {
+          echo '<a ';if ($titre_page == "C'est quoi ?") {echo 'class="active"';} echo' href="'.RACINE_SITE.'apero.php">c\'est quoi ?</a>';
+
+        }
+
+       echo '<div class="msg_apero accroche">Le T-shirt qui te paye l\'apéro </div>';
+       
         if(isset($titre_page) && $titre_page !== 'Accueil')
         {
           echo '<h1>'.$titre_page.'</h1>';

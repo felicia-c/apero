@@ -1,6 +1,6 @@
 <?php 
 require_once("../inc/init.inc.php");
-$titre_page = 'Gestion promos bars';
+$titre_page = 'Gestion des apéros';
 
 //APERO - Felicia Cuneo - 12/2015
 
@@ -134,19 +134,19 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	
 	echo '<h2 class="orange">Tous les apéros ('. $donnees['nbre_promo'].')</h2>
 	<a href="?action=ajout" class="button"> > Ajouter un apéro</a><br />
-	<a href="'.RACINE_SITE.'admin/gestion_bar.php"> >Gestion Bars</a><br />';
+	<a href="'.RACINE_SITE.'admin/gestion_bar.php?orderby=id_bar&affichage=affichage&desc=desc"> >Gestion Bars</a><br />';
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'ajout')
 {
 	echo '<h2 class="orange">Ajouter un apéro</h2>
 	<a href="?orderby=id_promo_bar&affichage=affichage&desc=desc" class="button" > > Tous les apéro</a><br />
-	<a href="'.RACINE_SITE.'admin/gestion_bar.php"> >Gestion Bars</a><br />';
+	<a href="'.RACINE_SITE.'admin/gestion_bar.php?orderby=id_bar&affichage=affichage&desc=desc"> >Gestion Bars</a><br />';
 }
 else
 {
 	echo '<h2><a href="?orderby=id_promo_bar&affichage=affichage&desc=desc" class="button" >Tous les apéros</a></h2>
 		<h2><a href="?action=ajout" class="button">Ajouter un apéro</a></h2>
-		<h2><a href="'.RACINE_SITE.'admin/gestion_bar.php"> >Gestion Bars</a></h2>';
+		<h2><a href="'.RACINE_SITE.'admin/gestion_bar.php?orderby=id_bar&affichage=affichage&desc=desc"> >Gestion Bars</a></h2>';
 }
 echo $msg;
 echo '<br />';
@@ -167,17 +167,21 @@ if(isset($_GET['affichage']) &&  $_GET['affichage']=='affichage')
 			
 	while ($ligne = $resultat->fetch_assoc())
 	{
+		$nom_bar=executeRequete("SELECT nom_bar FROM bar WHERE id_bar='$ligne[id_bar]' ");
+		$bar = $nom_bar -> fetch_assoc();
 		echo '<tr '; 
 		if((isset($_GET['id_promo_bar']) && ($_GET['id_promo_bar'] == $ligne['id_promo_bar'])) || (isset($_GET['id_bar']) && ($_GET['id_bar'] == $ligne['id_bar'])))
 		{
 			echo ' class="tr_active" ';
 		}
 		echo '>';
+		
 		foreach($ligne AS $indice => $valeur)
 		{
+
 			if($indice == 'id_bar')
 			{
-				echo '<td><a href="?affichage=affichage&action=detail&id_bar='.$ligne['id_bar'].$page.''.$orderby.''.$asc_desc.'#details">'.$valeur.'</a></td>';
+				echo '<td><a href="?affichage=affichage&action=detail&id_bar='.$ligne['id_bar'].$page.''.$orderby.''.$asc_desc.'#details">'.$bar['nom_bar'].'</a></td>';
 			}
 			
 			elseif($indice == 'id_promo')
@@ -207,7 +211,7 @@ if(isset($_GET['affichage']) &&  $_GET['affichage']=='affichage')
 		<br />';
 		
 	affichagePaginationGestion(10, $table, '');
-	echo '</div><br /><br />';
+	echo '<br /><br />';
 }
 
 
@@ -215,11 +219,12 @@ if(isset($_GET['affichage']) &&  $_GET['affichage']=='affichage')
 if(isset($_GET['id_bar']))
 {
 	if((isset($_GET['action']) && $_GET['action'] == 'detail'))
-	{
-		echo '<div class="box_info no_border"><table class="large_table">';
-		//On affiche les infos du bar associé a l'apero:
+	{	
+	//On affiche les infos du bar associé a l'apero:
 		$resultat = executeRequete("SELECT * FROM bar WHERE id_bar = '$_GET[id_bar]'");
-		$nbcol = $resultat->field_count;
+		echo '<div class="box_info no_border">
+		<h3>Bar</h3>
+		<table class="large_table">';
 		
 		$dont_link = 'nono'; // entete du tablau sans order by
 		$dont_show = 'description'; // colonne non affichée
@@ -255,15 +260,19 @@ if(isset($_GET['id_bar']))
 				{
 					echo '<td colspan="">' . ucfirst($valeur).'</td>';	
 				}
+				elseif($indice == 'nom_bar')
+				{
+					echo '<td ><strong>' . ucfirst($valeur).'<strong></td>';	
+				}
 				elseif($indice == 'statut')
 				{
 					if($valeur === '1')
 					{
-						echo '<td >actif</td>';
+						echo '<td class="teal">actif</td>';
 					}
 					else
 					{
-						echo '<td >en attente de validation</td>';
+						echo '<td class="tomato">en attente de validation</td>';
 					}
 				}
 				elseif($indice != 'description')
@@ -322,7 +331,7 @@ if(isset($_GET['id_bar']))
 		</tr>';
 	}						
 	echo '</table>
-		</div><br /><br />';
+		<br /><br />';
 }
 
 //FORM AJOUT / MODIF

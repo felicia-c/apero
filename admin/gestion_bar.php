@@ -94,10 +94,12 @@ if(!empty($_POST))
 
 			if(verificationExtensionPhoto())
 			{
+				//$format_nom_photo= str_replace(' ', '_', $_FILES['photo']['name']);
+				$nom_bar = str_replace(' ', '_',$_POST['nom_bar']);
 				// $msg .= '<div class="bg-success"><h4>OK !</h4></div>';
-				$nom_photo = $_POST['nom_bar'] . '_' . $_FILES['photo']['name']; //afin que chaque nom de photo soit unique
+				$nom_photo = $nom_bar . '_' . $_POST['nom'] . '_' .$_FILES['photo']['name']; //afin que chaque nom de photo soit unique
 				
-				$photo_bdd = RACINE_SITE . "images/bars/$nom_photo"; //chemin src que l'on va enregistrer ds la BDD
+				$photo_bdd = "images/bars/$nom_photo"; //chemin src que l'on va enregistrer ds la BDD
 				
 				$photo_dossier = RACINE_SERVER . RACINE_SITE . "images/bars/$nom_photo";// chemin pour l'enregistrement dans le dossier qui va servir dans la fonction copy()
 				copy($_FILES['photo']['tmp_name'], $photo_dossier); // COPY() permet de copier un fichier depuis un endroit (1er argument) vers un autre endroit (2eme argument). 	
@@ -214,19 +216,19 @@ if(isset($_GET['affichage']) && $_GET['affichage'] == 'affichage')
 	
 	echo '<h2 class="orange">Tous les bars ('. $donnees['nbre_bar'].')</h2>
 	<a href="?action=ajout" class="button"> > Ajouter un bar</a><br />
-	<a href="'.RACINE_SITE.'admin/gestion_promos_bar.php"> > Offres Apéro</a>';
+	<a href="'.RACINE_SITE.'admin/gestion_promos_bar.php?orderby=id_promo_bar&affichage=affichage&desc=desc"> > Offres Apéro</a>';
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'ajout')
 {
 	echo '<h2 class="orange">Ajouter un bar</h2>
-	<a href="?affichage=affichage" class="button" > > Tous les bars</a><br />
-	<a href="'.RACINE_SITE.'admin/gestion_promos_bar.php"> > Offres Apéro</a>';
+	<a href="?orderby=id_bar&affichage=affichage&desc=desc" class="button" > > Tous les bars</a><br />
+	<a href="'.RACINE_SITE.'admin/gestion_promos_bar.php?orderby=id_promo_bar&affichage=affichage&desc=desc"> > Offres Apéro</a>';
 }
 else
 {
-	echo '<h2><a href="?affichage=affichage" class="button" >Tous les bars</a></h2>
+	echo '<h2><a href="?orderby=id_bar&affichage=affichage&desc=desc" class="button" >Tous les bars</a></h2>
 		<h2><a href="?action=ajout" class="button">Ajouter un bar</a></h2>
-		<h2><a href="'.RACINE_SITE.'admin/gestion_promos_bar.php">Offres Apéro</a><h2>';
+		<h2><a href="'.RACINE_SITE.'admin/gestion_promos_bar.php?orderby=id_promo_bar&affichage=affichage&desc=desc">Offres Apéro</a><h2>';
 }
 
 // FIN LIENS
