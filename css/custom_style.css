@@ -24,36 +24,10 @@
 
 }
 
-@font-face {
-    font-family: 'lubalgraphxl';
-    src: url('../fonts/lubgr/lubgrxl-webfont.eot');
-    src: url('../fonts/lubgr/lubgrxl-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/lubgr/lubgrxl-webfont.woff2') format('woff2'),
-         url('../fonts/lubgr/lubgrxl-webfont.woff') format('woff'),
-         url('../fonts/lubgr/lubgrxl-webfont.ttf') format('truetype'),
-         url('../fonts/lubgr/lubgrxl-webfont.svg#lubalgraph_xlt_btextra_light') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'lubalgraphmd';
-    src: url('../fonts/lubgr/lubgrhn-webfont.eot');
-    src: url('../fonts/lubgr/lubgrhn-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/lubgr/lubgrhn-webfont.woff2') format('woff2'),
-         url('../fonts/lubgr/lubgrhn-webfont.woff') format('woff'),
-         url('../fonts/lubgr/lubgrhn-webfont.ttf') format('truetype'),
-         url('../fonts/lubgr/lubgrhn-webfont.svg#lubalgraph_bk_btbook') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
 body{
     margin: 0;
     padding: 0;
-    background-color: #F0F0F0;
+    background-color: #335163; /*#F0F0F0*/
     font-size: 18px;
 }
 .container{
@@ -155,22 +129,23 @@ h3 a:hover{
 
 a.btn_index{
    display: block;
-   background: #FF9133;
+   background: white;
    width: 40%;
    margin-left: 29%;
    margin-top: 2%;
    margin-bottom: 2%;
    padding: 1%;
-   border: 1px solid orange;
+   border: 1px solid #b4b8bb;
    border-radius: 3px;
-   color: white;
+   color: #b4b8bb;
+   font-family: 'dejavu', helvetica;
    font-weight: bold;
    letter-spacing: 2px;
 }
 a.btn_index:hover{
-    border: 1px solid #b4b8bb;
-    background: white;
-    color: #b4b8bb;
+    border: 1px solid orange;
+    background: #FF9133;
+    color: white;
 }
 
 /* Messages erreur / success */
@@ -257,7 +232,14 @@ footer a:hover{
    color: tomato;
 }
 
-/* FORMS */
+.ml_footer{
+  color: #b4b8bb;
+  font-style: italic;
+  font-size: 0.7em;
+}
+
+
+/******** FORMS *******/
 fieldset{
     width: 60%;
     margin: 5% 15%;
@@ -330,7 +312,6 @@ input[type=submit]{
    font-size: 1em;
    font-family: 'apero';
    letter-spacing: 1px;
-   font-weight: bold;
    font-size: 1.2em;
    border: none;
    background-color: rgb(51, 81, 99);
@@ -365,6 +346,9 @@ input:focus, textarea:focus, select:focus{
     vertical-align: top;
     padding: 2%;
 }
+.button_profil{
+  font-size: 1.8em;
+}
 /* fin FORM */
 
 img.thumbnail{
@@ -381,7 +365,6 @@ table{
 }
 th{
     padding: 1%;
-
     color: #b4b8bb;
     font-size: 0.8em; 
 }
@@ -398,14 +381,13 @@ th a.actif{
 td{
     padding: 0.5%;
     font-size: 0.6em;
-    font-family: verdana;
+    font-family: 'dejavu', helvetica;
     text-align: center;
 }
 td a{
    font-family: 'apero';
    letter-spacing: 1px;
    font-size: 1.3em;
-   font-weight: bold;
    padding: 15px;
 }
 td a:hover{
@@ -432,13 +414,11 @@ tr td a{
     background-color: rgba(92, 154, 132, 0.25) !important;
 }
 .large_table th{
-    
     padding: 0.3%;
     font-size: 0.6em;
 }
 
 .large_table td{
-
     padding: 0.2%;
     font-size: 0.5em;
 }
@@ -454,8 +434,10 @@ td.total_panier{
    font-size: 1.5em;
 }
 .infos_panier{
-   padding: 4%;
-   vertical-align: top;
+  padding: 2%;
+  vertical-align: top;
+  width: 28%;
+  text-align: center;
 }
 .bg_color1{
     background-color: #62BCCD;
@@ -513,7 +495,7 @@ td.total_panier{
      margin-top: 5%;
 }
 
-/* BARS */
+/********* BARS *********/
 
 div.bar{
     width: 80%;
@@ -582,7 +564,7 @@ div.vignette_produit h2{
 }
 
 .img_vignette{
-    min-height: 150px;
+    height: 150px;
     width: 100%;
     overflow: hidden;
 }
@@ -596,7 +578,7 @@ div.bar .contact_bar{
    width: 100%;
   
 } 
-
+/***** PRODUITS  ******/
 .fiche_produit h1{
   font-size: 1.3em;
 }
@@ -638,7 +620,12 @@ div.bar .contact_bar{
 .tomato{
     color: tomato;
 }
-
+.no-margin{
+  margin: 0;
+}
+.no-padding{
+  padding: 0;
+}
 
 div.tri a:hover{
    border: none;
@@ -662,7 +649,6 @@ div.tri a:hover{
 }
 
 /* Create the hidden pseudo-element */
-/* include the shadow for the end state */
 .box:after  {
   opacity: 0; 
 }
