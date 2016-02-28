@@ -65,15 +65,14 @@ if(isset($_GET['id_bar']))
 		$req_promo= "SELECT * FROM promo_bar WHERE id_bar='$id_bar' AND date_fin > NOW() ORDER BY date_debut";
 		affichePromoBar($req_promo);
 	}
-
-	echo '<br />';
-
 }
 
-echo '<hr /><div>';
+echo '<br /><br />';
+echo '<hr /><div id="boxnewsletter">';
 	formulaireNewsletter();
 	inscriptionNewsletter($msg);
 echo '</div>
 <br /><br />';
+
 echo '</div>';
 require_once('inc/footer.inc.php');
