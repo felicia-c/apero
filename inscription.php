@@ -79,19 +79,19 @@ if($_POST){
 	{
 		$msg .= '<div class="msg_erreur" ><h4>Le mot de passe doit avoir entre 4 et 15 caractères inclus</h4></div>';
 	}
-	if(strlen($_POST['nom'])< 1 || strlen($_POST['nom'])>20) 
+	if(strlen($_POST['nom'])< 1 || strlen($_POST['nom'])>45) 
 	{
-		$msg .= '<div class="msg_erreur" ><h4>Le nom doit avoir entre 2 et 20 caractères inclus</h4></div>';
+		$msg .= '<div class="msg_erreur" ><h4>Le nom doit avoir entre 2 et 25 caractères inclus</h4></div>';
 	}
-	if(strlen($_POST['prenom'])< 1 || strlen($_POST['prenom'])>20) 
+	if(strlen($_POST['prenom'])< 1 || strlen($_POST['prenom'])>45) 
 	{
-		$msg .= '<div class="msg_erreur"><h4>Le prénom doit avoir entre 1 et 20 caractères inclus</h4></div>';
+		$msg .= '<div class="msg_erreur"><h4>Le prénom doit avoir entre 1 et 25 caractères inclus</h4></div>';
 	}
 	if(strlen($_POST['email']) < 8)
 	{
 		$msg .= '<div class="msg_erreur"><h4>L\'email renseigné est trop court !</h4></div>';
 	}
-	if(strlen($_POST['email']) > 30) 
+	if(strlen($_POST['email']) > 45) 
 	{
 		$msg .= '<div class="msg_erreur"><h4>L\'email renseigné trop long !</h4></div>';
 	}
@@ -159,8 +159,6 @@ require_once("inc/header.inc.php");
 
 ?>
 
-				
-
 <br />
 
 <br />
@@ -177,17 +175,17 @@ require_once("inc/header.inc.php");
 		<input type="password" id="mdp" name="mdp" minlength="4" maxlength="14" value="<?php if(isset($_POST['mdp'])) {echo $_POST['mdp'];}?>"  placeholder="Password"  required /><br /><br />	<!------- Modifier Type = password ------>				
 		
 		<label for="mdp2">Confirmer le mot de passe *</label><br />
-		<input type="password" id="mdp2" name="mdp2" required /><br />	<br />	
+		<input type="password" minlength="4" id="mdp2" name="mdp2" required /><br />	<br />	
 	</fieldset>
 	<fieldset  class="block_inline" >	
 		<label for="nom">Nom *</label><br />
-		<input type="text" id="nom" name="nom" value="<?php if(isset($_POST['nom'])) {echo $_POST['nom'];}?>" placeholder="Durand"  required/><br /><br />
+		<input type="text" id="nom" name="nom" maxlenght="45" value="<?php if(isset($_POST['nom'])) {echo $_POST['nom'];}?>" placeholder="Durand"  required/><br /><br />
 		
 		<label for="prenom">Prénom *</label><br />
-		<input type="text" id="prenom" name="prenom" value="<?php if(isset($_POST['prenom'])) {echo $_POST['prenom'];}?>" placeholder="Jean"  required/><br /><br />
+		<input type="text" id="prenom" name="prenom" maxlenght="45" value="<?php if(isset($_POST['prenom'])) {echo $_POST['prenom'];}?>" placeholder="Jean"  required/><br /><br />
 		
 		<label for="email">E-mail *</label><br />
-		<input type="text" id="email" name="email" value="<?php if(isset($_POST['email'])) {echo $_POST['email'];}?>" placeholder="monmail@mail.com"  required /><br /><br /><br />
+		<input type="text" id="email" name="email" maxlenght="45" value="<?php if(isset($_POST['email'])) {echo $_POST['email'];}?>" placeholder="monmail@mail.com"  required /><br /><br /><br />
 	
 		<label for="sexe">Sexe *</label><br />
 		<select id="sexe" name="sexe" required >
@@ -197,13 +195,13 @@ require_once("inc/header.inc.php");
 	</fieldset>
 	<fieldset  class="block_inline" >
 		<label for="ville">Ville *</label><br />
-		<input type="text" id="ville" name="ville" required value="<?php if(isset($_POST['ville'])) {echo $_POST['ville'];}?>" /><br /><br />
+		<input type="text" id="ville" name="ville" maxlenght="45" required value="<?php if(isset($_POST['ville'])) {echo $_POST['ville'];}?>" /><br /><br />
 		
 		<label for="cp">Code Postal *</label><br />
-		<input type="text" id="cp" name="cp" required value="<?php if(isset($_POST['cp'])) {echo $_POST['cp'];}?>" placeholder="99999"/><br /><br />
+		<input type="text" id="cp" name="cp" maxlenght="5" required value="<?php if(isset($_POST['cp'])) {echo $_POST['cp'];}?>" placeholder="99999"/><br /><br />
 		
 		<label for="adresse">Adresse *</label><br />
-		<textarea  id="adresse" rows="8" name="adresse" required><?php if(isset($_POST['adresse'])) {echo $_POST['adresse'];}?></textarea><br /><br />
+		<textarea  id="adresse" rows="8" maxlenght="45" name="adresse" required><?php if(isset($_POST['adresse'])) {echo $_POST['adresse'];}?></textarea><br /><br />
 	</fieldset>	<br /><br />		
 	<div class="box_info">
 		<label for="newsletter" ><strong>S'inscrire à notre newsletter</strong></label><br />
@@ -214,7 +212,7 @@ require_once("inc/header.inc.php");
 	</div>
 	<br /><br />
 	<div class="box_info">
-		<p><strong>Vous avez un bar?</strong> Vous souhaitez le faire connaître et fidéliser votre clientèle ? <br />Inscrivez votre bar !<br /> <a href="<?php echo RACINE_SITE; ?>">En savoir plus</a></p><br/>
+		<p><strong>Vous avez un bar?</strong> Vous souhaitez le faire connaître et fidéliser votre clientèle ? <br />Inscrivez votre bar !<br /> <a href="<?php echo RACINE_SITE; ?>apero.php">En savoir plus</a></p><br/>
 		<input type="checkbox" name="bar" id="bar" class="float"/>
 		<label class="label_nl" for="bar">Je certifie que je suis gérant d'un bar<br />(nous procèderons aux vérifications nécessaires avant de valider l'inscription d'un bar)</label>
 	</div>

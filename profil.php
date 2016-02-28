@@ -65,6 +65,7 @@ if(!empty($_POST))
 	//ENREGISTREMENT
 	if(isset($_POST['enregistrer']) && $_POST['enregistrer'] == 'Enregistrer') 
 	{
+		$nom_bar = str_replace(' ', '_',$_POST['nom_bar']);
 		$siret= executeRequete("SELECT siret FROM bar WHERE siret='$_POST[siret]'");
 		if($siret -> num_rows > 0 && isset($_GET['action']) && $_GET['action'] == 'ajout') //si le siret est deja enregistré
 		{
@@ -83,9 +84,9 @@ if(!empty($_POST))
 			{
 				$nom_bar = str_replace(' ', '_',$_POST['nom_bar']);
 				// $msg .= '<div class="bg-success" style="padding: 10px; text-align: center"><h4>OK !</h4></div>';
-				$nom_photo = $nom_bar. '_' .$_POST['nom'] . '_' . $_FILES['photo']['name']; //afin que chaque nom de photo soit unique
+				$nom_photo = $nom_bar. '_' .$_POST['nom']. '_' .$_FILES['photo']['name']; //afin que chaque nom de photo soit unique
 				
-				$photo_bdd = RACINE_SITE . "images/bars/$nom_photo"; //chemin src que l'on va enregistrer ds la BDD
+				$photo_bdd = "images/bars/$nom_photo"; //chemin src que l'on va enregistrer ds la BDD
 				
 				$photo_dossier = RACINE_SERVER . RACINE_SITE . "images/bars/$nom_photo";// chemin pour l'enregistrement dans le dossier qui va servir dans la fonction copy()
 				copy($_FILES['photo']['tmp_name'], $photo_dossier); // COPY() permet de copier un fichier depuis un endroit (1er argument) vers un autre endroit (2eme argument). 
@@ -106,7 +107,7 @@ if(!empty($_POST))
 				$_POST[$indice] = htmlentities($valeur, ENT_QUOTES); 
 			}
 			extract($_POST);
-			
+
 			$resultat = executeRequete("SELECT statut FROM membre WHERE id_membre = '$id_membre' ");
 			$statut = $resultat -> fetch_assoc();
 			if($_GET['action'] == 'modification')
@@ -251,7 +252,7 @@ echo '</div>
 <p><strong>'. ucfirst($membre_actuel['prenom']) .' '. ucfirst($membre_actuel['nom']) .'</strong><br />'.$membre_actuel['adresse'] .'<br />'.$membre_actuel['cp'] .' '. ucfirst($membre_actuel['ville']) .'</p>';
 	echo '<br /><br /><a class="teal" href="'.RACINE_SITE.'modif_profil.php?id_membre='.$id_membre_actuel.'&action=Modifier" class="button" >Modifier mon compte</a>';	
 echo '</div>
-</div><br />';
+	</div><br />';
 
 if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdmin())
 {
@@ -300,7 +301,7 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 			//	}
 				elseif($indice == 'id_bar')
 				{
-					echo '<td><a href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$ligne['id_bar'].'" title="détails">'.$ligne['id_bar'].'</a></td>';
+					echo '<td><a href="'.RACINE_SITE.'fiche_bar.php?id_bar='.$ligne['id_bar'].'" title="détails">'.$ligne['nom_bar'].'</a></td>';
 				}
 				elseif($indice == 'nom_gerant')
 				{
@@ -328,15 +329,15 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 				}	
 			}
 			echo '<td><a href="?action=suppression&id_bar='.$ligne['id_bar'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));">X</a></td>';
-			echo '<td><a href="?action=modification&id_bar='.$ligne['id_bar'] .'" class="btn_edit">éditer</a></td>';
+			echo '<td><a href="?action=modification&id_bar='.$ligne['id_bar'] .'#form_bar" class="btn_edit">éditer</a></td>';
 			echo '</tr>';		
 		}						
 			
 	}
 	echo '</table><br />';
 	//affichagePaginationRecherche(5, $req);
-	echo '<a href="'.RACINE_SITE.'profil.php?action=ajouter#form_bar" class="button" >Ajouter un bar</a> | 
-		<a href="'.RACINE_SITE.'mes_promos.php" class="button" >Mes promos</a><br /><br />';	
+	echo '<a href="'.RACINE_SITE.'profil.php?action=ajouter#form_bar" class="button button_profil" >Ajouter un bar </a> | 
+		<a href="'.RACINE_SITE.'mes_promos.php?affichage=affichage" class="button button_profil" > Gérer mes apéros</a><br /><br />';	
 	
 
 	if(isset($_GET['action']))
@@ -353,7 +354,9 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 	<form class="form" method="post" action="" enctype="multipart/form-data">
 		<fieldset>
 			<legend>Ajouter / Modifier un bar</legend>
-			 
+
+			 <a class="button tomato" style="margin-left: 86%;" href="<?php echo RACINE_SITE; ?>profil.php?affichage=affichage">Annuler</a>
+			 <br /><br />
 			<input type="hidden" name="id_bar" id="id_bar" value="<?php if(isset($bar_actuel['id_bar'])){ echo $bar_actuel['id_bar']; }?>" />
 			<label for="nom_bar">Nom de l'établissement</label>
 			<input required type="text" id="nom_bar" name="nom_bar"  maxlength="50" value="<?php if(isset($_POST['nom_bar'])) {echo $_POST['nom_bar'];} elseif(isset($bar_actuel['nom_bar'])){ echo $bar_actuel['nom_bar']; }?>" placeholder="Puzzle Bar" /><br />
@@ -364,18 +367,13 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 			<label for="photo">Photo </label>
 			<input type="file" name="photo" id="photo"><br />
 			<?php 
-		/*	if(isset($_POST['photo'])) // on affiche la photo actuelle par defaut
-			{
-				echo '<label>Photo actuelle</label><br />';
-				echo '<img src="'. $_POST['photo'].'" width="140"/><br />';
-				echo '<input type="hidden" name="photo_actuelle" value="'. $_POST['photo'].'" /><br />';
-			} */
 			if(isset($bar_actuel['photo'])) // on affiche la photo actuelle par defaut
 			{
 				echo '<label>Photo actuelle</label><br />';
 				echo '<img src="'.RACINE_SITE. $bar_actuel['photo'].'" width="140"/><br />';
 				echo '<input type="hidden" name="photo_actuelle" id="photo_actuelle" value="'. $bar_actuel['photo'].'" /><br />';
 			}
+
 			?>	
 			<label for="description">Description </label><br />
 			<textarea id="description" name="description" maxlength="200" class="description_form" ><?php if(isset($_POST['description'])) {echo $_POST['description'];} elseif(isset($bar_actuel['description'])){ echo $bar_actuel['description']; }?></textarea>
@@ -404,10 +402,10 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 			<textarea required type="text" id="adresse" name="adresse" maxlength="100" placeholder="86 rue de la Ville" required><?php if(isset($_POST['adresse'])) {echo $_POST['adresse'];} elseif(isset($bar_actuel['adresse'])){ echo $bar_actuel['adresse']; }?></textarea><br />
 			
 			<br />
-			<p><i>ATTENTION: Si vous validez ces modifications, votre bar et les apéros qui lui sont associés n'appaîtront plus sur le site jusqu'à la validation de notre équipe</i></p>
+			<p><i>ATTENTION: Si vous validez ces modifications, votre bar et les apéros qui lui sont asociés n'appaîtront plus sur le site jusqu'à la validation de notre équipe</i></p>
 			<input onClick="return(confirm(\'Votre bar et les apéro seront inaccessibles jusqu'à validation par l'équipe apéro. <br /> Continuer ?\'));" type="submit" id="enregistrer" name="enregistrer" value="Enregistrer" class="button" /><br />
 			<br />
-			<a class="button " href="<?php echo RACINE_SITE; ?>profil.php?affichage=affichage">Annuler</a><br />
+			
 			<br />
 		</fieldset>
 	</form>			
@@ -416,12 +414,12 @@ if(utilisateurEstConnecteEtEstGerant() || utilisateurEstConnecteEtEstGerantEtAdm
 		<?php
 		}	
 	}
+
+
 }	
 echo '<!-- DERNIERES COMMANDES -->
 			
-				<h4 class=orange>Vos dernières commandes</h4>';
-
-			
+		<h4 class=orange>Vos dernières commandes</h4>';	
 //selection des commandes de l'utilisateur
 $id_utilisateur = $_SESSION['utilisateur']['id_membre'];
 $req = "SELECT * FROM commande WHERE id_membre = '$id_utilisateur' ORDER BY date DESC LIMIT 5";
@@ -448,27 +446,27 @@ while($ma_commande = $resultat -> fetch_assoc() )
 			$date_avis = date_create_from_format('Y-m-d H:i:s', $ma_commande['date']);
 	echo '<td>'. date_format($date_avis, 'd/m/Y H:i').' </td>
 			<td> '.$ma_commande['montant']. ' €</td>
-			<td> '; 
+			'; 
 			if($ma_commande['etat'] == 'validee')
 			{
-				echo 'Validée';
+				echo '<td class="orange"> Validée';
 			} 
 			elseif($ma_commande['etat'] == 'expediee')
 			{
-				echo 'Expédiée';
+				echo '<td class="teal"> Expédiée';
 			}
 			else
 			{
-				echo ucfirst($ma_commande['etat']);
+				echo '<td>'.ucfirst($ma_commande['etat']);
 			}
 			echo '</td>
 		</tr>';
 }
 echo '</table>
 <br />
-<!-- DERNIERES AVIS -->		 
+<!-- DERNIERS AVIS -->		 
 
-	<h4 class=orange>Vos derniers avis</h4>';
+	<h4 class=orange>Votre avis sur les bars</h4>';
 	
 //selection des avis de l'utilisateur
 $id_utilisateur = $_SESSION['utilisateur']['id_membre'];
@@ -499,17 +497,21 @@ while($mon_avis = $resultat -> fetch_assoc() )
 			echo date_format($date, 'd/m/Y H:i') .' </td>
 			<td>'. $mon_avis['note'] .' </td>
 			<td> '.ucfirst($mon_avis['commentaire']). '</td>	
-			<td><a href="?action=suppression_avis&id_avis='.$mon_avis['id_avis'] .'" class="btn_delete" onClick="return(confirm(\'En êtes-vous certain ?\'));"> X </a>
+			<td><a href="?action=suppression_avis&id_avis='.$mon_avis['id_avis'] .'" class="btn_delete" onClick="return(confirm(\'Etes-vous certain de vouloir supprimer cet avis?\'));"> X </a>
 			</td>
 		</tr>';
 }
 echo '</table>
-<br />
-<br />
-<div>';
-	formulaireNewsletter();
-	inscriptionNewsletter($msg);
-echo '</div>
+	<br />
+	<br />
+	<hr />
+	<br />
+	<br />
+	<div id="boxnewsletter">';
+		formulaireNewsletter();
+		inscriptionNewsletter($msg);
+	echo '</div>
+
 </div>
 <br />
 <br />';

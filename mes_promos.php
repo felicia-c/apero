@@ -195,7 +195,7 @@ echo '<br />';
 
 if(isset($_GET['affichage']) &&  $_GET['affichage']=='affichage')
 {
-	echo '<table>'; 
+	echo '<table id="details">'; 
 	//$table= 'promo_bar';
 	
 	$dont_link = 'nono'; // colonne du tablau sans order by
