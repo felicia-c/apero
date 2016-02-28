@@ -35,6 +35,12 @@ elseif(isset($_GET['desc']))
 	$asc_desc.='&desc='.$_GET['desc'];
 }
 
+$verif_caractere = preg_match('#^[a-zA-Z0-9._]+$#', $_POST['categorie']); //retourne FALSE si mauvais caracteres dans $_POST['pseudo'], sinon TRUE
+if(!$verif_caractere && !empty($_POST['categorie']))
+{
+	$msg .= '<div class="msg_erreur" ><h4>La catégorie du produit ne peut comporter d\'accent ni de caractères spéciaux</h4></div>';  
+}
+
  // SUPPRESSION DES PRODUITS
  
  if(isset($_GET['action']) && $_GET['action'] == 'suppression')
@@ -63,6 +69,7 @@ if(isset($_POST['modif_stock']) && $_POST['modif_stock'] == 'modifier le stock')
 }				
  
 //ENREGISTREMENT DES PRODUITS
+
 if(isset($_POST['enregistrement'])) //nom du bouton valider	
 {
 	$reference= executeRequete("SELECT reference FROM produit WHERE reference='$_POST[reference]'");
@@ -86,7 +93,7 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 				// $msg .= '<div class="bg-success" style="padding: 10px; text-align: center"><h4>OK !</h4></div>';
 				$nom_photo = $_POST['reference'] . '_' . $_FILES['photo']['name']; //afin que chaque nom de photo soit unique
 				
-				$photo_bdd = RACINE_SITE . "images/produits/$nom_photo"; //chemin src que l'on va enregistrer ds la BDD
+				$photo_bdd ="images/produits/$nom_photo"; //chemin src que l'on va enregistrer ds la BDD
 				
 				$photo_dossier = RACINE_SERVER . RACINE_SITE . "images/produits/$nom_photo";// chemin pour l'enregistrement dans le dossier qui va servir dans la fonction copy()
 				copy($_FILES['photo']['tmp_name'], $photo_dossier); // COPY() permet de copier un fichier depuis un endroit (1er argument) vers un autre endroit (2eme argument). 
@@ -115,7 +122,11 @@ if(isset($_POST['enregistrement'])) //nom du bouton valider
 			else
 			{
 				executeRequete("INSERT INTO produit (reference, categorie, titre, description, couleur, sexe, photo, prix, id_promo_produit) VALUES ( '$reference', '$categorie', '$titre', '$description', '$couleur', '$sexe', '$photo_bdd', '$prix', '$id_promo_produit')"); //requete d'inscription (pour la PHOTO on utilise le chemin src que l'on a enregistré ds $photo_bdd)
-				header('location:gestion_produit.php?affichage=affichage&add=ok&'.$mysqli->insert_id.''.$page.''.$orderby.''.$asc_desc.'');
+				$id_produit = $mysqli->insert_id;
+				executeRequete("INSERT INTO taille_stock (id_produit, id_taille, stock) VALUES ('$id_produit', 2, '5')");
+				executeRequete("INSERT INTO taille_stock (id_produit, id_taille, stock) VALUES ('$id_produit', 3, '5')");
+				executeRequete("INSERT INTO taille_stock (id_produit, id_taille, stock) VALUES ('$id_produit', 4, '5')");
+				header('location:gestion_produit.php?affichage=affichage&add=ok&'.$id_produit.''.$page.''.$orderby.''.$asc_desc.'');
 			}
 			//$_GET['affichage'] = 'affichage'; // afficher les produits une fois qu'on a validé le formulaire
 		}	
@@ -301,7 +312,7 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 			</legend>
 			<input type="hidden" name="id_produit" id="id_produit" value="<?php if(isset($produit_actuel['id_produit'])){ echo $produit_actuel['id_produit']; }?>" /><!-- On met un input caché pour pouvoir identifier l'article lors de la modification (REPLACE se base sur l'id uniquement(PRIMARY KEY)) /!\SECURITE : On est ici dans un back-office, on peut donc se permettre une certaine confiance en l'utilisateur, mais les champs cachés ne sont pas sécurisés pour l'acces public il faut faire des controles securités sur les url -->
 			<label for="reference">Réference </label>
-			<input required type="text" id="reference" name="reference" value="<?php if(isset($_POST['reference'])) {echo $_POST['reference'];} if(isset($produit_actuel['reference'])){ echo $produit_actuel['reference']; }?>" />
+			<input required type="text" id="reference" name="reference" value="<?php if(isset($_POST['reference'])) {echo $_POST['reference'];} elseif(isset($produit_actuel['reference'])){ echo $produit_actuel['reference']; }?>" />
 			<label for="photo">Photo </label>
 			<input type="file" name="photo" id="photo"><br />
 			<?php 
@@ -314,18 +325,18 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 			
 			?>
 			<label for="categorie">Catégorie </label>
-			<input required type="text" id="categorie" name="categorie"  value="<?php if(isset($_POST['categorie'])) {echo $_POST['categorie'];} if(isset($produit_actuel['categorie'])){ echo $produit_actuel['categorie']; }?>"/>
+			<input required type="text" id="categorie" name="categorie"  value="<?php if(isset($_POST['categorie'])) {echo $_POST['categorie'];} elseif(isset($produit_actuel['categorie'])){ echo $produit_actuel['categorie']; }?>"/>
 			
 			<label for="titre">Titre </label>
-			<input required class="form-control" type="text" id="titre" name="titre" value="<?php if(isset($_POST['titre'])) {echo $_POST['titre'];} if(isset($produit_actuel['titre'])){ echo $produit_actuel['titre']; }?>"/>
+			<input required class="form-control" type="text" id="titre" name="titre" value="<?php if(isset($_POST['titre'])) {echo $_POST['titre'];} elseif(isset($produit_actuel['titre'])){ echo $produit_actuel['titre']; }?>"/>
 			
 			<label for="description">Description </label><br />
-			<textarea required id="description" name="description" class="description_form" ><?php if(isset($_POST['description'])) {echo $_POST['description'];} if(isset($produit_actuel['description'])){ echo $produit_actuel['description']; }?></textarea>
+			<textarea required id="description" name="description" class="description_form" ><?php if(isset($_POST['description'])) {echo $_POST['description'];} elseif(isset($produit_actuel['description'])){ echo $produit_actuel['description']; }?></textarea>
 		
 		</fieldset>
 		<fieldset>
 			<label for="couleur">Couleur </label>
-			<input required type="text" id="couleur" name="couleur"  value="<?php if(isset($_POST['couleur'])) {echo $_POST['couleur'];} if(isset($produit_actuel['couleur'])){ echo $produit_actuel['couleur']; }?>" />
+			<input required type="text" id="couleur" name="couleur"  value="<?php if(isset($_POST['couleur'])) {echo $_POST['couleur'];} elseif(isset($produit_actuel['couleur'])){ echo $produit_actuel['couleur']; }?>" />
 			
 			<label for="sexe">Sexe </label><br /> <!--cas par défaut + une valeur checkée si le formulaire a dejà été rempli-->
 				<input type="radio" name="sexe" value="m"  class="inline" <?php if((isset($_POST['sexe']) && $_POST['sexe'] == "m") ||(isset($produit_actuel['sexe'])&& $produit_actuel['sexe'] == "m")) { echo 'checked';} elseif(!isset($_POST['sexe']) && !isset($produit_actuel['sexe'])){echo 'checked';} ?> /> Homme &nbsp;
@@ -350,11 +361,8 @@ if(isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == '
 					}
 				?>					
 				</select>
-			<label for="prix">Prix </label>
-			<input required type="text" id="prix" name="prix"  value="<?php if(isset($_POST['prix'])) {echo $_POST['prix'];} if(isset($produit_actuel['prix'])){ echo $produit_actuel['prix']; }?>" /><br />
-			
-			<!-- <label for="stock">Stock </label>
-			<input required type="text" id="stock" name="stock"  value="<?php if(isset($_POST['stock'])) {echo $_POST['stock'];} if(isset($produit_actuel['stock'])){ echo $produit_actuel['stock']; }?>" /><br /> -->
+			<label for="prix">Prix HT</label>
+			<input required type="text" id="prix" name="prix"  value="<?php if(isset($_POST['prix'])) {echo $_POST['prix'];} elseif(isset($produit_actuel['prix'])){ echo $produit_actuel['prix']; }?>" /><br />
 			
 			<input type="submit" id="enregistrement" name="enregistrement" value="<?php echo ucfirst($_GET['action']); ?>" class="btn" />
 			
